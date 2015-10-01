@@ -8,7 +8,7 @@ import org.app4j.site.module.page.web.api.impl.DirectoryPageObjectImpl;
 import org.app4j.site.module.page.web.api.impl.PagePageObjectImpl;
 import org.app4j.site.module.page.web.api.impl.RequestPageObjectImpl;
 import org.app4j.site.module.page.web.api.impl.SitePageObjectImpl;
-import org.app4j.site.runtime.assets.Resource;
+import org.app4j.site.runtime.template.Resource;
 import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;

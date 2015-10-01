@@ -1,7 +1,7 @@
 package org.app4j.site.util;
 
-import org.app4j.site.runtime.assets.FolderResourceRepository;
-import org.app4j.site.runtime.assets.Resource;
+import org.app4j.site.runtime.template.FolderResourceRepository;
+import org.app4j.site.runtime.template.Resource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

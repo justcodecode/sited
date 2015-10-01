@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.assets;
+package org.app4j.site.runtime.template;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;

@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.assets.web;
+package org.app4j.site.runtime.template.web;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

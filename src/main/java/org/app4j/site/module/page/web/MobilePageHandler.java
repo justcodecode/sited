@@ -3,7 +3,7 @@ package org.app4j.site.module.page.web;
 import org.app4j.site.Site;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.runtime.assets.Resource;
+import org.app4j.site.runtime.template.Resource;
 import org.app4j.site.web.Request;
 
 import java.util.Optional;

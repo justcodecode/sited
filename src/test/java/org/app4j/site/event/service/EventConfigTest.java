@@ -1,6 +1,6 @@
 package org.app4j.site.event.service;
 
-import com.google.api.client.util.Maps;
+import com.google.common.collect.Maps;
 import org.app4j.site.runtime.event.Event;
 import org.app4j.site.runtime.event.EventConfig;
 import org.junit.Assert;
@@ -15,9 +15,9 @@ public class EventConfigTest {
         EventConfig eventConfig = new EventConfig();
 
         eventConfig.addListener(Object.class,
-            event -> {
-                System.out.println(event.target());
-            });
+                event -> {
+                    System.out.println(event.target());
+                });
 
         Assert.assertTrue(eventConfig.pop(new Event<>("some", new Object(), Maps.<String, Object>newHashMap())));
     }

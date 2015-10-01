@@ -6,14 +6,12 @@ import com.google.common.io.Files;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.assets.AssetsConfig;
-import org.app4j.site.runtime.assets.FolderResourceRepository;
-import org.app4j.site.runtime.assets.Resource;
-import org.app4j.site.runtime.assets.ResourceRepository;
 import org.app4j.site.runtime.route.NotFoundException;
+import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
+import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.cache.StandardCacheManager;
@@ -36,6 +34,7 @@ public class TemplateConfig extends InternalModule {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
     private final List<ResourceRepository> templateRepositories = Lists.newArrayList();
+    private final Assets assets = new Assets();
 
     public TemplateConfig() {
         templateEngine.setCacheManager(cacheManager);
@@ -44,14 +43,17 @@ public class TemplateConfig extends InternalModule {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(AssetsConfig.class);
+        return Arrays.asList(RouteConfig.class);
     }
 
-    public TemplateConfig addResourceRepository(ResourceRepository resourceRepository) {
+    public TemplateConfig add(ResourceRepository resourceRepository) {
         templateRepositories.add(resourceRepository);
         return this;
     }
 
+    public Assets assets() {
+        return assets;
+    }
 
     public TemplateEngine engine() {
         return templateEngine;
@@ -64,6 +66,8 @@ public class TemplateConfig extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
+        route().get("/assets/*", new AssetsHandler(assets));
+
         Site site = require(Site.class);
 
         if (site.isDebugEnabled()) {
@@ -76,8 +80,8 @@ public class TemplateConfig extends InternalModule {
                 templateDir.mkdirs();
             }
             FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir);
-            addResourceRepository(resourceRepository);
-            assets().addResourceRepository(resourceRepository);
+            add(resourceRepository);
+            assets().add(resourceRepository);
         }
 
 

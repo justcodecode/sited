@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.assets;
+package org.app4j.site.runtime.template;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;

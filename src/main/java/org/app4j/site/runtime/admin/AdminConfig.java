@@ -3,12 +3,12 @@ package org.app4j.site.runtime.admin;
 import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.assets.ClasspathResourceRepository;
-import org.app4j.site.runtime.assets.FolderResourceRepository;
-import org.app4j.site.runtime.assets.ResourceRepository;
-import org.app4j.site.runtime.assets.web.AssetsHandler;
 import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.template.ClasspathResourceRepository;
+import org.app4j.site.runtime.template.FolderResourceRepository;
+import org.app4j.site.runtime.template.ResourceRepository;
 import org.app4j.site.runtime.template.TemplateConfig;
+import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,13 +68,13 @@ public class AdminConfig extends InternalModule {
         }
 
 
-        template().addResourceRepository(resourceRepository);
-        assets().addResourceRepository(resourceRepository);
+        template().add(resourceRepository);
+        template().assets().add(resourceRepository);
 
         bind(AdminConfig.class).to(this).export();
 
-        get("/admin/index.html", new AdminHandler(site(), new AssetsHandler(assets())));
-        get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(assets())));
+        get("/admin/index.html", new AdminHandler(site(), new AssetsHandler(template().assets())));
+        get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(template().assets())));
     }
 
     @Override

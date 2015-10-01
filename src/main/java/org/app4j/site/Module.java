@@ -3,7 +3,6 @@ package org.app4j.site;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.app4j.site.runtime.admin.AdminConfig;
-import org.app4j.site.runtime.assets.AssetsConfig;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.error.ErrorConfig;
@@ -127,10 +126,6 @@ public abstract class Module implements Scope, Iterable<Binding<?>> {
 
     protected I18nConfig i18n() {
         return site().i18n();
-    }
-
-    protected AssetsConfig assets() {
-        return site().assets();
     }
 
     protected AdminConfig admin() {

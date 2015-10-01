@@ -1,7 +1,7 @@
 package org.app4j.site.module.page.web.api.impl;
 
 import org.app4j.site.module.page.web.api.TemplatePageObject;
-import org.app4j.site.runtime.assets.Resource;
+import org.app4j.site.runtime.template.Resource;
 
 /**
  * @author chi

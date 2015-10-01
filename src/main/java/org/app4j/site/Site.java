@@ -6,13 +6,13 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.mongodb.MongoClientURI;
 import org.app4j.site.runtime.admin.AdminConfig;
-import org.app4j.site.runtime.assets.AssetsConfig;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.i18n.I18nConfig;
 import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.template.Assets;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.util.Graph;
 import org.app4j.site.web.Request;
@@ -66,16 +66,10 @@ public class Site extends Module {
         install(new CacheConfig());
         install(new ErrorConfig());
         install(new I18nConfig());
-        install(new AssetsConfig());
         install(new AdminConfig());
         install(this);
 
-        bind(Site.class)
-
-                .
-
-                        to(this);
-
+        bind(Site.class).to(this);
     }
 
     @Override
@@ -205,8 +199,8 @@ public class Site extends Module {
         return require(I18nConfig.class);
     }
 
-    public AssetsConfig assets() {
-        return require(AssetsConfig.class);
+    public Assets assets() {
+        return require(Assets.class);
     }
 
     public AdminConfig admin() {
