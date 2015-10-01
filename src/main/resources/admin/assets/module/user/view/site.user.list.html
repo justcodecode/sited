@@ -1,0 +1,70 @@
+<div class="top">
+    <div class="container-fluid">
+        <nav class="navbar">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search..." ng-model="query">
+                </div>
+
+                <button type="submit" class="btn btn-primary" ng-click="filter()">Search</button>
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" ng-click="filter()">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="modal" ui-sref="site.user.create">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <small class="help-block">{{totalResults}} users</small>
+    <table st-table="rowCollection" st-pipe="loadData" class="table table-striped table-hover table-condensed">
+        <thead>
+        <tr>
+            <th><input type="checkbox"/></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>LastUpdateTime</th>
+            <th>CreateTime</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody ng-show="!isLoading">
+        <tr ng-repeat="row in rowCollection" st-select-row="row">
+            <td table-checkbox="row"></td>
+            <td><a href="{{row.username}}" target="_blank" title="{{row.path}}">{{row.username}}</a></td>
+            <td>{{row.email}}</td>
+            <td>{{row.roles}}</td>
+            <td>{{row.lastUpdateTime | date : 'yyyy-MM-dd HH:mm'}}</td>
+            <td>{{row.createTime | date : 'yyyy-MM-dd HH:mm'}}</td>
+            <td>
+                <button class="btn btn-default btn-sm" ng-click="updateFile(row)">Edit</button>
+                <button class="btn btn-danger btn-sm" ng-click="deleteFile(row)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+
+        <tbody ng-show="isLoading">
+        <tr>
+            <td colspan="8" class="text-center">Loading ...</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td st-pagination="" st-items-by-page="pageSize" colspan="8"
+                st-template="st-pagination.html">
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

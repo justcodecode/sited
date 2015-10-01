@@ -1,0 +1,54 @@
+<div class="top">
+    <ul class="nav">
+        <li role="presentation">
+            <span ng-if="isFileChanged()">*</span> {{file.path}}
+        </li>
+    </ul>
+
+    <div class="top-action">
+        <button class="btn btn-sm btn-default" ng-click="resetFile()">Reset</button>
+        <button class="btn btn-sm btn-primary" ng-click="updateFile()">Update</button>
+        <button class="btn btn-sm btn-danger" ng-click="deleteFile()">Delete</button>
+    </div>
+</div>
+
+<div class="body">
+    <form>
+        <div class="form-group">
+            <label class="control-label">Path</label>
+
+            <div class="form-control">
+                <a href="{{file.path}}" class="form-control-static" target="_blank">{{file.path}}</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Title</label>
+            <input type="text" class="form-control" placeholder="Title" ng-model="file.title">
+
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Description</label>
+            <textarea class="form-control" placeholder="Description" ng-model="file.description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Tags</label>
+            <ui-select multiple tagging tagging-label="" ng-model="file.tags">
+                <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
+                <ui-select-choices repeat="tag in file.tags | filter:$select.search">
+                    {{tag}}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+
+        <div class="form-group" ng-if="isImageFile(file)">
+            <label class="control-label">Preview</label>
+
+            <div>
+                <img src="{{file.path}}" class="img-responsive"/>
+            </div>
+        </div>
+    </form>
+</div>

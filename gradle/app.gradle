@@ -1,0 +1,28 @@
+// use gradlew -Penv=${env} to pass
+def environment = hasProperty('env') ? env : null
+
+apply plugin: 'application'
+mainClassName = 'Main'
+
+afterEvaluate {
+    distTar {
+        archiveName "${baseName}.${extension}"
+    }
+
+    startScripts {
+        doLast {
+            windowsScript.text = windowsScript.text.replaceFirst('set DEFAULT_JVM_OPTS=', "set DEFAULT_JVM_OPTS=\"-Dcore.webPath=%~dp0../web -Dcore.appName=${project.name}\"")
+            unixScript.text = unixScript.text.replaceFirst('DEFAULT_JVM_OPTS=""', "DEFAULT_JVM_OPTS='-Dcore.webPath=\\\$APP_HOME/web -Dcore.appName=${project.name}'")
+        }
+    }
+}
+
+distributions {
+    main {
+        if (environment != null) {
+            def envProperties = "conf/${environment}/resources"
+            assert project.file(envProperties).exists()
+            sourceSets.main.resources.srcDirs envProperties
+        }
+    }
+}
