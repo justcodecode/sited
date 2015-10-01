@@ -1,6 +1,5 @@
 package org.app4j.site.runtime.database;
 
-import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -16,7 +15,15 @@ import java.util.stream.Collectors;
  */
 public class DatabaseConfig extends InternalModule {
     private final SimpleCodecRegistry simpleCodecRegistry = new SimpleCodecRegistry();
-    private MongoDatabase database;
+    private final MongoDatabase database;
+
+    public DatabaseConfig(MongoClientURI mongoClientURI) {
+        MongoClientOptions mongoClientOptions = MongoClientOptions.builder()
+                .codecRegistry(simpleCodecRegistry)
+                .build();
+        MongoClient mongoClient = new MongoClient(serverAddresses(mongoClientURI), mongoClientOptions);
+        database = mongoClient.getDatabase(mongoClientURI.getDatabase());
+    }
 
     public SimpleCodecRegistry codecs() {
         return simpleCodecRegistry;
@@ -28,12 +35,6 @@ public class DatabaseConfig extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
-        MongoClientURI mongoClientURI = new MongoClientURI(property("site.database.url").get());
-        MongoClientOptions mongoClientOptions = MongoClientOptions.builder()
-                .codecRegistry(simpleCodecRegistry)
-                .build();
-        MongoClient mongoClient = new MongoClient(toServerAddresses(mongoClientURI), mongoClientOptions);
-        database = mongoClient.getDatabase(mongoClientURI.getDatabase());
         bind(DatabaseConfig.class).to(this).export();
     }
 
@@ -42,9 +43,7 @@ public class DatabaseConfig extends InternalModule {
         return "database";
     }
 
-    private List<ServerAddress> toServerAddresses(MongoClientURI mongoClientURI) {
-        List<ServerAddress> serverAddresses = Lists.newArrayList();
-        serverAddresses.addAll(mongoClientURI.getHosts().stream().map(ServerAddress::new).collect(Collectors.toList()));
-        return serverAddresses;
+    private List<ServerAddress> serverAddresses(MongoClientURI mongoClientURI) {
+        return mongoClientURI.getHosts().stream().map(ServerAddress::new).collect(Collectors.toList());
     }
 }

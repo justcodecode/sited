@@ -41,25 +41,23 @@ public class Site extends Module {
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
 
     private final File dir;
-    private final MongoClientURI mongoClientURI;
     private final Locale locale;
     private final Charset charset;
 
     @SuppressWarnings("unchecked")
     public Site(File dir, MongoClientURI mongoClientURI) {
         this.dir = dir;
-        this.mongoClientURI = mongoClientURI;
-
         SiteLogger siteLogger = new SiteLogger();
+
         if (isDebugEnabled()) {
             siteLogger.setLevel(Level.DEBUG);
         }
 
         charset = Charset.forName(property("charset").orElse(Charsets.UTF_8.name()).get());
         locale = Locale.forLanguageTag(property("locale").orElse(Locale.getDefault().toLanguageTag()).get());
+        bind(Site.class).to(this);
 
-
-        install(new DatabaseConfig());
+        install(new DatabaseConfig(mongoClientURI));
         install(new RouteConfig());
         install(new TemplateConfig());
         install(new EventConfig());
@@ -69,7 +67,6 @@ public class Site extends Module {
         install(new AdminConfig());
         install(this);
 
-        bind(Site.class).to(this);
     }
 
     @Override
