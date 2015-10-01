@@ -37,6 +37,11 @@ public class DatabaseConfig extends InternalModule {
         bind(DatabaseConfig.class).to(this).export();
     }
 
+    @Override
+    protected String name() {
+        return "database";
+    }
+
     private List<ServerAddress> toServerAddresses(MongoClientURI mongoClientURI) {
         List<ServerAddress> serverAddresses = Lists.newArrayList();
         serverAddresses.addAll(mongoClientURI.getHosts().stream().map(ServerAddress::new).collect(Collectors.toList()));

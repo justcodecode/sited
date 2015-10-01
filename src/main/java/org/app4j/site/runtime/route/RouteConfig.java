@@ -63,4 +63,9 @@ public class RouteConfig extends InternalModule {
     protected void configure() throws Exception {
         bind(RouteConfig.class).to(this).export();
     }
+
+    @Override
+    protected String name() {
+        return "route";
+    }
 }

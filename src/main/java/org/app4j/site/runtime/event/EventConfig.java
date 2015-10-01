@@ -44,4 +44,9 @@ public class EventConfig extends InternalModule {
     protected void configure() throws Exception {
         bind(EventConfig.class).to(this).export();
     }
+
+    @Override
+    protected String name() {
+        return "event";
+    }
 }

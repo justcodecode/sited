@@ -32,4 +32,9 @@ public class CacheConfig extends InternalModule {
     protected void configure() throws Exception {
         bind(CacheConfig.class).to(this).export();
     }
+
+    @Override
+    protected String name() {
+        return "cache";
+    }
 }

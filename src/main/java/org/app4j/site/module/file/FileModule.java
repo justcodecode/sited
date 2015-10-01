@@ -41,4 +41,9 @@ public class FileModule extends Module {
         admin().put("/admin/api/file/:id", adminUploadFileRESTController::updateUploadFile);
         admin().delete("/admin/api/file/:id", adminUploadFileRESTController::deleteUploadFile);
     }
+
+    @Override
+    protected String name() {
+        return "file";
+    }
 }

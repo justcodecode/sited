@@ -36,6 +36,11 @@ public class I18nConfig extends InternalModule {
         bind(I18nConfig.class).to(this).export();
     }
 
+    @Override
+    protected String name() {
+        return "i18n";
+    }
+
     public synchronized I18nConfig add(String lang, String path) {
         URL resource = com.google.common.io.Resources.getResource(path);
         try (InputStreamReader reader = new InputStreamReader(resource.openStream(), Charsets.UTF_8)) {

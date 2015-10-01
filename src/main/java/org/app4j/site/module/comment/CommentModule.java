@@ -19,4 +19,9 @@ public class CommentModule extends Module {
         AdminCommentRESTController commentRESTController = new AdminCommentRESTController(commentService);
         admin().get("/admin/api/comment/", commentRESTController::findComments);
     }
+
+    @Override
+    protected String name() {
+        return "comment";
+    }
 }

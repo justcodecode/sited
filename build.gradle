@@ -24,6 +24,5 @@ dependencies {
     testRuntime(
             'junit:junit:4.12',
             'com.github.fakemongo:fongo:2.0.2'
-
     )
 }

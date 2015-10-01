@@ -29,6 +29,11 @@ public class AssetsConfig extends InternalModule {
         bind(AssetsConfig.class).to(this).export();
     }
 
+    @Override
+    protected String name() {
+        return "assets";
+    }
+
     public AssetsConfig addResourceRepository(ResourceRepository resourceRepository) {
         assetsRepositories.add(resourceRepository);
         return this;

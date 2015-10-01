@@ -61,4 +61,9 @@ public class PageModule extends Module {
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
         admin().post("/admin/draft/*", adminPagePreviewHandler);
     }
+
+    @Override
+    protected String name() {
+        return "name";
+    }
 }

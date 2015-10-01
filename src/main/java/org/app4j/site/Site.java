@@ -164,6 +164,11 @@ public class Site extends Module {
 //        error().handle(Exception.class, (request, response) -> response.setStatusCode(500));
     }
 
+    @Override
+    protected String name() {
+        return "site";
+    }
+
     public <T> T require(Class<T> type) {
         return super.require(type);
     }

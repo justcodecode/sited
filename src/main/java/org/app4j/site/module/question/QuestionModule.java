@@ -32,4 +32,9 @@ public class QuestionModule extends Module {
                 .get("/api/question/{questionId}", questionController::getQuestion)
                 .post("/api/question/{questionId}/answer", questionController::createAnswer);
     }
+
+    @Override
+    protected String name() {
+        return "question";
+    }
 }

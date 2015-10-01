@@ -76,4 +76,9 @@ public class AdminConfig extends InternalModule {
         get("/admin/index.html", new AdminHandler(site(), new AssetsHandler(assets())));
         get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(assets())));
     }
+
+    @Override
+    protected String name() {
+        return "admin";
+    }
 }
