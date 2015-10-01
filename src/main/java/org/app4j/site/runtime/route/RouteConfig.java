@@ -4,6 +4,7 @@ import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.web.Handler;
+import org.app4j.site.web.Request;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author chi
  */
 public class RouteConfig extends InternalModule {
-    private final Map<String, Route<Handler>> routes = new HashMap<>();
+    private final Map<Request.Method, Route<Handler>> routes = new HashMap<>();
 
     @Override
     public List<Class<? extends Module>> dependencies() {
@@ -22,26 +23,26 @@ public class RouteConfig extends InternalModule {
     }
 
     public RouteConfig get(String route, Handler handler) {
-        route("GET").add(route, handler);
+        route(Request.Method.GET).add(route, handler);
         return this;
     }
 
     public RouteConfig post(String route, Handler handler) {
-        route("POST").add(route, handler);
+        route(Request.Method.POST).add(route, handler);
         return this;
     }
 
     public RouteConfig put(String route, Handler handler) {
-        route("PUT").add(route, handler);
+        route(Request.Method.PUT).add(route, handler);
         return this;
     }
 
     public RouteConfig delete(String route, Handler handler) {
-        route("DELETE").add(route, handler);
+        route(Request.Method.DELETE).add(route, handler);
         return this;
     }
 
-    public Handler find(String method, String path, Map<String, String> parameters) {
+    public Handler find(Request.Method method, String path, Map<String, String> parameters) {
         Route<Handler> route = route(method);
         if (route == null) {
             throw new NotFoundException(path);
@@ -49,7 +50,7 @@ public class RouteConfig extends InternalModule {
         return route.find(path, parameters);
     }
 
-    private Route<Handler> route(String method) {
+    private Route<Handler> route(Request.Method method) {
         Route<Handler> route = routes.get(method);
         if (route == null) {
             route = new Route<>();
