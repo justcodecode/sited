@@ -8,11 +8,11 @@ import org.junit.Test;
  * @author chi
  */
 public class I18nConfigTest {
-    I18nConfig i18nConfig;
+    I18nModule i18nConfig;
 
     @Before
     public void setup() {
-        i18nConfig = new I18nConfig();
+        i18nConfig = new I18nModule();
         i18nConfig.add("en", "message/message.txt");
 
     }

@@ -8,15 +8,17 @@ import com.mongodb.MongoClientURI;
 import org.app4j.site.runtime.admin.AdminConfig;
 import org.app4j.site.runtime.admin.AdminModule;
 import org.app4j.site.runtime.cache.CacheConfig;
+import org.app4j.site.runtime.cache.CacheModule;
 import org.app4j.site.runtime.database.DatabaseConfig;
-import org.app4j.site.runtime.error.ErrorConfig;
+import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.error.ErrorHandler;
-import org.app4j.site.runtime.event.EventConfig;
-import org.app4j.site.runtime.i18n.I18nConfig;
+import org.app4j.site.runtime.error.ErrorModule;
+import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
+import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.util.Graph;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
@@ -62,13 +64,12 @@ public class Site extends Module {
         locale = Locale.forLanguageTag(property("locale").orElse(Locale.getDefault().toLanguageTag()).get());
         bind(Site.class).to(this);
 
-        install(new DatabaseConfig(mongoClientURI));
+        install(new DatabaseModule(mongoClientURI));
         install(new RouteModule());
-        install(new TemplateConfig());
-        install(new EventConfig());
-        install(new CacheConfig());
-        install(new ErrorConfig());
-        install(new I18nConfig());
+        install(new TemplateModule());
+        install(new EventModule());
+        install(new CacheModule(dir("cache")));
+        install(new ErrorModule());
         install(new AdminModule());
         install(this);
     }
@@ -76,12 +77,12 @@ public class Site extends Module {
     @Override
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(RouteModule.class,
-                TemplateConfig.class,
-                EventConfig.class,
-                CacheConfig.class,
-                DatabaseConfig.class,
+                TemplateModule.class,
+                EventModule.class,
+                CacheModule.class,
+                DatabaseModule.class,
                 AdminModule.class,
-                ErrorConfig.class);
+                ErrorModule.class);
     }
 
 
@@ -176,16 +177,16 @@ public class Site extends Module {
         return require(TemplateConfig.class);
     }
 
-    public ErrorConfig error() {
-        return require(ErrorConfig.class);
+    public ErrorModule error() {
+        return require(ErrorModule.class);
     }
 
     public CacheConfig cache() {
         return require(CacheConfig.class);
     }
 
-    public EventConfig event() {
-        return require(EventConfig.class);
+    public EventModule event() {
+        return require(EventModule.class);
     }
 
     public DatabaseConfig database() {
@@ -194,10 +195,6 @@ public class Site extends Module {
 
     public RouteConfig route() {
         return require(RouteConfig.class);
-    }
-
-    public I18nConfig i18n() {
-        return require(I18nConfig.class);
     }
 
     public AssetsConfig assets() {

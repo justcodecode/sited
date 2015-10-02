@@ -1,5 +1,9 @@
 package org.app4j.site.runtime.event;
 
+import com.google.common.base.Preconditions;
+import org.app4j.site.util.JSON;
+import org.app4j.site.util.Value;
+
 import java.util.Map;
 
 /**
@@ -7,11 +11,10 @@ import java.util.Map;
  */
 public class Event<T> {
     private final T target;
-    private final String name;
     private final Map<String, Object> parameters;
 
-    public Event(String name, T target, Map<String, Object> parameters) {
-        this.name = name;
+    public Event(T target, Map<String, Object> parameters) {
+        Preconditions.checkNotNull(target, "target can't be null");
         this.target = target;
         this.parameters = parameters;
     }
@@ -20,15 +23,14 @@ public class Event<T> {
         return target;
     }
 
-    public Class<T> type() {
-        return (Class<T>) target.getClass();
+    public <K> Value<K> param(String key, Class<K> type) {
+        if (parameters.containsKey(key)) {
+            return new Value<>(key, JSON.mapper().convertValue(parameters.get(key), type));
+        }
+        return new Value<>(key, null);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, Object> parameters() {
-        return parameters;
+    public Value<String> param(String key) {
+        return param(key, String.class);
     }
 }

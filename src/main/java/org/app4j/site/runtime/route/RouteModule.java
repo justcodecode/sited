@@ -2,7 +2,7 @@ package org.app4j.site.runtime.route;
 
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.error.ErrorConfig;
+import org.app4j.site.runtime.error.ErrorModule;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.exception.NotFoundException;
@@ -20,7 +20,7 @@ public class RouteModule extends InternalModule implements RouteConfig {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(ErrorConfig.class);
+        return Arrays.asList(ErrorModule.class);
     }
 
     @Override

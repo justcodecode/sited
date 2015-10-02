@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.admin.web;
+package org.app4j.site.runtime.admin;
 
 import org.app4j.site.Site;
 import org.app4j.site.web.Handler;

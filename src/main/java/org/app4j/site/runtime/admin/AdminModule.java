@@ -4,13 +4,12 @@ import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.admin.service.Console;
-import org.app4j.site.runtime.admin.web.AdminHandler;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.ClasspathResourceRepository;
 import org.app4j.site.runtime.template.FolderResourceRepository;
 import org.app4j.site.runtime.template.ResourceRepository;
-import org.app4j.site.runtime.template.TemplateConfig;
+import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
@@ -28,7 +27,7 @@ public class AdminModule extends InternalModule {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteModule.class, TemplateConfig.class);
+        return Arrays.asList(RouteModule.class, TemplateModule.class);
     }
 
     @Override

@@ -5,9 +5,8 @@ import com.google.common.collect.Lists;
 import org.app4j.site.runtime.admin.AdminConfig;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
-import org.app4j.site.runtime.error.ErrorConfig;
-import org.app4j.site.runtime.event.EventConfig;
-import org.app4j.site.runtime.i18n.I18nConfig;
+import org.app4j.site.runtime.error.ErrorModule;
+import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.util.JSON;
@@ -106,7 +105,7 @@ public abstract class Module implements Scope, Iterable<Binding<?>> {
         return site().database();
     }
 
-    protected EventConfig event() {
+    protected EventModule event() {
         return site().event();
     }
 
@@ -118,12 +117,8 @@ public abstract class Module implements Scope, Iterable<Binding<?>> {
         return site().cache();
     }
 
-    protected ErrorConfig error() {
+    protected ErrorModule error() {
         return site().error();
-    }
-
-    protected I18nConfig i18n() {
-        return site().i18n();
     }
 
     protected AdminConfig admin() {
