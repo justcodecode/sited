@@ -50,7 +50,7 @@ import java.util.Set;
  * @author chi
  */
 public class TemplateDialect extends StandardDialect {
-    public static final String PREFIX = "j";
+    private static final String PREFIX = "j";
     private final Set<IProcessor> processors = Sets.newLinkedHashSet();
 
     public TemplateDialect() {
@@ -124,7 +124,6 @@ public class TemplateDialect extends StandardDialect {
          * HTML: COMMENT PROCESSORS
          */
         processors.add(new StandardConditionalCommentProcessor(this));
-
     }
 
     public TemplateDialect add(IProcessor iProcessor) {

@@ -2,7 +2,6 @@ package org.app4j.site.runtime.template.processor;
 
 import org.app4j.site.runtime.template.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
-import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -16,8 +15,8 @@ public class LangAttrProcessor extends AbstractStandardExpressionAttributeTagPro
     public static final int PRECEDENCE = 1000;
     public static final String ATTR_NAME = "lang";
 
-    public LangAttrProcessor(IProcessorDialect dialect) {
-        super(dialect, TemplateMode.HTML, TemplateDialect.PREFIX, ATTR_NAME, PRECEDENCE, true);
+    public LangAttrProcessor(TemplateDialect dialect) {
+        super(dialect, TemplateMode.HTML, dialect.getPrefix(), ATTR_NAME, PRECEDENCE, true);
     }
 
 

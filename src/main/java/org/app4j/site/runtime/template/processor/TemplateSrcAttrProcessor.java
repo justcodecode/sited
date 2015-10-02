@@ -3,7 +3,6 @@ package org.app4j.site.runtime.template.processor;
 import com.google.common.base.Strings;
 import org.app4j.site.runtime.template.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
-import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractAttributeTagProcessor;
@@ -19,8 +18,8 @@ public class TemplateSrcAttrProcessor extends AbstractAttributeTagProcessor impl
     private final String baseUrl;
     private final List<String> baseCdnUrls;
 
-    public TemplateSrcAttrProcessor(IProcessorDialect dialect, String baseUrl, List<String> baseCdnUrls) {
-        super(dialect, TemplateMode.HTML, TemplateDialect.PREFIX, null, false, ATTRIBUTE_NAME, true, PRECEDENCE, true);
+    public TemplateSrcAttrProcessor(TemplateDialect dialect, String baseUrl, List<String> baseCdnUrls) {
+        super(dialect, TemplateMode.HTML, dialect.getPrefix(), null, false, ATTRIBUTE_NAME, true, PRECEDENCE, true);
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.baseCdnUrls = baseCdnUrls;
     }

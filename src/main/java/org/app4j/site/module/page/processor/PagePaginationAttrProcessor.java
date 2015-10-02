@@ -4,7 +4,6 @@ import org.app4j.site.runtime.database.Pageable;
 import org.app4j.site.runtime.template.TemplateDialect;
 import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
 import org.thymeleaf.context.ITemplateProcessingContext;
-import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractElementTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -15,8 +14,8 @@ public class PagePaginationAttrProcessor extends AbstractElementTagProcessor imp
     public static final String ELEMENT_NAME = "pagination";
     private final String baseUrl;
 
-    public PagePaginationAttrProcessor(IProcessorDialect dialect, String baseUrl) {
-        super(dialect, TemplateMode.HTML, TemplateDialect.PREFIX, ELEMENT_NAME, true, null, false, PRECEDENCE);
+    public PagePaginationAttrProcessor(TemplateDialect dialect, String baseUrl) {
+        super(dialect, TemplateMode.HTML, dialect.getPrefix(), ELEMENT_NAME, true, null, false, PRECEDENCE);
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
     }
 
