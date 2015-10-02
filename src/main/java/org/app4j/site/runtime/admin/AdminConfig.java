@@ -79,6 +79,6 @@ public class AdminConfig extends InternalModule {
 
     @Override
     protected String name() {
-        return "sited/admin";
+        return "site/admin";
     }
 }
