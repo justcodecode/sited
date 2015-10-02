@@ -55,21 +55,6 @@ public class RequestImpl extends DefaultScope implements Request {
         for (Map.Entry<String, Deque<String>> entry : exchange.getQueryParameters().entrySet()) {
             parameters.put(entry.getKey(), entry.getValue().peek());
         }
-
-        if ("POST".equals(method()) && "application/x-www-form-urlencoded".equals(contentType())) {
-            FormParserFactory formParserFactory = FormParserFactory.builder().build();
-            try {
-                FormDataParser parser = formParserFactory.createParser(exchange);
-                parser.setCharacterEncoding(charset.name());
-                FormData formData = parser.parseBlocking();
-                for (String name : formData) {
-                    FormData.FormValue formValue = formData.get(name).getFirst();
-                    parameters.put(name, formValue.getValue());
-                }
-            } catch (IOException e) {
-                throw new Error(e);
-            }
-        }
     }
 
     @Override
