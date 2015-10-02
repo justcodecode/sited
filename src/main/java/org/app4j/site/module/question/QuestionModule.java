@@ -33,8 +33,4 @@ public class QuestionModule extends Module {
                 .post("/api/question/{questionId}/answer", questionController::createAnswer);
     }
 
-    @Override
-    protected String name() {
-        return "question";
-    }
 }

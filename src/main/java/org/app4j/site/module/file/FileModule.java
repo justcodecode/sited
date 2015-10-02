@@ -42,8 +42,4 @@ public class FileModule extends Module {
                 .delete("/admin/api/file/:id", adminUploadFileRESTController::deleteUploadFile);
     }
 
-    @Override
-    protected String name() {
-        return "file";
-    }
 }

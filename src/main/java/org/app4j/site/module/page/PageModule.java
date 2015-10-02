@@ -70,8 +70,4 @@ public class PageModule extends Module {
                 .post("/admin/draft/*", adminPagePreviewHandler);
     }
 
-    @Override
-    protected String name() {
-        return "name";
-    }
 }

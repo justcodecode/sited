@@ -99,11 +99,6 @@ public class TemplateConfig extends InternalModule {
         bind(TemplateConfig.class).to(this).export();
     }
 
-    @Override
-    protected String name() {
-        return "template";
-    }
-
     public Resource get(String path) {
         for (ResourceRepository templateLoader : templateRepositories) {
             Optional<Resource> resourceOptional = templateLoader.load(path);

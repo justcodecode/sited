@@ -20,8 +20,4 @@ public class CommentModule extends Module {
         admin().route().get("/sited/admin/api/comment/", commentRESTController::findComments);
     }
 
-    @Override
-    protected String name() {
-        return "comment";
-    }
 }

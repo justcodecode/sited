@@ -32,8 +32,6 @@ public abstract class Module implements Scope, Iterable<Binding<?>> {
 
     protected abstract void configure() throws Exception;
 
-    protected abstract String name();
-
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(Site.class);
     }

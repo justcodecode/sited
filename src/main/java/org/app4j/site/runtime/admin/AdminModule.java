@@ -99,8 +99,4 @@ public class AdminModule extends InternalModule {
                 .get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(template().assets())));
     }
 
-    @Override
-    protected String name() {
-        return "site/admin";
-    }
 }

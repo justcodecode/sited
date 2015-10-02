@@ -71,8 +71,4 @@ public class RouteModule extends InternalModule implements RouteConfig {
         bind(RouteConfig.class).to(this).export();
     }
 
-    @Override
-    protected String name() {
-        return "route";
-    }
 }

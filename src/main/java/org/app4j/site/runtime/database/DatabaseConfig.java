@@ -38,11 +38,6 @@ public class DatabaseConfig extends InternalModule {
         bind(DatabaseConfig.class).to(this).export();
     }
 
-    @Override
-    protected String name() {
-        return "database";
-    }
-
     private List<ServerAddress> serverAddresses(MongoClientURI mongoClientURI) {
         return mongoClientURI.getHosts().stream().map(ServerAddress::new).collect(Collectors.toList());
     }

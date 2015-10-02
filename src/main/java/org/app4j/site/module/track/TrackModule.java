@@ -15,8 +15,4 @@ public class TrackModule extends Module {
         bind(TrackingService.class).to(new TrackingService(site().database().get())).export();
     }
 
-    @Override
-    protected String name() {
-        return "track";
-    }
 }

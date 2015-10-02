@@ -29,8 +29,4 @@ public class ErrorConfig extends InternalModule {
         bind(ErrorConfig.class).to(this).export();
     }
 
-    @Override
-    protected String name() {
-        return "error";
-    }
 }

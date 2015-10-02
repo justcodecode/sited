@@ -41,8 +41,4 @@ public class UserModule extends Module {
                 .get("/admin/api/user/", adminUserRESTController::findUsers);
     }
 
-    @Override
-    protected String name() {
-        return "user";
-    }
 }

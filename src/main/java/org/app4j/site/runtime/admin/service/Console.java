@@ -1,7 +1,5 @@
 package org.app4j.site.runtime.admin.service;
 
-import org.app4j.site.Module;
-
 /**
  * @author chi
  */
@@ -12,7 +10,7 @@ public class Console {
         return menu;
     }
 
-    public Console register(Module module) {
+    public Console add(String module) {
         return this;
     }
 }

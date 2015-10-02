@@ -91,7 +91,7 @@ public class Site extends Module {
     }
 
     public Site install(Module module) {
-        logger.info("install module [{}]", module.name());
+        logger.info("install module [{}]", module.getClass().getCanonicalName());
         modules.put(module.getClass(), module);
 
         Queue<Class<? extends Module>> dependencies = new LinkedList<>();
@@ -162,11 +162,6 @@ public class Site extends Module {
 //
 //        error().handle(NotFoundException.class, (request, response) -> response.setStatusCode(404));
 //        error().handle(Exception.class, (request, response) -> response.setStatusCode(500));
-    }
-
-    @Override
-    protected String name() {
-        return "site";
     }
 
     public <T> T require(Class<T> type) {
