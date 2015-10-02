@@ -82,9 +82,9 @@ public class AdminModule extends InternalModule {
         ResourceRepository resourceRepository;
 
         if (property("site.admin.dir").isPresent()) {
-            resourceRepository = new FolderResourceRepository(new File(property("site.admin.dir").get()));
+            resourceRepository = new FolderResourceRepository(new File(property("site.admin.dir").get()), 100);
         } else {
-            resourceRepository = new ClasspathResourceRepository("sited/");
+            resourceRepository = new ClasspathResourceRepository("sited/", 100);
         }
 
 

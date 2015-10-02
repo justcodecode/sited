@@ -18,9 +18,11 @@ import java.util.Optional;
  */
 public class FolderResourceRepository implements ResourceRepository {
     private final File dir;
+    private final int priority;
 
-    public FolderResourceRepository(File dir) {
+    public FolderResourceRepository(File dir, int priority) {
         this.dir = dir;
+        this.priority = priority;
     }
 
     @Override
@@ -34,6 +36,11 @@ public class FolderResourceRepository implements ResourceRepository {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public int priority() {
+        return priority;
     }
 
     @Override

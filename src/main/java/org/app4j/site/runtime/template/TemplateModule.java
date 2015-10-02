@@ -23,6 +23,8 @@ import org.thymeleaf.templateresolver.TemplateResolver;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author chi
@@ -31,7 +33,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     private final TemplateDialect templateDialect = new TemplateDialect();
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
-    private final List<ResourceRepository> templateRepositories = Lists.newArrayList();
+    private final Set<ResourceRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
     private final AssetsConfig assetsConfig = new AssetsConfig();
 
     public TemplateModule() {
@@ -66,16 +68,12 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     protected void configure() throws Exception {
         Site site = site();
 
-        if (site.isDebugEnabled()) {
-            cacheManager.setTemplateCacheMaxSize(0);
-        }
-
         TemplateResolver templateResolver = new TemplateResolver();
         templateResolver.setCharacterEncoding(Charsets.UTF_8.name());
         templateResolver.setResourceResolver(new IResourceResolver() {
             @Override
             public String getName() {
-                return "sited";
+                return "template";
             }
 
             @Override
@@ -92,8 +90,10 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
 
         if (site.isDebugEnabled()) {
+            cacheManager.setTemplateCacheMaxSize(0);
             templateResolver.setCacheable(false);
         }
+
         templateEngine.addTemplateResolver(templateResolver);
         bind(TemplateConfig.class).to(this).export();
     }
@@ -110,16 +110,14 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     public List<Resource> all() {
         List<Resource> templates = Lists.newArrayList();
-        for (ResourceRepository templateRepository : templateRepositories) {
-            if (templateRepository instanceof FolderResourceRepository) {
-                List<Resource> resources = Lists.newArrayList(templateRepository);
-                for (Resource resource : resources) {
-                    if ("html".equals(Files.getFileExtension(resource.path()))) {
-                        templates.add(resource);
-                    }
+        templateRepositories.stream().filter(templateRepository -> templateRepository instanceof FolderResourceRepository).forEach(templateRepository -> {
+            List<Resource> resources = Lists.newArrayList(templateRepository);
+            for (Resource resource : resources) {
+                if ("html".equals(Files.getFileExtension(resource.path()))) {
+                    templates.add(resource);
                 }
             }
-        }
+        });
         return templates;
     }
 }

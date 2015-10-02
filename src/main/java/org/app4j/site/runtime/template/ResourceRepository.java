@@ -6,5 +6,7 @@ import java.util.Optional;
  * @author chi
  */
 public interface ResourceRepository extends Iterable<Resource> {
+    int priority();
+
     Optional<Resource> load(String path);
 }

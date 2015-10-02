@@ -13,9 +13,16 @@ import java.util.Optional;
  */
 public class ClasspathResourceRepository implements ResourceRepository {
     private final String prefix;
+    private final int priority;
 
-    public ClasspathResourceRepository(String prefix) {
+    public ClasspathResourceRepository(String prefix, int priority) {
+        this.priority = priority;
         this.prefix = prefix.endsWith("/") ? prefix.substring(0, prefix.length() - 1) : prefix;
+    }
+
+    @Override
+    public int priority() {
+        return priority;
     }
 
     @Override

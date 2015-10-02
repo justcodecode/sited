@@ -42,7 +42,7 @@ public class PageModule extends Module {
         if (!templateDir.exists()) {
             templateDir.mkdirs();
         }
-        FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir);
+        FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir, 1000);
         template().add(resourceRepository);
         template().dialect()
                 .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));

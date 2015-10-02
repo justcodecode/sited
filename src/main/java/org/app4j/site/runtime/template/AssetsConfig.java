@@ -1,16 +1,16 @@
 package org.app4j.site.runtime.template;
 
-import com.google.common.collect.Lists;
 import org.app4j.site.web.exception.NotFoundException;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author chi
  */
 public class AssetsConfig {
-    private final List<ResourceRepository> assetsRepositories = Lists.newArrayList();
+    private final Set<ResourceRepository> assetsRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
 
     public AssetsConfig add(ResourceRepository resourceRepository) {
         assetsRepositories.add(resourceRepository);

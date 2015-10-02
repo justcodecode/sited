@@ -25,7 +25,7 @@ public class FolderResourceRepositoryTest {
     @Before
     public void setup() throws IOException {
         File root = this.dir.getRoot();
-        folderResourceRepository = new FolderResourceRepository(root);
+        folderResourceRepository = new FolderResourceRepository(root, 100);
 
         dir.newFile("index.html").createNewFile();
     }
