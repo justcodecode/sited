@@ -6,12 +6,11 @@ import com.google.common.io.Files;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
-import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.web.exception.NotFoundException;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.cache.StandardCacheManager;
@@ -21,7 +20,6 @@ import org.thymeleaf.resource.StringResource;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +32,7 @@ public class TemplateConfig extends InternalModule {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
     private final List<ResourceRepository> templateRepositories = Lists.newArrayList();
-    private final Assets assets = new Assets();
+    private final AssetsConfig assetsConfig = new AssetsConfig();
 
     public TemplateConfig() {
         templateEngine.setCacheManager(cacheManager);
@@ -51,8 +49,8 @@ public class TemplateConfig extends InternalModule {
         return this;
     }
 
-    public Assets assets() {
-        return assets;
+    public AssetsConfig assets() {
+        return assetsConfig;
     }
 
     public TemplateEngine engine() {
@@ -66,24 +64,11 @@ public class TemplateConfig extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
-        route().get("/assets/*", new AssetsHandler(assets));
-
-        Site site = require(Site.class);
+        Site site = site();
 
         if (site.isDebugEnabled()) {
             cacheManager.setTemplateCacheMaxSize(0);
         }
-
-        if (property("site.template.dir").isPresent()) {
-            File templateDir = new File(property("site.template.dir").get());
-            if (!templateDir.exists()) {
-                templateDir.mkdirs();
-            }
-            FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir);
-            add(resourceRepository);
-            assets().add(resourceRepository);
-        }
-
 
         TemplateResolver templateResolver = new TemplateResolver();
         templateResolver.setCharacterEncoding(Charsets.UTF_8.name());

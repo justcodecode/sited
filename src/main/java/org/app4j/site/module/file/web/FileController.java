@@ -2,9 +2,9 @@ package org.app4j.site.module.file.web;
 
 import com.google.common.io.ByteStreams;
 import org.app4j.site.module.file.service.FileRepository;
-import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

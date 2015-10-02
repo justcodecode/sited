@@ -21,7 +21,7 @@ public class SiteHandler implements HttpHandler {
         this.site = site;
         handlers.put(BeanBody.class, new BeanBodyResponseHandler());
         handlers.put(TextBody.class, new TextBodyResponseHandler());
-        handlers.put(TemplateBody.class, new TemplateBodyResponseHandler(null));
+        handlers.put(TemplateBody.class, new TemplateBodyResponseHandler(site));
         handlers.put(ByteArrayBody.class, new ByteArrayBodyResponseHandler());
         handlers.put(FileBody.class, new FileBodyResponseHandler());
     }

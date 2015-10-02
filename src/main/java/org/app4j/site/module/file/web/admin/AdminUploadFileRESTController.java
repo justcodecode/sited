@@ -2,9 +2,9 @@ package org.app4j.site.module.file.web.admin;
 
 import org.app4j.site.module.file.domain.UploadFile;
 import org.app4j.site.module.file.service.UploadFileService;
-import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 import org.bson.types.ObjectId;
 
 import java.io.IOException;

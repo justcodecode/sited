@@ -9,14 +9,17 @@ import org.app4j.site.runtime.admin.AdminConfig;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.error.ErrorConfig;
+import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.i18n.I18nConfig;
 import org.app4j.site.runtime.route.RouteConfig;
-import org.app4j.site.runtime.template.Assets;
+import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.util.Graph;
+import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +69,6 @@ public class Site extends Module {
         install(new I18nConfig());
         install(new AdminConfig());
         install(this);
-
     }
 
     @Override
@@ -87,29 +89,27 @@ public class Site extends Module {
     }
 
     public Site install(Module module) {
-        logger.info("install module {}", module.getClass().getName());
+        logger.info("install module [{}]", module.name());
         modules.put(module.getClass(), module);
 
-        Queue<Class<? extends Module>> queue = new LinkedList<>();
-        queue.addAll(module.dependencies());
+        Queue<Class<? extends Module>> dependencies = new LinkedList<>();
+        dependencies.addAll(module.dependencies());
 
-        while (!queue.isEmpty()) {
-            Class<? extends Module> dependencyModuleType = queue.poll();
-            if (!modules.containsKey(dependencyModuleType)) {
-                try {
-                    Module dependencyModule = dependencyModuleType.getDeclaredConstructor().newInstance();
-                    install(dependencyModule);
-                    queue.addAll(dependencyModule.dependencies());
-                } catch (Exception e) {
-                    throw new Error(String.format("failed to install %s dependency %s", module.getClass(), dependencyModuleType), e);
-                }
+        while (!dependencies.isEmpty()) {
+            Class<? extends Module> dependentModuleType = dependencies.poll();
+            if (!modules.containsKey(dependentModuleType)) {
+                install(dependentModuleType);
             }
         }
         return this;
     }
 
     public Site install(Class<? extends Module> moduleType) {
-        return this;
+        try {
+            return install(moduleType.getDeclaredConstructor().newInstance());
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 
     public final void start() {
@@ -134,13 +134,20 @@ public class Site extends Module {
         return graph;
     }
 
-    public Response handle(Request request) throws IOException {
-//        Handler handler = route().find(request.method(), request.path(), request.parameters());
-//        if (handler == null) {
-//            throw new NotFoundException(request.path());
-//        }
-//        handler.handle(request, response);
-        return null;
+    public Response handle(Request request) throws Exception {
+        Handler handler = route().find(request.method(), request.path(), request.parameters());
+        if (handler == null) {
+            throw new NotFoundException(request.path());
+        }
+        try {
+            return handler.handle(request);
+        } catch (Exception e) {
+            ErrorHandler errorHandler = error().handler(e.getClass());
+            if (errorHandler != null) {
+                return errorHandler.handle(request, e);
+            }
+            throw e;
+        }
     }
 
     public final void stop() {
@@ -196,8 +203,8 @@ public class Site extends Module {
         return require(I18nConfig.class);
     }
 
-    public Assets assets() {
-        return require(Assets.class);
+    public AssetsConfig assets() {
+        return require(AssetsConfig.class);
     }
 
     public AdminConfig admin() {
@@ -233,7 +240,7 @@ public class Site extends Module {
     }
 
     public boolean isAdminEnabled() {
-        return property("admin", Boolean.class).orElse(true).get();
+        return property("sited/admin", Boolean.class).orElse(true).get();
     }
 
     public String baseURL() {

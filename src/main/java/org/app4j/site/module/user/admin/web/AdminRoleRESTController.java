@@ -2,9 +2,9 @@ package org.app4j.site.module.user.admin.web;
 
 import org.app4j.site.module.user.domain.Role;
 import org.app4j.site.module.user.service.RoleService;
-import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 
 import java.io.IOException;
 

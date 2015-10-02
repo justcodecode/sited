@@ -64,7 +64,7 @@ public class AdminConfig extends InternalModule {
         if (property("site.admin.dir").isPresent()) {
             resourceRepository = new FolderResourceRepository(new File(property("site.admin.dir").get()));
         } else {
-            resourceRepository = new ClasspathResourceRepository("admin/");
+            resourceRepository = new ClasspathResourceRepository("sited/");
         }
 
 
@@ -79,6 +79,6 @@ public class AdminConfig extends InternalModule {
 
     @Override
     protected String name() {
-        return "admin";
+        return "sited/admin";
     }
 }

@@ -17,7 +17,7 @@ public class CommentModule extends Module {
         bind(CommentService.class).to(commentService);
 
         AdminCommentRESTController commentRESTController = new AdminCommentRESTController(commentService);
-        admin().get("/admin/api/comment/", commentRESTController::findComments);
+        admin().get("/sited/admin/api/comment/", commentRESTController::findComments);
     }
 
     @Override

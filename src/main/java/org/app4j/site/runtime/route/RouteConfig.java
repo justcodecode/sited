@@ -5,6 +5,7 @@ import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
+import org.app4j.site.web.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.HashMap;

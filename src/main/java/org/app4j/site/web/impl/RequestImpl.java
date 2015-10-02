@@ -41,10 +41,12 @@ class RequestImpl implements Request {
     private final Map<Binding.Key<?>, Binding<?>> bindings = Maps.newHashMap();
     private final Locale locale;
     private final Charset charset;
+    private final Method method;
 
     RequestImpl(HttpServerExchange exchange, Scope parentScope) {
         this.exchange = exchange;
         this.parentScope = parentScope;
+        this.method = Method.valueOf(exchange.getRequestMethod().toString());
 
         Binding.Key<Request> key = new Binding.Key<>(Request.class);
         bindings.put(key, new Binding<>(key, (key1, scope) -> this, Site.class));
@@ -105,7 +107,7 @@ class RequestImpl implements Request {
 
     @Override
     public Method method() {
-        return null;
+        return method;
     }
 
     @Override

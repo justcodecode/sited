@@ -6,7 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.runtime.database.FindView;
-import org.app4j.site.runtime.route.NotFoundException;
+import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

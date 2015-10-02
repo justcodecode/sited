@@ -1,0 +1,39 @@
+<nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/sited/admin">{{org.app4j.site.runtime.template.site.name}}</a>
+    </div>
+
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-left">
+            <li ng-class="{active: $state.includes('page')}">
+                <a ui-sref="org.app4j.site.runtime.template.site.page.list" role="button">Page</a>
+            </li>
+
+            <li ng-class="{active: $state.includes('file')}">
+                <a ui-sref="org.app4j.site.runtime.template.site.file.list" role="button">File</a>
+            </li>
+
+            <li ng-class="{active: $state.includes('user')}">
+                <a ui-sref="org.app4j.site.runtime.template.site.user.list" role="button">User</a>
+            </li>
+
+            <li ng-class="{active: $state.includes('comment')}">
+                <a ui-sref="org.app4j.site.runtime.template.site.comment.list" role="button">Comment</a>
+            </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="/"><i class="fa fa-gear"></i></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div ui-view></div>

@@ -11,6 +11,7 @@ import org.app4j.site.web.impl.TextBody;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * @author chi
@@ -36,7 +37,7 @@ public interface Response {
                 .setStatusCode(statusCode);
     }
 
-    static Response template(String templatePath, Object model) {
+    static Response template(String templatePath, Map<String, Object> model) {
         return new ResponseImpl(new TemplateBody(templatePath, model))
                 .setStatusCode(200);
     }

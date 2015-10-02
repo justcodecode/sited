@@ -102,6 +102,6 @@ public class SiteMapService {
             }
             cache.put("/sitemap.xml", siteMapIndexXml.toXml().getBytes(Charsets.UTF_8));
         }
-        trackingService.track("system", "create", "site");
+        trackingService.track("system", "create", "org/app4j/site/runtime/template/site");
     }
 }

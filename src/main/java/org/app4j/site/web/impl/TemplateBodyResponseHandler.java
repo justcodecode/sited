@@ -1,22 +1,25 @@
 package org.app4j.site.web.impl;
 
 import io.undertow.io.Sender;
-import org.thymeleaf.TemplateEngine;
+import org.app4j.site.Site;
+import org.thymeleaf.context.Context;
 
 /**
  * @author neo
  */
 public class TemplateBodyResponseHandler implements BodyHandler {
-    private final TemplateEngine templateManager;
+    private final Site site;
 
-    public TemplateBodyResponseHandler(TemplateEngine templateManager) {
-        this.templateManager = templateManager;
+    public TemplateBodyResponseHandler(Site site) {
+        this.site = site;
     }
 
     @Override
     public void handle(ResponseImpl response, Sender sender, RequestImpl request) {
         TemplateBody body = (TemplateBody) response.body;
-        String content = templateManager.process(body.templatePath, null);
+        Context context = new Context();
+        context.setVariables(body.model);
+        String content = site.template().engine().process(body.templatePath, context);
         sender.send(content);
     }
 }

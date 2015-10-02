@@ -1,10 +1,10 @@
 package org.app4j.site.runtime.admin;
 
 import org.app4j.site.Site;
-import org.app4j.site.runtime.route.NotFoundException;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 
 /**
  * @author chi
