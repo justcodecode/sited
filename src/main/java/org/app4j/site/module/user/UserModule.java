@@ -36,8 +36,9 @@ public class UserModule extends Module {
 
         //Admin
         AdminUserRESTController adminUserRESTController = new AdminUserRESTController(userService);
-        admin().get("/admin/api/user/:username", adminUserRESTController::findByUsername);
-        admin().get("/admin/api/user/", adminUserRESTController::findUsers);
+        admin().route()
+                .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
+                .get("/admin/api/user/", adminUserRESTController::findUsers);
     }
 
     @Override

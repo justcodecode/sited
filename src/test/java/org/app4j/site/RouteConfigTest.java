@@ -1,7 +1,7 @@
 package org.app4j.site;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.junit.Assert;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author chi
  */
 public class RouteConfigTest {
-    RouteConfig routeConfig = new RouteConfig();
+    RouteModule routeConfig = new RouteModule();
 
     @Test
     public void get() {

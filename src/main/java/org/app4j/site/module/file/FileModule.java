@@ -33,13 +33,13 @@ public class FileModule extends Module {
                 .get("/i/*", fileController::image);
 
         AdminUploadController adminUploadController = new AdminUploadController(uploadFileService);
-        admin().post("/admin/file/upload", adminUploadController::upload);
-
         AdminUploadFileRESTController adminUploadFileRESTController = new AdminUploadFileRESTController(uploadFileService);
-        admin().get("/admin/api/file/:id", adminUploadFileRESTController::findById);
-        admin().get("/admin/api/file/", adminUploadFileRESTController::findUploadFiles);
-        admin().put("/admin/api/file/:id", adminUploadFileRESTController::updateUploadFile);
-        admin().delete("/admin/api/file/:id", adminUploadFileRESTController::deleteUploadFile);
+        admin().route()
+                .post("/admin/file/upload", adminUploadController::upload)
+                .get("/admin/api/file/:id", adminUploadFileRESTController::findById)
+                .get("/admin/api/file/", adminUploadFileRESTController::findUploadFiles)
+                .put("/admin/api/file/:id", adminUploadFileRESTController::updateUploadFile)
+                .delete("/admin/api/file/:id", adminUploadFileRESTController::deleteUploadFile);
     }
 
     @Override

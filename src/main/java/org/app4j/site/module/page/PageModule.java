@@ -60,14 +60,14 @@ public class PageModule extends Module {
         route().get("/", pageHandler);
 
         AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService);
-        admin().get("/admin/api/page/", adminPageRESTController::findPages);
-        admin().post("/admin/api/page", adminPageRESTController::createPage);
-        admin().get("/admin/api/page/:id", adminPageRESTController::getPage);
-        admin().put("/admin/api/page/:id", adminPageRESTController::updatePage);
-        admin().delete("/admin/api/page/:id", adminPageRESTController::deletePage);
-
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
-        admin().post("/admin/draft/*", adminPagePreviewHandler);
+        admin().route()
+                .get("/admin/api/page/", adminPageRESTController::findPages)
+                .post("/admin/api/page", adminPageRESTController::createPage)
+                .get("/admin/api/page/:id", adminPageRESTController::getPage)
+                .put("/admin/api/page/:id", adminPageRESTController::updatePage)
+                .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
+                .post("/admin/draft/*", adminPagePreviewHandler);
     }
 
     @Override

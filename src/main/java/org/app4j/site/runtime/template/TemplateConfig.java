@@ -6,7 +6,7 @@ import com.google.common.io.Files;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
@@ -41,7 +41,7 @@ public class TemplateConfig extends InternalModule {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteConfig.class);
+        return Arrays.asList(RouteModule.class);
     }
 
     public TemplateConfig add(ResourceRepository resourceRepository) {

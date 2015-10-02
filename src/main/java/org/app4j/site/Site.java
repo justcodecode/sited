@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.mongodb.MongoClientURI;
 import org.app4j.site.runtime.admin.AdminConfig;
+import org.app4j.site.runtime.admin.AdminModule;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.error.ErrorConfig;
@@ -13,6 +14,7 @@ import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.i18n.I18nConfig;
 import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.util.Graph;
@@ -61,24 +63,24 @@ public class Site extends Module {
         bind(Site.class).to(this);
 
         install(new DatabaseConfig(mongoClientURI));
-        install(new RouteConfig());
+        install(new RouteModule());
         install(new TemplateConfig());
         install(new EventConfig());
         install(new CacheConfig());
         install(new ErrorConfig());
         install(new I18nConfig());
-        install(new AdminConfig());
+        install(new AdminModule());
         install(this);
     }
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteConfig.class,
+        return Arrays.asList(RouteModule.class,
                 TemplateConfig.class,
                 EventConfig.class,
                 CacheConfig.class,
                 DatabaseConfig.class,
-                AdminConfig.class,
+                AdminModule.class,
                 ErrorConfig.class);
     }
 

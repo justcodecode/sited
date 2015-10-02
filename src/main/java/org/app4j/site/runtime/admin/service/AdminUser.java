@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.admin;
+package org.app4j.site.runtime.admin.service;
 
 import java.util.Date;
 
