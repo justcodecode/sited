@@ -8,12 +8,12 @@ import com.google.common.base.Objects;
 public class Binding<T> {
     public final Key<T> key;
     public final Provider<T> provider;
-    public final Class<? extends Module> module;
+    public final Class<? extends Scope> scope;
 
-    public Binding(Key<T> key, Provider<T> provider, Class<? extends Module> module) {
+    public Binding(Key<T> key, Provider<T> provider, Class<? extends Scope> scope) {
         this.key = key;
         this.provider = provider;
-        this.module = module;
+        this.scope = scope;
     }
 
     public interface Export {

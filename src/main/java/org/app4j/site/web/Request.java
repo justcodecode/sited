@@ -26,9 +26,9 @@ public interface Request extends Scope {
 
     String path();
 
-    Parameter<String> path(String key);
+    Parameter<String> path(String name);
 
-    <T> Parameter<T> path(String key, Class<T> type);
+    <T> Parameter<T> path(String name, Class<T> type);
 
     Parameter<String> query(String key);
 

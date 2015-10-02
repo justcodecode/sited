@@ -1,7 +1,5 @@
 package org.app4j.site;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.app4j.site.runtime.admin.AdminConfig;
 import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.database.DatabaseConfig;
@@ -12,80 +10,30 @@ import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.util.JSON;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author chi
  */
-public abstract class Module implements Scope, Iterable<Binding<?>> {
-    private final Map<Binding.Key<?>, Binding<?>> bindings = new HashMap<>();
-    private Module parent;
+public abstract class Module extends DefaultScope {
+    public Module() {
+        super(null);
+    }
+
+    protected abstract void configure() throws Exception;
 
     final void configure(Module parent) throws Exception {
         this.parent = parent;
         configure();
     }
 
-    protected abstract void configure() throws Exception;
 
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(Site.class);
     }
 
-    protected <T> Binding.Named<T> bind(final Class<T> type) {
-        return new Binding.Named<T>() {
-            Binding.Key<T> key = new Binding.Key<>(type);
-
-            @Override
-            public Binding.To<T> named(String qualifier) {
-                Preconditions.checkNotNull(qualifier, "qualifier can't be null");
-                this.key = new Binding.Key<T>(type, qualifier);
-                return this;
-            }
-
-            @Override
-            public Binding.Export to(final Binding.Provider<T> supplier) {
-                final Binding<T> binding = new Binding<>(key, supplier, Module.this.getClass());
-                put(binding);
-                return () -> parent.put(binding);
-            }
-        };
-    }
-
-    final <T> void put(Binding<T> binding) {
-        bindings.put(binding.key, binding);
-    }
-
-    public <T> T require(Class<T> type) {
-        return require(type, null);
-    }
-
-    public <T> T require(Class<T> type, String qualifier) {
-        Binding.Key<T> key = new Binding.Key<T>(type, qualifier);
-        Binding<T> binding = get(key);
-        return binding.provider.get(key, this);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> Binding<T> get(Binding.Key<T> key) {
-        Binding<T> binding = (Binding<T>) this.bindings.get(key);
-        if (binding == null && parent != null && !this.equals(parent)) {
-            binding = parent.get(key);
-        }
-        Preconditions.checkNotNull(binding, "missing binding %s", key);
-        return binding;
-    }
-
-    @Override
-    public Iterator<Binding<?>> iterator() {
-        return Lists.newArrayList(bindings.values()).iterator();
-    }
-
     protected Module onShutdown(Runnable shutdownHook) {
-        require(Site.class).onShutdown(shutdownHook);
+        site().onShutdown(shutdownHook);
         return this;
     }
 
@@ -98,7 +46,7 @@ public abstract class Module implements Scope, Iterable<Binding<?>> {
     }
 
     protected Site site() {
-        return (Site) parent;
+        return require(Site.class);
     }
 
     protected DatabaseConfig database() {

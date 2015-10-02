@@ -13,7 +13,7 @@ import io.undertow.server.handlers.form.FormDataParser;
 import io.undertow.server.handlers.form.FormParserFactory;
 import io.undertow.util.HeaderValues;
 import org.app4j.site.Binding;
-import org.app4j.site.Scope;
+import org.app4j.site.DefaultScope;
 import org.app4j.site.Site;
 import org.app4j.site.util.JSON;
 import org.app4j.site.util.Value;
@@ -33,27 +33,24 @@ import java.util.Map;
 /**
  * @author chi
  */
-class RequestImpl implements Request {
+public class RequestImpl extends DefaultScope implements Request {
     private final HttpServerExchange exchange;
     private final Date timestamp;
     private final Map<String, String> parameters = Maps.newHashMap();
-    private final Scope parentScope;
-    private final Map<Binding.Key<?>, Binding<?>> bindings = Maps.newHashMap();
     private final Locale locale;
     private final Charset charset;
     private final Method method;
 
-    RequestImpl(HttpServerExchange exchange, Scope parentScope) {
+    RequestImpl(HttpServerExchange exchange, DefaultScope parent) {
+        super(parent);
+        bind(Request.class).to(this);
+
         this.exchange = exchange;
-        this.parentScope = parentScope;
         this.method = Method.valueOf(exchange.getRequestMethod().toString());
 
-        Binding.Key<Request> key = new Binding.Key<>(Request.class);
-        bindings.put(key, new Binding<>(key, (key1, scope) -> this, Site.class));
-
         timestamp = new Date();
-        charset = parentScope.require(Site.class).charset();
-        locale = parentScope.require(Site.class).locale();
+        charset = parent.require(Site.class).charset();
+        locale = parent.require(Site.class).locale();
 
         for (Map.Entry<String, Deque<String>> entry : exchange.getQueryParameters().entrySet()) {
             parameters.put(entry.getKey(), entry.getValue().peek());
@@ -75,29 +72,9 @@ class RequestImpl implements Request {
         }
     }
 
-    public <T> Binding.To<T> bind(Class<T> type) {
-        Binding.Key<T> key = new Binding.Key<>(type);
-        return provider -> {
-            bindings.put(key, new Binding<>(key, provider, Site.class));
-            return () -> {
-                throw new Error("export not support for request scope binding");
-            };
-        };
-    }
-
     @Override
-    public <T> T require(Class<T> type) {
-        return require(type, null);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T require(Class<T> type, String qualifier) {
-        Binding.Key key = new Binding.Key(type, qualifier);
-        if (bindings.containsKey(key)) {
-            return (T) bindings.get(key).provider.get(key, this);
-        }
-        return parentScope.require(type);
+    public final <T> Binding.Named<T> bind(Class<T> type) {
+        return super.bind(type);
     }
 
     @Override
@@ -131,13 +108,13 @@ class RequestImpl implements Request {
     }
 
     @Override
-    public Parameter<String> path(String key) {
-        return null;
+    public Parameter<String> path(String name) {
+        return query(name);
     }
 
     @Override
-    public <T> Parameter<T> path(String key, Class<T> type) {
-        return null;
+    public <T> Parameter<T> path(String name, Class<T> type) {
+        return query(name, type);
     }
 
     @Override
