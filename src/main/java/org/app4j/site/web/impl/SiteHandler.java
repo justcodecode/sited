@@ -40,7 +40,6 @@ public class SiteHandler implements HttpHandler {
             BodyHandler handler = handlers.get(response.body.getClass());
             if (handler == null)
                 throw new Error(String.format("unexpected body class, body=%s", response.body.getClass().getCanonicalName()));
-            logger.debug("responseHandlerClass={}", handler.getClass().getCanonicalName());
             handler.handle(response, exchange.getResponseSender(), request);
         } catch (Exception e) {
             throw new Error(e);
