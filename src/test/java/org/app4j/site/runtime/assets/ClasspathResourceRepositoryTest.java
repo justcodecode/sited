@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author chi
  */
 public class ClasspathResourceRepositoryTest {
-    ClasspathResourceRepository classpathResourceLoader = new ClasspathResourceRepository("web/", 100);
+    ClasspathResourceRepository classpathResourceLoader = new ClasspathResourceRepository("site/template", 100);
 
     @Test
     public void load() throws IOException {

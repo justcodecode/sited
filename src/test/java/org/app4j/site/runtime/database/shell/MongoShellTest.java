@@ -3,6 +3,7 @@ package org.app4j.site.runtime.database.shell;
 import com.github.fakemongo.junit.FongoRule;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class MongoShellTest {
 
     @Test
     public void eval() throws ScriptException {
-        ShellCursor value = (ShellCursor) mongoShell.eval("db.Test.find({field: { name: 'some1'}})", new SimpleBindings());
-        System.out.println(value.total());
+        ShellCursor value = (ShellCursor) mongoShell.eval("db.Test.find({field: { name: 'some'}})", new SimpleBindings());
+        Assert.assertEquals(1, value.total());
     }
 }

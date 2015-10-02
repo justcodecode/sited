@@ -21,7 +21,7 @@ dependencies {
             'org.apache.lucene:lucene-queryparser:5.3.1',
             'com.fasterxml.jackson.core:jackson-databind:2.6.2'
     )
-    testRuntime(
+    testCompile(
             'junit:junit:4.12',
             'com.github.fakemongo:fongo:2.0.2'
     )

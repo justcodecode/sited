@@ -2,6 +2,8 @@ package org.app4j.site.module.page.service.sitemap;
 
 import org.app4j.site.module.page.domain.Page;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
@@ -24,7 +26,7 @@ public class SiteMapUrlEntry {
             b.append("<url><loc>")
                     .append(new URL(baseUrl + '/' + page.getPath()).toURI().normalize().toString())
                     .append("</loc>");
-        } catch (Exception e) {
+        } catch (MalformedURLException | URISyntaxException e) {
             throw new Error(e);
         }
 

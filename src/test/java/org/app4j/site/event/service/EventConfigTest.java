@@ -16,7 +16,7 @@ public class EventConfigTest {
         EventConfig eventConfig = new EventModule();
         eventConfig.on(Object.class,
                 event -> {
-                    System.out.println(event.target());
+                    Assert.assertNotNull(event.target());
                 });
         Assert.assertTrue(eventConfig.trigger(new Event<>(new Object(), Maps.<String, Object>newHashMap())));
     }

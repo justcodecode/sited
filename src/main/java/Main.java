@@ -22,9 +22,6 @@ public class Main {
         return arguments;
     }
 
-    protected static void printUsage() {
-        System.err.println(Sited.usage());
-    }
 
     public static void main(String[] args) {
         Map<String, String> profile = profile(args);
@@ -32,8 +29,6 @@ public class Main {
             File dir = new File(profile.get("dir"));
             MongoClientURI mongoClientURI = new MongoClientURI(profile.get("db"));
             new Sited(new Site(dir, mongoClientURI)).start();
-        } else {
-            printUsage();
         }
     }
 }

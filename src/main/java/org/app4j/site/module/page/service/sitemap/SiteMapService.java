@@ -10,6 +10,8 @@ import org.app4j.site.runtime.database.FindView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -96,7 +98,7 @@ public class SiteMapService {
             for (String file : sitemapFiles) {
                 try {
                     siteMapIndexXml.add(new URL(baseUrl + '/' + file).toURI().toString());
-                } catch (Exception e) {
+                } catch (MalformedURLException | URISyntaxException e) {
                     throw new Error(e);
                 }
             }

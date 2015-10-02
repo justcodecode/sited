@@ -56,9 +56,6 @@ public class TemplateDialect extends StandardDialect {
     public TemplateDialect() {
         super("template", PREFIX, 1000);
         processors.add(new StandardTextTagProcessor(this, TemplateMode.HTML, PREFIX));
-        /*
-         * HTML: ATTRIBUTE TAG PROCESSORS
-         */
         processors.add(new StandardActionTagProcessor(this, PREFIX));
         processors.add(new StandardAltTitleTagProcessor(this, PREFIX));
         processors.add(new StandardAssertTagProcessor(this, TemplateMode.HTML, PREFIX));
@@ -102,27 +99,9 @@ public class TemplateDialect extends StandardDialect {
         processors.add(new StandardXmlLangTagProcessor(this, PREFIX));
         processors.add(new StandardXmlSpaceTagProcessor(this, PREFIX));
         processors.add(new StandardXmlNsTagProcessor(this, TemplateMode.HTML, PREFIX));
-        // TODO: Implement default attribute processor
-//        processors.add(new StandardDefaultAttributesTagProcessor());
-
-        /*
-         * HTML: ELEMENT TAG PROCESSORS
-         */
         processors.add(new StandardBlockTagProcessor(this, TemplateMode.HTML, PREFIX, StandardBlockTagProcessor.ELEMENT_NAME));
-
-        /*
-         * HTML: TEXT PROCESSORS
-         */
         processors.add(new StandardInliningTextProcessor(this, TemplateMode.HTML));
-
-        /*
-         * HTML: DOCTYPE PROCESSORS
-         */
         processors.add(new StandardTranslationDocTypeProcessor(this));
-
-        /*
-         * HTML: COMMENT PROCESSORS
-         */
         processors.add(new StandardConditionalCommentProcessor(this));
     }
 

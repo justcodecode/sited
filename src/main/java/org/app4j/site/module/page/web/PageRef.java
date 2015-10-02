@@ -37,7 +37,7 @@ public class PageRef {
 
     public String template() {
         if (isDirectory()) {
-            if (path.equals("/")) {
+            if ("/".equals(path)) {
                 return "/index.html";
             } else {
                 return path.substring(0, path.length() - 1) + ".html";

@@ -17,7 +17,7 @@ public class UserController {
     }
 
     public Response login(Request request) throws IOException {
-        return Response.empty();
+        return Response.bean(userService.findByUsername(request.query("username").get()));
     }
 
     public Response register(Request request) throws IOException {

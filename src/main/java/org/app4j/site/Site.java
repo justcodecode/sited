@@ -165,14 +165,6 @@ public class Site extends Module {
 //        error().handle(Exception.class, (request, response) -> response.setStatusCode(500));
     }
 
-    public <T> T require(Class<T> type) {
-        return super.require(type);
-    }
-
-    public <T> T require(Class<T> type, String qualifier) {
-        return super.require(type, qualifier);
-    }
-
     public TemplateConfig template() {
         return require(TemplateConfig.class);
     }

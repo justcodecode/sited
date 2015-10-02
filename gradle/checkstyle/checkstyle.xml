@@ -23,18 +23,18 @@
 
         <!--Restricts the number of executable statements to a specified limit-->
         <module name="ExecutableStatementCount">
-            <property name="max" value="40"/>
+            <property name="max" value="50"/>
         </module>
 
         <!--Checks for long anonymous inner classes.-->
         <module name="AnonInnerLength">
-            <property name="max" value="15"/>
+            <property name="max" value="50"/>
         </module>
 
         <!--Checks for long methods.-->
         <module name="MethodLength">
             <property name="countEmpty" value="false"/>
-            <property name="max" value="50"/>
+            <property name="max" value="100"/>
         </module>
 
         <!--Checks for unused import statements.-->
@@ -94,7 +94,7 @@
 
         <!--Checks the number of parameters that a method or constructor has.-->
         <module name="ParameterNumber">
-            <property name="max" value="6"/>
+            <property name="max" value="10"/>
         </module>
 
         <!--Checks that there is no whitespace before a token.-->

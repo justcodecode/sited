@@ -119,43 +119,43 @@ public class RequestImpl extends DefaultScope implements Request {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T body(Class<T> type) throws IOException {
-        if (method == Method.PUT || method == Method.POST) {
-            String contentType = contentType();
-
-            if ("application/json".equalsIgnoreCase(contentType)) {
-                exchange.startBlocking();
-                try (InputStream in = exchange.getInputStream()) {
-                    return JSON.parse(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)), type);
-                }
-            } else if ("application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
-                FormParserFactory formParserFactory = FormParserFactory.builder().build();
-                FormDataParser parser = formParserFactory.createParser(exchange);
-                parser.setCharacterEncoding(charset.name());
-                FormData formData = parser.parseBlocking();
-
-                Map<String, String> form = Maps.newHashMap();
-                for (String name : formData) {
-                    FormData.FormValue formValue = formData.get(name).getFirst();
-                    form.put(name, formValue.getValue());
-                }
-                return JSON.mapper().convertValue(form, type);
-            } else if ("multipart/form-data".equalsIgnoreCase(contentType) && type.equals(File.class)) {
-                FormParserFactory formParserFactory = FormParserFactory.builder().build();
-                FormDataParser parser = formParserFactory.createParser(exchange);
-                parser.setCharacterEncoding(charset.name());
-                FormData formData = parser.parseBlocking();
-                for (String name : formData) {
-                    FormData.FormValue formValue = formData.get(name).getFirst();
-                    if (formValue.isFile()) {
-                        return (T) formValue.getPath().toFile();
-                    }
-                }
-            }
-
-            throw new Error(String.format("invalid content type %s", contentType));
+        if (method == Method.GET || method == Method.DELETE) {
+            throw new Error(String.format("%s request has no body", method));
         }
 
-        throw new Error(String.format("%s request has no body", method));
+        String contentType = contentType();
+
+        if ("application/json".equalsIgnoreCase(contentType)) {
+            exchange.startBlocking();
+            try (InputStream in = exchange.getInputStream()) {
+                return JSON.parse(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)), type);
+            }
+        } else if ("application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
+            FormParserFactory formParserFactory = FormParserFactory.builder().build();
+            FormDataParser parser = formParserFactory.createParser(exchange);
+            parser.setCharacterEncoding(charset.name());
+            FormData formData = parser.parseBlocking();
+
+            Map<String, String> form = Maps.newHashMap();
+            for (String name : formData) {
+                FormData.FormValue formValue = formData.get(name).getFirst();
+                form.put(name, formValue.getValue());
+            }
+            return JSON.mapper().convertValue(form, type);
+        } else if ("multipart/form-data".equalsIgnoreCase(contentType) && type.equals(File.class)) {
+            FormParserFactory formParserFactory = FormParserFactory.builder().build();
+            FormDataParser parser = formParserFactory.createParser(exchange);
+            parser.setCharacterEncoding(charset.name());
+            FormData formData = parser.parseBlocking();
+            for (String name : formData) {
+                FormData.FormValue formValue = formData.get(name).getFirst();
+                if (formValue.isFile()) {
+                    return (T) formValue.getPath().toFile();
+                }
+            }
+        }
+
+        throw new Error(String.format("invalid content type %s", contentType));
     }
 
     @Override

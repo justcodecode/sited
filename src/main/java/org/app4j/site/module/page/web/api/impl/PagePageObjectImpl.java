@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class PagePageObjectImpl extends Page implements PagePageObject {
     protected final Page page;
-    protected final transient PageService pageService;
+    protected final PageService pageService;
 
     public PagePageObjectImpl(Page page, PageService pageService) {
         this.page = page;

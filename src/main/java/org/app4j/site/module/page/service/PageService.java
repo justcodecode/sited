@@ -85,7 +85,7 @@ public class PageService {
         page.setCategories(parseCategories(path));
         page.setType(path.endsWith("/") ? "directory" : "page");
 
-        String content = page.getContent();
+//        String content = page.getContent();
 
 //        if (!Strings.isNullOrEmpty(content)) {
 //            org.jsoup.nodes.Document doc = Jsoup.parseBodyFragment(content);

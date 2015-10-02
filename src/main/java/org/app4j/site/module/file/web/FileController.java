@@ -30,8 +30,8 @@ public class FileController {
     public Response image(Request request) throws IOException {
         Matcher matcher = pattern.matcher(request.path());
         if (matcher.matches()) {
-            int width = Integer.parseInt(matcher.group(1));
-            int height = Integer.parseInt(matcher.group(2));
+//            int width = Integer.parseInt(matcher.group(1));
+//            int height = Integer.parseInt(matcher.group(2));
             String file = matcher.group(3);
             byte[] image = ByteStreams.toByteArray(fileRepository.get(file));
             return Response.bytes(image);

@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<ruleset name="Basic" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Basic"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
     <description>PMD rules</description>
 
     <rule ref="rulesets/java/basic.xml">
         <exclude name="AvoidUsingHardCodedIP"/>
+        <exclude name="UselessOverridingMethod"/>
     </rule>
 
     <rule ref="rulesets/java/strings.xml">
@@ -86,7 +87,6 @@
 
     <rule ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals"/>
     <rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable"/>
-    <rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod"/>
     <rule ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier"/>
     <rule ref="rulesets/java/unnecessary.xml/UnnecessaryReturn"/>
     <rule ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary"/>

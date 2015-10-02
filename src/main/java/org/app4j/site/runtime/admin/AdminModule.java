@@ -32,50 +32,7 @@ public class AdminModule extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
-        AdminConfig adminConfig = new AdminConfig() {
-            @Override
-            public Console console() {
-                return console;
-            }
-
-            @Override
-            public RouteConfig route() {
-                return new RouteConfig() {
-                    @Override
-                    public RouteConfig get(String route, Handler handler) {
-                        Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
-                        AdminModule.this.route().get(route, new AdminHandler(site(), handler));
-                        return this;
-                    }
-
-                    @Override
-                    public RouteConfig post(String route, Handler handler) {
-                        Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
-                        AdminModule.this.route().post(route, new AdminHandler(site(), handler));
-                        return this;
-                    }
-
-                    @Override
-                    public RouteConfig put(String route, Handler handler) {
-                        Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
-                        AdminModule.this.route().post(route, new AdminHandler(site(), handler));
-                        return this;
-                    }
-
-                    @Override
-                    public RouteConfig delete(String route, Handler handler) {
-                        Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
-                        AdminModule.this.route().delete(route, new AdminHandler(site(), handler));
-                        return this;
-                    }
-
-                    @Override
-                    public Handler find(Request.Method method, String path, Map<String, String> parameters) {
-                        throw new Error("not implemented");
-                    }
-                };
-            }
-        };
+        AdminConfig adminConfig = new AdminConfigImpl();
         bind(AdminConfig.class).to(adminConfig).export();
 
 
@@ -98,4 +55,48 @@ public class AdminModule extends InternalModule {
                 .get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(template().assets())));
     }
 
+    private class AdminConfigImpl implements AdminConfig {
+        @Override
+        public Console console() {
+            return console;
+        }
+
+        @Override
+        public RouteConfig route() {
+            return new RouteConfig() {
+                @Override
+                public RouteConfig get(String route, Handler handler) {
+                    Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
+                    AdminModule.this.route().get(route, new AdminHandler(site(), handler));
+                    return this;
+                }
+
+                @Override
+                public RouteConfig post(String route, Handler handler) {
+                    Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
+                    AdminModule.this.route().post(route, new AdminHandler(site(), handler));
+                    return this;
+                }
+
+                @Override
+                public RouteConfig put(String route, Handler handler) {
+                    Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
+                    AdminModule.this.route().post(route, new AdminHandler(site(), handler));
+                    return this;
+                }
+
+                @Override
+                public RouteConfig delete(String route, Handler handler) {
+                    Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
+                    AdminModule.this.route().delete(route, new AdminHandler(site(), handler));
+                    return this;
+                }
+
+                @Override
+                public Handler find(Request.Method method, String path, Map<String, String> parameters) {
+                    throw new Error("not implemented");
+                }
+            };
+        }
+    }
 }

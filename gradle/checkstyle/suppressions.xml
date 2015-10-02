@@ -3,6 +3,4 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <suppress files="Main.java" checks="UncommentedMain"/>
-
-    <suppress checks="ParameterNumberCheck" files="DomainUpdateContext.java"/>
 </suppressions>
