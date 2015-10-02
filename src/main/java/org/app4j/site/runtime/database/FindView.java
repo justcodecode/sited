@@ -7,13 +7,13 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * @author chi
  */
 public class FindView<T> extends ArrayList<T> implements Pageable<T>, JsonSerializable {
+    private static final FindView<?> EMPTY = new FindView<>(0, 0);
+
     private final long offset;
     private final long total;
 
@@ -22,13 +22,9 @@ public class FindView<T> extends ArrayList<T> implements Pageable<T>, JsonSerial
         this.total = total;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> FindView<T> empty() {
-        return new FindView<T>(0, 0) {
-            @Override
-            public Iterator<T> iterator() {
-                return Collections.EMPTY_LIST.iterator();
-            }
-        };
+        return (FindView<T>) EMPTY;
     }
 
     @Override
@@ -47,7 +43,6 @@ public class FindView<T> extends ArrayList<T> implements Pageable<T>, JsonSerial
         gen.writeNumberField("offset", offset);
         gen.writeNumberField("total", total);
         gen.writeArrayFieldStart("data");
-
         for (T object : this) {
             gen.writeObject(object);
         }

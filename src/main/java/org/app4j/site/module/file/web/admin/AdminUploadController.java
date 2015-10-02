@@ -9,6 +9,7 @@ import org.app4j.site.module.file.service.UploadFileService;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,16 +32,15 @@ public class AdminUploadController {
         FormDataParser formDataParser = multiPartParserDefinition.create(null);
         FormData formData = formDataParser.parseBlocking();
 
-        FormData.FormValue formFile = formData.getFirst("file");
-        formFile.getFile();
 
-        try (InputStream in = new FileInputStream(formFile.getFile())) {
-            String path = uploadFileService.repository().put(in, formFile.getFileName());
+        File file = request.body(File.class);
+        try (InputStream in = new FileInputStream(file)) {
+            String path = uploadFileService.repository().put(in, file.getName());
 
             UploadFile uploadFile = new UploadFile();
             uploadFile.setPath("/f/" + path);
             uploadFile.setTags(listFormData("tags", formData));
-            uploadFile.setTitle(formFile.getFileName());
+            uploadFile.setTitle(file.getName());
             uploadFile.setDescription(formData("description", formData));
             uploadFile.setCreateTime(new Date());
             uploadFile.setLastUpdateTime(new Date());

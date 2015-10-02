@@ -4,7 +4,6 @@ import org.app4j.site.Scope;
 import org.app4j.site.util.Value;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Locale;
@@ -35,8 +34,6 @@ public interface Request extends Scope {
     <T> Parameter<T> query(String key, Class<T> type);
 
     <T> T body(Class<T> type) throws IOException;
-
-    InputStream body() throws IOException;
 
     Map<String, String> parameters();
 

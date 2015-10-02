@@ -3,7 +3,6 @@ package org.app4j.site.web.impl;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.common.net.MediaType;
 import io.undertow.server.HttpServerExchange;
@@ -20,6 +19,7 @@ import org.app4j.site.util.Value;
 import org.app4j.site.web.Parameter;
 import org.app4j.site.web.Request;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,8 +43,8 @@ public class RequestImpl extends DefaultScope implements Request {
 
     RequestImpl(HttpServerExchange exchange, DefaultScope parent) {
         super(parent);
-        bind(Request.class).to(this);
 
+        bind(Request.class).to(this);
         this.exchange = exchange;
         this.method = Method.valueOf(exchange.getRequestMethod().toString());
 
@@ -134,20 +134,43 @@ public class RequestImpl extends DefaultScope implements Request {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T body(Class<T> type) throws IOException {
-        try (InputStream in = exchange.getInputStream()) {
-            if (String.class.isAssignableFrom(type)) {
-                return (T) CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8));
-            } else if (byte[].class.isAssignableFrom(type)) {
-                return (T) ByteStreams.toByteArray(in);
-            } else {
-                return JSON.parse(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)), type);
-            }
-        }
-    }
+        if (method == Method.PUT || method == Method.POST) {
+            String contentType = contentType();
 
-    @Override
-    public InputStream body() throws IOException {
-        return null;
+            if ("application/json".equalsIgnoreCase(contentType)) {
+                exchange.startBlocking();
+                try (InputStream in = exchange.getInputStream()) {
+                    return JSON.parse(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)), type);
+                }
+            } else if ("application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
+                FormParserFactory formParserFactory = FormParserFactory.builder().build();
+                FormDataParser parser = formParserFactory.createParser(exchange);
+                parser.setCharacterEncoding(charset.name());
+                FormData formData = parser.parseBlocking();
+
+                Map<String, String> form = Maps.newHashMap();
+                for (String name : formData) {
+                    FormData.FormValue formValue = formData.get(name).getFirst();
+                    form.put(name, formValue.getValue());
+                }
+                return JSON.mapper().convertValue(form, type);
+            } else if ("multipart/form-data".equalsIgnoreCase(contentType) && type.equals(File.class)) {
+                FormParserFactory formParserFactory = FormParserFactory.builder().build();
+                FormDataParser parser = formParserFactory.createParser(exchange);
+                parser.setCharacterEncoding(charset.name());
+                FormData formData = parser.parseBlocking();
+                for (String name : formData) {
+                    FormData.FormValue formValue = formData.get(name).getFirst();
+                    if (formValue.isFile()) {
+                        return (T) formValue.getPath().toFile();
+                    }
+                }
+            }
+
+            throw new Error(String.format("invalid content type %s", contentType));
+        }
+
+        throw new Error(String.format("%s request has no body", method));
     }
 
     @Override
