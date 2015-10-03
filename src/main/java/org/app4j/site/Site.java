@@ -2,6 +2,7 @@ package org.app4j.site;
 
 import ch.qos.logback.classic.Level;
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.mongodb.MongoClientURI;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  * @author chi
@@ -50,19 +53,34 @@ public class Site extends Module {
     private final File dir;
     private final Locale locale;
     private final Charset charset;
+    private final Boolean adminEnabled;
+    private final Boolean debugEnabled;
+    private final String baseURL;
+    private final List<String> baseCdnURLs;
 
     @SuppressWarnings("unchecked")
-    public Site(File dir, MongoClientURI mongoClientURI) {
-        this.dir = dir;
+    public Site(MongoClientURI mongoClientURI) {
         SiteLogger siteLogger = new SiteLogger();
+
+        this.dir = new File(property("site.dir").orElse(defaultDir().toString()).get());
+        charset = Charset.forName(property("site.charset").orElse(Charsets.UTF_8.name()).get());
+        locale = Locale.forLanguageTag(property("site.locale").orElse(Locale.getDefault().toLanguageTag()).get());
+        debugEnabled = property("site.debug", Boolean.class).orElse(false).get();
+        adminEnabled = property("site.admin", Boolean.class).orElse(true).get();
+        baseURL = property("site.baseURL").orElse("/").get();
+        if (property("site.baseCdnURLs").isPresent()) {
+            baseCdnURLs = Arrays.stream(property("site.baseCdnURLs").get().split(","))
+                    .filter(s -> !Strings.isNullOrEmpty(s))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+        } else {
+            baseCdnURLs = Lists.newArrayList(baseURL());
+        }
 
         if (isDebugEnabled()) {
             siteLogger.setLevel(Level.DEBUG);
         }
-
-        charset = Charset.forName(property("charset").orElse(Charsets.UTF_8.name()).get());
-        locale = Locale.forLanguageTag(property("locale").orElse(Locale.getDefault().toLanguageTag()).get());
-        bind(Site.class).to(this);
+        logger.info("use dir {}", dir);
 
         install(new DatabaseModule(mongoClientURI));
         install(new RouteModule());
@@ -72,6 +90,12 @@ public class Site extends Module {
         install(new ErrorModule());
         install(new AdminModule());
         install(this);
+
+        bind(Site.class).to(this);
+    }
+
+    Path defaultDir() {
+        return new File(property("user.dir").get(), property("site.host").orElse(host()).get()).toPath();
     }
 
     @Override
@@ -83,6 +107,14 @@ public class Site extends Module {
                 DatabaseModule.class,
                 AdminModule.class,
                 ErrorModule.class);
+    }
+
+    public String host() {
+        return property("site.host").orElse("0.0.0.0").get();
+    }
+
+    public int port() {
+        return property("site.port", Integer.class).orElse(8080).get();
     }
 
 
@@ -222,19 +254,18 @@ public class Site extends Module {
     }
 
     public final boolean isDebugEnabled() {
-        return property("debug", Boolean.class).orElse(true).get();
+        return debugEnabled;
     }
 
     public boolean isAdminEnabled() {
-        return property("sited/admin", Boolean.class).orElse(true).get();
+        return adminEnabled;
     }
 
-    public String baseURL() {
-        return property("baseURL").get();
+    public final String baseURL() {
+        return baseURL;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<String> baseCdnURLs() {
-        return property("cdnURLs", List.class).orElse(Lists.newArrayList(baseURL())).get();
+    public final List<String> baseCdnURLs() {
+        return baseCdnURLs;
     }
 }
