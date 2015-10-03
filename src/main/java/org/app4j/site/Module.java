@@ -1,13 +1,20 @@
 package org.app4j.site;
 
 import org.app4j.site.runtime.admin.AdminConfig;
+import org.app4j.site.runtime.admin.AdminModule;
 import org.app4j.site.runtime.cache.CacheConfig;
+import org.app4j.site.runtime.cache.CacheModule;
 import org.app4j.site.runtime.database.DatabaseConfig;
+import org.app4j.site.runtime.database.DatabaseModule;
+import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorModule;
+import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.route.RouteConfig;
+import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
-import org.app4j.site.util.JSON;
+import org.app4j.site.runtime.template.TemplateModule;
+import org.app4j.site.runtime.variable.VariableModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,14 +29,18 @@ public abstract class Module extends DefaultScope {
 
     protected abstract void configure() throws Exception;
 
-    final void configure(Module parent) throws Exception {
+    final void configure(DefaultScope parent) throws Exception {
         this.parent = parent;
         configure();
     }
 
 
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(Site.class);
+        return Arrays.asList(AdminModule.class,
+                CacheModule.class, DatabaseModule.class,
+                ErrorModule.class, EventModule.class,
+                EventModule.class, RouteModule.class,
+                TemplateModule.class, VariableModule.class);
     }
 
     protected Module onShutdown(Runnable shutdownHook) {
@@ -53,7 +64,7 @@ public abstract class Module extends DefaultScope {
         return site().database();
     }
 
-    protected EventModule event() {
+    protected EventConfig event() {
         return site().event();
     }
 
@@ -65,7 +76,7 @@ public abstract class Module extends DefaultScope {
         return site().cache();
     }
 
-    protected ErrorModule error() {
+    protected ErrorConfig error() {
         return site().error();
     }
 
@@ -74,11 +85,7 @@ public abstract class Module extends DefaultScope {
     }
 
     protected <T> Property<T> property(String key, Class<T> type) {
-        String value = System.getProperty(key);
-        if (value == null) {
-            return new Property<>(key, null);
-        }
-        return new Property<>(key, JSON.mapper().convertValue(value, type));
+        return site().property(key, type);
     }
 
     protected Property<String> property(String key) {

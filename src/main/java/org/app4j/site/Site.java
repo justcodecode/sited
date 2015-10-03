@@ -12,8 +12,10 @@ import org.app4j.site.runtime.cache.CacheConfig;
 import org.app4j.site.runtime.cache.CacheModule;
 import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.database.DatabaseModule;
+import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.error.ErrorModule;
+import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
@@ -21,6 +23,7 @@ import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.util.Graph;
+import org.app4j.site.util.JSON;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -45,7 +48,7 @@ import java.util.stream.Collectors;
 /**
  * @author chi
  */
-public class Site extends Module {
+public class Site extends DefaultScope {
     private final List<Runnable> shutdownHooks = Lists.newArrayList();
     private final Logger logger = LoggerFactory.getLogger(Site.class);
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
@@ -60,6 +63,7 @@ public class Site extends Module {
 
     @SuppressWarnings("unchecked")
     public Site(MongoClientURI mongoClientURI) {
+        super(null);
         SiteLogger siteLogger = new SiteLogger();
 
         this.dir = new File(property("site.dir").orElse(defaultDir().toString()).get());
@@ -89,24 +93,12 @@ public class Site extends Module {
         install(new CacheModule(dir("cache")));
         install(new ErrorModule());
         install(new AdminModule());
-        install(this);
 
         bind(Site.class).to(this);
     }
 
     Path defaultDir() {
         return new File(property("user.dir").get(), property("site.host").orElse(host()).get()).toPath();
-    }
-
-    @Override
-    public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteModule.class,
-                TemplateModule.class,
-                EventModule.class,
-                CacheModule.class,
-                DatabaseModule.class,
-                AdminModule.class,
-                ErrorModule.class);
     }
 
     public String host() {
@@ -189,28 +181,20 @@ public class Site extends Module {
         Lists.reverse(shutdownHooks).forEach(java.lang.Runnable::run);
     }
 
-    @Override
-    protected void configure() throws Exception {
-//        admin().get("/admin/api/template/", new TemplateRESTController(template())::all);
-//
-//        error().handle(NotFoundException.class, (request, response) -> response.setStatusCode(404));
-//        error().handle(Exception.class, (request, response) -> response.setStatusCode(500));
-    }
-
     public TemplateConfig template() {
         return require(TemplateConfig.class);
     }
 
-    public ErrorModule error() {
-        return require(ErrorModule.class);
+    public ErrorConfig error() {
+        return require(ErrorConfig.class);
     }
 
     public CacheConfig cache() {
         return require(CacheConfig.class);
     }
 
-    public EventModule event() {
-        return require(EventModule.class);
+    public EventConfig event() {
+        return require(EventConfig.class);
     }
 
     public DatabaseConfig database() {
@@ -229,6 +213,18 @@ public class Site extends Module {
         return require(AdminConfig.class);
     }
 
+    public <T> Property<T> property(String key, Class<T> type) {
+        String value = System.getProperty(key);
+        if (value == null) {
+            return new Property<>(key, null);
+        }
+        return new Property<>(key, JSON.mapper().convertValue(value, type));
+    }
+
+    public Property<String> property(String key) {
+        return property(key, String.class);
+    }
+
     public Charset charset() {
         return charset;
     }
@@ -240,6 +236,7 @@ public class Site extends Module {
     public File dir() {
         return dir;
     }
+
 
     public File dir(String name) {
         File dir = new File(this.dir, name);

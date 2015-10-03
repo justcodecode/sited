@@ -1,7 +1,6 @@
 package org.app4j.site.module.page;
 
 import org.app4j.site.Module;
-import org.app4j.site.Site;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
 import org.app4j.site.module.page.service.PageService;
@@ -28,7 +27,7 @@ public class PageModule extends Module {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(Site.class, TrackModule.class, UserModule.class, FileModule.class);
+        return Arrays.asList(TrackModule.class, UserModule.class, FileModule.class);
     }
 
     @Override
