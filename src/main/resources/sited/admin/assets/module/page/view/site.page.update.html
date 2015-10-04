@@ -17,8 +17,8 @@
     </div>
 </div>
 
-<div class="body">
-    <form ng-if="editor == 'summernote'">
+<div class="body" ng-if="editor == 'summernote'">
+    <form>
         <div class="form-group">
             <label class="control-label">Path</label>
             <input type="text" class="form-control" placeholder="path" ng-model="page.path">
@@ -72,8 +72,10 @@
 
 
     </form>
+</div>
 
+<div>
     <form ng-if="editor == 'yaml'">
-        <div ui-ace="aceConfig" ng-model="yaml" style="height: 400px;"></div>
+        <div ui-ace="aceConfig" ng-model="pageJson" style="height: 400px;"></div>
     </form>
 </div>

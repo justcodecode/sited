@@ -9,7 +9,6 @@ require.config({
         uiSelect: 'lib/js/select.min',
         ace: 'lib/js/ace/ace',
         uiAce: 'lib/js/ui-ace',
-        jsyaml: 'lib/js/js-yaml.min',
         loadingBar: 'lib/js/loading-bar.min',
         summernote: 'lib/js/summernote.min',
         ngSummernote: 'lib/js/angular-summernote.min',
@@ -18,7 +17,6 @@ require.config({
     },
     shim: {
         'angular': {'exports': 'angular'},
-        'jsyaml': {'exports': 'jsyaml'},
         'ngCookies': ['angular'],
         'ngAnimate': ['angular'],
         'uiRouter': ['angular'],
@@ -51,7 +49,6 @@ require([
         'uiSelect',
         'ace',
         'uiAce',
-        'jsyaml',
         'summernote',
         'ngSummernote',
         'smartTable',

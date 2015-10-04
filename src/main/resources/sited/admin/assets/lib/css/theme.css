@@ -7,10 +7,12 @@ html, body {
     clear: both;
     position: relative;
     height: 50px;
+    overflow: hidden;
 }
 
 .top .nav-tabs {
     padding: 10px 15px 0;
+    margin-top: 8px;
 }
 
 .top .navbar {
@@ -107,7 +109,7 @@ input[type='file'] {
     border: 0;
 }
 
-.some{
+.some {
 
 }
 

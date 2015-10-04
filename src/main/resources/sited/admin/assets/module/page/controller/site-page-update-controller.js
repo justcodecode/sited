@@ -11,8 +11,8 @@ define([
         };
         $scope.original = angular.copy($scope.page);
         $scope.templates = [];
-        $scope.yaml = '';
         $scope.editor = 'summernote';
+        $scope.pageJson = JSON.stringify($scope.page, null, 2);
 
         if ($state.is('site.page.update')) {
             $http.get('/admin/api/page/' + $stateParams.id).success(function (data) {
@@ -21,7 +21,7 @@ define([
                     $scope.page.tags = [];
                 }
                 $scope.original = angular.copy($scope.page);
-                $scope.yaml = jsyaml.dump($scope.page);
+                $scope.pageJson = JSON.stringify($scope.page, null, 2);
             });
         }
 
@@ -67,15 +67,8 @@ define([
             useWrapMode: true,
             showGutter: true,
             theme: 'eclipse',
-            mode: 'yaml',
-            firstLineNumber: 1,
-            onLoad: function (_editor) {
-                $scope.aceSession = _editor.getSession();
-            },
-            onChange: function () {
-                $scope.yaml = $scope.aceSession.getDocument().getValue();
-                $scope.draft = jsyaml.load($scope.yaml);
-            }
+            mode: 'json',
+            firstLineNumber: 1
         };
 
 
