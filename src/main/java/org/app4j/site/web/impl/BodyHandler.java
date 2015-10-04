@@ -1,10 +1,10 @@
 package org.app4j.site.web.impl;
 
-import io.undertow.io.Sender;
+import java.io.InputStream;
 
 /**
  * @author neo
  */
 public interface BodyHandler {
-    void handle(ResponseImpl response, Sender sender, RequestImpl request);
+    InputStream handle(ResponseImpl response);
 }

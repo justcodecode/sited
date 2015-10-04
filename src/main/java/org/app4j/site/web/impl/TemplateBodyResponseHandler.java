@@ -1,8 +1,10 @@
 package org.app4j.site.web.impl;
 
-import io.undertow.io.Sender;
+import com.google.common.base.Charsets;
 import org.app4j.site.Site;
-import org.thymeleaf.context.Context;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * @author neo
@@ -15,11 +17,13 @@ public class TemplateBodyResponseHandler implements BodyHandler {
     }
 
     @Override
-    public void handle(ResponseImpl response, Sender sender, RequestImpl request) {
+    public InputStream handle(ResponseImpl response) {
         TemplateBody body = (TemplateBody) response.body;
-        Context context = new Context();
-        context.setVariables(body.model);
-        String content = site.template().engine().process(body.templatePath, context);
-        sender.send(content);
+        ResponseImpl templateResponse = (ResponseImpl) site.render(body.templatePath, body.model);
+        response.setContentType(templateResponse.contentType);
+        response.setStatusCode(templateResponse.statusCode);
+
+        TextBody textBody = (TextBody) templateResponse.body;
+        return new ByteArrayInputStream(textBody.text.getBytes(Charsets.UTF_8));
     }
 }

@@ -2,6 +2,8 @@ package org.app4j.site.runtime.template;
 
 import org.thymeleaf.TemplateEngine;
 
+import java.util.Optional;
+
 /**
  * @author chi
  */
@@ -13,4 +15,6 @@ public interface TemplateConfig {
     AssetsConfig assets();
 
     TemplateConfig add(ResourceRepository resourceRepository);
+
+    Optional<Resource> get(String templatePath);
 }

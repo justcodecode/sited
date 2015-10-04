@@ -10,7 +10,6 @@ import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
-import org.app4j.site.web.exception.NotFoundException;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.cache.StandardCacheManager;
@@ -51,6 +50,17 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         return this;
     }
 
+    @Override
+    public Optional<Resource> get(String templatePath) {
+        for (ResourceRepository templateLoader : templateRepositories) {
+            Optional<Resource> resourceOptional = templateLoader.load(templatePath);
+            if (resourceOptional.isPresent()) {
+                return Optional.of(resourceOptional.get());
+            }
+        }
+        return Optional.empty();
+    }
+
     public AssetsConfig assets() {
         return assetsConfig;
     }
@@ -78,7 +88,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
             @Override
             public IResource resolveResource(IEngineConfiguration configuration, IContext context, String resource, String characterEncoding) {
-                Resource template = get(resource);
+                Resource template = get(resource).get();
                 return new StringResource(template.path(), new String(template.content(), Charsets.UTF_8));
             }
         });
@@ -96,16 +106,6 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
         templateEngine.addTemplateResolver(templateResolver);
         bind(TemplateConfig.class).to(this).export();
-    }
-
-    public Resource get(String path) {
-        for (ResourceRepository templateLoader : templateRepositories) {
-            Optional<Resource> resourceOptional = templateLoader.load(path);
-            if (resourceOptional.isPresent()) {
-                return resourceOptional.get();
-            }
-        }
-        throw new NotFoundException(path);
     }
 
     public List<Resource> all() {

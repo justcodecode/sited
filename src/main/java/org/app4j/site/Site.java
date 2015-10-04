@@ -19,7 +19,6 @@ import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
-import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.util.Graph;
@@ -30,6 +29,7 @@ import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,12 +60,22 @@ public class Site extends DefaultScope {
     private final Boolean debugEnabled;
     private final String baseURL;
     private final List<String> baseCdnURLs;
+    private final String host;
+    private final Integer port;
+    private final DatabaseModule databaseModule;
+    private final RouteModule routeModule;
+    private final TemplateModule templateModule;
+    private final EventModule eventModule;
+    private final ErrorModule errorModule;
+    private final AdminModule adminModule;
+    private final CacheModule cacheModule;
 
-    @SuppressWarnings("unchecked")
     public Site(MongoClientURI mongoClientURI) {
         super(null);
-        SiteLogger siteLogger = new SiteLogger();
 
+        SiteLogger siteLogger = new SiteLogger();
+        host = property("site.host").orElse("0.0.0.0").get();
+        port = property("site.port", Integer.class).orElse(8080).get();
         this.dir = new File(property("site.dir").orElse(defaultDir().toString()).get());
         charset = Charset.forName(property("site.charset").orElse(Charsets.UTF_8.name()).get());
         locale = Locale.forLanguageTag(property("site.locale").orElse(Locale.getDefault().toLanguageTag()).get());
@@ -86,27 +96,34 @@ public class Site extends DefaultScope {
         }
         logger.info("use dir {}", dir);
 
-        install(new DatabaseModule(mongoClientURI));
-        install(new RouteModule());
-        install(new TemplateModule());
-        install(new EventModule());
-        install(new CacheModule(dir("cache")));
-        install(new ErrorModule());
-        install(new AdminModule());
+        databaseModule = new DatabaseModule(mongoClientURI);
+        install(databaseModule);
+        routeModule = new RouteModule();
+        install(routeModule);
+        templateModule = new TemplateModule();
+        install(templateModule);
+        eventModule = new EventModule();
+        install(eventModule);
+        cacheModule = new CacheModule(dir("cache"));
+        install(cacheModule);
+        errorModule = new ErrorModule();
+        install(errorModule);
+        adminModule = new AdminModule();
+        install(adminModule);
 
         bind(Site.class).to(this);
     }
 
-    Path defaultDir() {
-        return new File(property("user.dir").get(), property("site.host").orElse(host()).get()).toPath();
+    private Path defaultDir() {
+        return new File(property("user.home").get(), host()).toPath();
     }
 
-    public String host() {
-        return property("site.host").orElse("0.0.0.0").get();
+    public final String host() {
+        return host;
     }
 
-    public int port() {
-        return property("site.port", Integer.class).orElse(8080).get();
+    public final int port() {
+        return port;
     }
 
 
@@ -168,12 +185,23 @@ public class Site extends DefaultScope {
         }
         try {
             return handler.handle(request);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             ErrorHandler errorHandler = error().handler(e.getClass());
-            if (errorHandler != null) {
-                return errorHandler.handle(request, e);
+            return errorHandler.handle(request, e);
+        }
+    }
+
+    public Response render(String templatePath, Map<String, Object> model) {
+        try {
+            if (!template().get(templatePath).isPresent()) {
+                throw new NotFoundException(templatePath);
             }
-            throw e;
+            Context context = new Context();
+            context.setVariables(model);
+            return Response.text(template().engine().process(templatePath, context), "text/html");
+        } catch (Throwable e) {
+            ErrorHandler errorHandler = error().handler(e.getClass());
+            return errorHandler.handle((Request) model.get("__request__"), e);
         }
     }
 
@@ -182,35 +210,31 @@ public class Site extends DefaultScope {
     }
 
     public TemplateConfig template() {
-        return require(TemplateConfig.class);
+        return templateModule;
     }
 
     public ErrorConfig error() {
-        return require(ErrorConfig.class);
+        return errorModule;
     }
 
     public CacheConfig cache() {
-        return require(CacheConfig.class);
+        return cacheModule;
     }
 
     public EventConfig event() {
-        return require(EventConfig.class);
+        return eventModule;
     }
 
     public DatabaseConfig database() {
-        return require(DatabaseConfig.class);
+        return databaseModule;
     }
 
     public RouteConfig route() {
-        return require(RouteConfig.class);
-    }
-
-    public AssetsConfig assets() {
-        return require(AssetsConfig.class);
+        return routeModule;
     }
 
     public AdminConfig admin() {
-        return require(AdminConfig.class);
+        return adminModule.require(AdminConfig.class);
     }
 
     public <T> Property<T> property(String key, Class<T> type) {

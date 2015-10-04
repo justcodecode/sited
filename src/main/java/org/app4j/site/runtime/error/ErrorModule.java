@@ -26,7 +26,7 @@ public class ErrorModule extends InternalModule implements ErrorConfig {
     public ErrorHandler handler(Class<? extends Throwable> error) {
         ErrorHandler handler = handlers.get(error);
         if (handler == null) {
-            handlers.get(Exception.class);
+            handlers.get(Throwable.class);
         }
         return handler;
     }

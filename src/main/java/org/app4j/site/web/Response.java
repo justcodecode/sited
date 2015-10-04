@@ -39,6 +39,7 @@ public interface Response {
 
     static Response template(String templatePath, Map<String, Object> model) {
         return new ResponseImpl(new TemplateBody(templatePath, model))
+                .setContentType("text/html")
                 .setStatusCode(200);
     }
 

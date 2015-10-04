@@ -5,7 +5,6 @@ import org.app4j.site.Site;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.web.api.impl.DirectoryPageObjectImpl;
-import org.app4j.site.module.page.web.api.impl.RequestPageObjectImpl;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -35,13 +34,11 @@ public class PageHandler implements Handler {
             Page page = pageOptional.get();
             Map<String, Object> context = Maps.newHashMap();
             context.put("__page__", new DirectoryPageObjectImpl(page, pageService, pageRef.pageNumber()));
-            context.put("__request__", new RequestPageObjectImpl(request));
-
+            context.put("__request__", request);
             return Response.template(page.getTemplate(), context);
         } else {
             Map<String, Object> context = Maps.newHashMap();
-            context.put("__request__", new RequestPageObjectImpl(request));
-
+            context.put("__request__", request);
             return Response.template(pageRef.template(), context);
         }
     }

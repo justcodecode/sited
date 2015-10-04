@@ -1,14 +1,17 @@
 package org.app4j.site.web.impl;
 
-import io.undertow.io.Sender;
+import com.google.common.base.Charsets;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * @author neo
  */
 public class TextBodyResponseHandler implements BodyHandler {
     @Override
-    public void handle(ResponseImpl response, Sender sender, RequestImpl request) {
+    public InputStream handle(ResponseImpl response) {
         TextBody body = (TextBody) response.body;
-        sender.send(body.text);
+        return new ByteArrayInputStream(body.text.getBytes(Charsets.UTF_8));
     }
 }
