@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * @author neo
+ * @author chi
  */
 public class TextBodyResponseHandler implements BodyHandler {
     @Override

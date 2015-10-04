@@ -1,7 +1,7 @@
 package org.app4j.site.web.impl;
 
 /**
- * @author neo
+ * @author chi
  */
 public class TextBody implements Body {
     final String text;

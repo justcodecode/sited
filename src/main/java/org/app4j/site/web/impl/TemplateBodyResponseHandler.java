@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * @author neo
+ * @author chi
  */
 public class TemplateBodyResponseHandler implements BodyHandler {
     private final Site site;

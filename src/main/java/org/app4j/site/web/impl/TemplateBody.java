@@ -3,7 +3,7 @@ package org.app4j.site.web.impl;
 import java.util.Map;
 
 /**
- * @author neo
+ * @author chi
  */
 public class TemplateBody implements Body {
     final String templatePath;

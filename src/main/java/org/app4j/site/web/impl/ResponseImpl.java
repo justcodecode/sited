@@ -10,6 +10,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author chi
+ */
 public class ResponseImpl implements Response {
     final Body body;
     final Map<String, String> headers = Maps.newHashMap();
