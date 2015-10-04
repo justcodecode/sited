@@ -3,7 +3,9 @@ package org.app4j.site.runtime.admin;
 import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.admin.service.AdminResourceRepository;
 import org.app4j.site.runtime.admin.service.Console;
+import org.app4j.site.runtime.admin.web.AdminHandler;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.ClasspathResourceRepository;
@@ -13,6 +15,7 @@ import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
+import org.app4j.site.web.Response;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,9 +41,9 @@ public class AdminModule extends InternalModule {
         ResourceRepository resourceRepository;
 
         if (property("site.admin.dir").isPresent()) {
-            resourceRepository = new FolderResourceRepository(new File(property("site.admin.dir").get()), 100);
+            resourceRepository = new AdminResourceRepository(new FolderResourceRepository(new File(property("site.admin.dir").get()), 0));
         } else {
-            resourceRepository = new ClasspathResourceRepository("sited/", 100);
+            resourceRepository = new AdminResourceRepository(new ClasspathResourceRepository("sited/", 0));
         }
 
 
@@ -50,6 +53,7 @@ public class AdminModule extends InternalModule {
         bind(AdminModule.class).to(this).export();
 
         adminConfig.route()
+                .get("/admin/api/template/", request -> Response.bean(template().all()))
                 .get("/admin/index.html", new AdminHandler(site(), new AssetsHandler(template().assets())))
                 .get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(template().assets())));
     }
@@ -80,7 +84,7 @@ public class AdminModule extends InternalModule {
                 @Override
                 public RouteConfig put(String route, Handler handler) {
                     Preconditions.checkState(route.startsWith("/admin/"), "admin route must start with /admin/");
-                    AdminModule.this.route().post(route, new AdminHandler(site(), handler));
+                    AdminModule.this.route().put(route, new AdminHandler(site(), handler));
                     return this;
                 }
 

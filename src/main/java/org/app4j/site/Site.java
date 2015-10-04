@@ -186,6 +186,7 @@ public class Site extends DefaultScope {
         try {
             return handler.handle(request);
         } catch (Throwable e) {
+            logger.error("failed to handle ", e);
             ErrorHandler errorHandler = error().handler(e.getClass());
             return errorHandler.handle(request, e);
         }

@@ -1,5 +1,6 @@
 package org.app4j.site.module.page;
 
+import com.google.common.collect.Maps;
 import org.app4j.site.Module;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chi
@@ -66,6 +68,11 @@ public class PageModule extends Module {
         AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService);
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
         admin().route()
+                .get("/admin/api/site", request -> {
+                    Map<String, Object> site = Maps.newHashMap();
+                    site.put("host", site().host());
+                    return Response.bean(site);
+                })
                 .get("/admin/api/page/", adminPageRESTController::findPages)
                 .post("/admin/api/page", adminPageRESTController::createPage)
                 .get("/admin/api/page/:id", adminPageRESTController::getPage)

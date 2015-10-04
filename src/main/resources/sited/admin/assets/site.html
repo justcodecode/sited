@@ -7,25 +7,25 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/sited/admin">{{org.app4j.site.runtime.template.site.name}}</a>
+        <a class="navbar-brand" href="/sited/admin">{{site.name}}</a>
     </div>
 
     <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-left">
             <li ng-class="{active: $state.includes('page')}">
-                <a ui-sref="org.app4j.site.runtime.template.site.page.list" role="button">Page</a>
+                <a ui-sref="site.page.list" role="button">Page</a>
             </li>
 
             <li ng-class="{active: $state.includes('file')}">
-                <a ui-sref="org.app4j.site.runtime.template.site.file.list" role="button">File</a>
+                <a ui-sref="site.file.list" role="button">File</a>
             </li>
 
             <li ng-class="{active: $state.includes('user')}">
-                <a ui-sref="org.app4j.site.runtime.template.site.user.list" role="button">User</a>
+                <a ui-sref="site.user.list" role="button">User</a>
             </li>
 
             <li ng-class="{active: $state.includes('comment')}">
-                <a ui-sref="org.app4j.site.runtime.template.site.comment.list" role="button">Comment</a>
+                <a ui-sref="site.comment.list" role="button">Comment</a>
             </li>
         </ul>
 

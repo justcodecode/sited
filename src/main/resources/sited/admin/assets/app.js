@@ -28,7 +28,14 @@ define([
         $stateProvider
             .state('site', {
                 url: "/site",
-                template: '<div ui-view></div>'
+                templateUrl: '/admin/assets/site.html',
+                resolve: {
+                    site: function ($http) {
+                        return $http.get('/admin/api/site').then(function (data) {
+                            return data;
+                        });
+                    }
+                }
             });
     });
 

@@ -68,7 +68,5 @@ public class RouteModule extends InternalModule implements RouteConfig {
     @Override
     @SuppressWarnings("unchecked")
     protected void configure() throws Exception {
-        bind(RouteConfig.class).to(this).export();
     }
-
 }

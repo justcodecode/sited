@@ -53,7 +53,7 @@ public abstract class Module extends DefaultScope {
     }
 
     protected RouteConfig route() {
-        return require(RouteConfig.class);
+        return site().route();
     }
 
     protected Site site() {

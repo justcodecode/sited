@@ -9,9 +9,9 @@
         <button class="btn btn-sm btn-default" ng-click="previewPage()">Preview</button>
         <button class="btn btn-sm btn-default" ng-click="resetPage()">Reset</button>
 
-        <button class="btn btn-sm btn-primary" ng-click="createPage()" ng-if="$state.is('org.app4j.site.runtime.template.site.page.create')">Create
+        <button class="btn btn-sm btn-primary" ng-click="createPage()" ng-if="$state.is('site.page.create')">Create
         </button>
-        <button class="btn btn-sm btn-primary" ng-click="updatePage()" ng-if="$state.is('org.app4j.site.runtime.template.site.page.update')">Update
+        <button class="btn btn-sm btn-primary" ng-click="updatePage()" ng-if="$state.is('site.page.update')">Update
         </button>
         <button class="btn btn-sm btn-danger" ng-click="deletePage()">Delete</button>
     </div>
@@ -48,21 +48,21 @@
         <div class="form-group">
             <label class="control-label">Tags</label>
             <ui-select multiple tagging tagging-label="" ng-model="page.tags">
-                    <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
+                <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
                 <ui-select-choices repeat="tag in page.tags | filter:$select.search">
-                        {{tag}}
-                    </ui-select-choices>
-                </ui-select>
+                    {{tag}}
+                </ui-select-choices>
+            </ui-select>
         </div>
 
         <div class="form-group">
             <label class="control-label">Content</label>
-                <summernote
-                        config="editorOptions"
-                        ng-model="page.content"
-                        on-image-upload="imageUpload(files, editor)"
-                        on-change="change(contents)"
-                        editable="editorOptions.editable" style="height: 400px;"></summernote>
+            <summernote
+                    config="editorOptions"
+                    ng-model="page.content"
+                    on-image-upload="imageUpload(files, editor)"
+                    on-change="change(contents)"
+                    editable="editorOptions.editable" style="height: 400px;"></summernote>
         </div>
 
         <div class="form-group">

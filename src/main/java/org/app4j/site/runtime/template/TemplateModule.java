@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @author chi
@@ -105,18 +106,15 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         }
 
         templateEngine.addTemplateResolver(templateResolver);
-        bind(TemplateConfig.class).to(this).export();
     }
 
+    @Override
     public List<Resource> all() {
         List<Resource> templates = Lists.newArrayList();
-        templateRepositories.stream().filter(templateRepository -> templateRepository instanceof FolderResourceRepository).forEach(templateRepository -> {
-            List<Resource> resources = Lists.newArrayList(templateRepository);
-            for (Resource resource : resources) {
-                if ("html".equals(Files.getFileExtension(resource.path()))) {
-                    templates.add(resource);
-                }
-            }
+        templateRepositories.stream().forEach(templateRepository -> {
+            templates.addAll(Lists.newArrayList(templateRepository)
+                    .stream()
+                    .filter(resource -> "html".equals(Files.getFileExtension(resource.path()))).collect(Collectors.toList()));
         });
         return templates;
     }

@@ -2,6 +2,7 @@ package org.app4j.site.runtime.template;
 
 import org.thymeleaf.TemplateEngine;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,6 @@ public interface TemplateConfig {
     TemplateConfig add(ResourceRepository resourceRepository);
 
     Optional<Resource> get(String templatePath);
+
+    List<Resource> all();
 }
