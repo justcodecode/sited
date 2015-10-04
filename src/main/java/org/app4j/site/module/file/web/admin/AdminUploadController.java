@@ -2,8 +2,6 @@ package org.app4j.site.module.file.web.admin;
 
 import com.google.common.collect.Lists;
 import io.undertow.server.handlers.form.FormData;
-import io.undertow.server.handlers.form.FormDataParser;
-import io.undertow.server.handlers.form.MultiPartParserDefinition;
 import org.app4j.site.module.file.domain.UploadFile;
 import org.app4j.site.module.file.service.UploadFileService;
 import org.app4j.site.web.Request;
@@ -28,20 +26,14 @@ public class AdminUploadController {
     }
 
     public Response upload(Request request) throws IOException {
-        MultiPartParserDefinition multiPartParserDefinition = new MultiPartParserDefinition();
-        FormDataParser formDataParser = multiPartParserDefinition.create(null);
-        FormData formData = formDataParser.parseBlocking();
-
-
         File file = request.body(File.class);
         try (InputStream in = new FileInputStream(file)) {
             String path = uploadFileService.repository().put(in, file.getName());
 
             UploadFile uploadFile = new UploadFile();
             uploadFile.setPath("/f/" + path);
-            uploadFile.setTags(listFormData("tags", formData));
             uploadFile.setTitle(file.getName());
-            uploadFile.setDescription(formData("description", formData));
+            uploadFile.setTitle(request.query("fileName").orElse(file.getName()).get());
             uploadFile.setCreateTime(new Date());
             uploadFile.setLastUpdateTime(new Date());
             uploadFile.setStatus(1);

@@ -131,6 +131,7 @@ public class RequestImpl extends DefaultScope implements Request {
                 return JSON.parse(CharStreams.toString(new InputStreamReader(in, Charsets.UTF_8)), type);
             }
         } else if ("application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
+            exchange.startBlocking();
             FormParserFactory formParserFactory = FormParserFactory.builder().build();
             FormDataParser parser = formParserFactory.createParser(exchange);
             parser.setCharacterEncoding(charset.name());
@@ -143,6 +144,7 @@ public class RequestImpl extends DefaultScope implements Request {
             }
             return JSON.mapper().convertValue(form, type);
         } else if ("multipart/form-data".equalsIgnoreCase(contentType) && type.equals(File.class)) {
+            exchange.startBlocking();
             FormParserFactory formParserFactory = FormParserFactory.builder().build();
             FormDataParser parser = formParserFactory.createParser(exchange);
             parser.setCharacterEncoding(charset.name());
@@ -150,6 +152,7 @@ public class RequestImpl extends DefaultScope implements Request {
             for (String name : formData) {
                 FormData.FormValue formValue = formData.get(name).getFirst();
                 if (formValue.isFile()) {
+                    parameters.put("fileName", formValue.getFileName());
                     return (T) formValue.getPath().toFile();
                 }
             }

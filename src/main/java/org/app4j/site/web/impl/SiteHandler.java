@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Map;
 
 /**
@@ -46,7 +44,7 @@ public class SiteHandler implements HttpHandler {
             if (handler == null)
                 throw new Error(String.format("unexpected body class, body=%s", response.body.getClass().getCanonicalName()));
 
-            try (InputStream inputStream = handler.handle(response); ReadableByteChannel channel = Channels.newChannel(inputStream)) {
+            try (InputStream inputStream = handler.handle(response)) {
                 exchange.setStatusCode(response.statusCode);
                 response.cookies.forEach(cookie -> exchange.getResponseCookies().put(cookie.getName(), cookie));
                 response.headers.forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));
