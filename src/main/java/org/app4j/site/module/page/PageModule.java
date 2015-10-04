@@ -49,7 +49,10 @@ public class PageModule extends Module {
                 .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
 
         template().assets().add(resourceRepository);
-        route().get("/assets/*", new AssetsHandler(template().assets()));
+        AssetsHandler assetsHandler = new AssetsHandler(template().assets());
+        route().get("/assets/*", assetsHandler);
+        route().get("/robots.txt", assetsHandler);
+        route().get("/favicon.ico", assetsHandler);
 
 //        SiteMapService siteMapService = new SiteMapService(siteEngine.baseUrl())
 //                .setCache(site().cache().register("sitemap", 1, TimeUnit.DAYS))
