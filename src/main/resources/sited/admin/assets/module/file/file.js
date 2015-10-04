@@ -2,10 +2,10 @@
 
 define([
     'angular',
-    'file.module.js',
-    'controller/site-file-controller',
-    'controller/site-file-list-controller',
-    'controller/site-file-update-controller'
+    'module/file/file.module',
+    'module/file/controller/site-file-controller',
+    'module/file/controller/site-file-list-controller',
+    'module/file/controller/site-file-update-controller'
 ], function (angular, module) {
     module.config(function ($stateProvider) {
             $stateProvider.state('site.file', {

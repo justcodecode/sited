@@ -2,33 +2,11 @@
 
 define([
     'angular',
-    'jquery',
-    'bootstrap',
-    'ngCookies',
-    'ngAnimate',
-    'uiRouter',
-    'uiSelect',
-    'lib/js/ace/ace',
-    'uiAce',
-    'jsyaml',
-    'summernote',
-    'ngSummernote',
-    'smartTable',
-    'loadingBar',
-    'ngFileUpload',
     'module/page/page',
     'module/file/file',
     'module/user/user',
-    'module/comment/comment',
-    'css!lib/css/bootstrap.min',
-    'css!lib/css/font-awesome.min',
-    'css!lib/css/loading-bar.min',
-    'css!lib/css/summernote',
-    'css!lib/css/summernote-bs3',
-    'css!lib/css/select.min',
-    'css!lib/css/theme'
+    'module/comment/comment'
 ], function (angular) {
-
     var module = angular.module("app", [
         'ngCookies',
         'ui.router',
@@ -50,12 +28,7 @@ define([
         $stateProvider
             .state('site', {
                 url: "/site",
-                templateUrl: '/admin/assets/site.html',
-                resolve: {
-                    site: function ($http) {
-                        return $http.get('/admin/api/site');
-                    }
-                }
+                template: '<div ui-view></div>'
             });
     });
 

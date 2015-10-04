@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../comment.module.js'
+    'module/comment/comment.module',
 ], function (angular, module) {
     module.controller('SiteCommentListController', ['$scope', '$rootScope', '$http', '$stateParams', '$state', 'FileUploader', function ($scope, $rootScope, $http, $stateParams, $state, FileUploader) {
         $scope.rowCollection = [];

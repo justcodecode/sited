@@ -2,9 +2,9 @@
 
 define([
     'angular',
-    'comment.module.js',
-    'controller/site-comment-controller',
-    'controller/site-comment-list-controller'
+    'module/comment/comment.module',
+    'module/comment/controller/site-comment-controller',
+    'module/comment/controller/site-comment-list-controller'
 ], function (angular, module) {
     module.config(function ($stateProvider) {
             $stateProvider.state('site.comment', {

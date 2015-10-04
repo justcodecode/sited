@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../user.module.js'
+    'module/user/user.module',
 ], function (angular, module) {
     module.controller('SiteUserListController', ['$scope', '$rootScope', '$http', '$stateParams', '$state', function ($scope, $rootScope, $http, $stateParams, $state) {
         $scope.rowCollection = [];

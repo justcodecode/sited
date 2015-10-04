@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../file.module.js'
+    'module/file/file.module',
 ], function (angular, module) {
     module.controller('SiteFileUpdateController', ['$scope', '$rootScope', '$http', '$stateParams', '$state', function ($scope, $rootScope, $http, $stateParams, $state) {
         $scope.file = {

@@ -1,6 +1,7 @@
 package org.app4j.site.web.impl;
 
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
@@ -9,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Map;
@@ -45,23 +45,19 @@ public class SiteHandler implements HttpHandler {
             BodyHandler handler = handlers.get(response.body.getClass());
             if (handler == null)
                 throw new Error(String.format("unexpected body class, body=%s", response.body.getClass().getCanonicalName()));
+
             try (InputStream inputStream = handler.handle(response); ReadableByteChannel channel = Channels.newChannel(inputStream)) {
-                response.headers.forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));
-                response.cookies.forEach(cookie -> exchange.getResponseCookies().put(cookie.getName(), cookie));
                 exchange.setStatusCode(response.statusCode);
-                ByteBuffer buffer = ByteBuffer.allocate(4096);
-                while (true) {
-                    if (channel.read(buffer) == -1) {
-                        break;
-                    }
-                    buffer.flip();
-                    exchange.getResponseSender().send(buffer);
-                    buffer.clear();
-                }
+                response.cookies.forEach(cookie -> exchange.getResponseCookies().put(cookie.getName(), cookie));
+                response.headers.forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));
+                exchange.startBlocking();
+                ByteStreams.copy(inputStream, exchange.getOutputStream());
             }
         } catch (Throwable e) {
             logger.error("failed to process", e);
-            exchange.setStatusCode(500);
+            if (exchange.getStatusCode() == 200) {
+                exchange.setStatusCode(500);
+            }
         } finally {
             exchange.endExchange();
         }

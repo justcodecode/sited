@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../comment.module.js'
+    'module/comment/comment.module',
 ], function (angular, module) {
     module.controller('SiteCommentController', function () {
     });

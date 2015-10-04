@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../page.module.js'
+    'module/page/page.module'
 ], function (angular, module) {
     module.controller('SitePageController', function () {
 

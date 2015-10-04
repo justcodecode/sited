@@ -2,10 +2,10 @@
 
 define([
     'angular',
-    'user.module.js',
-    'controller/site-user-controller',
-    'controller/site-user-list-controller',
-    'controller/site-user-update-controller'
+    'module/user/user.module',
+    'module/user/controller/site-user-controller',
+    'module/user/controller/site-user-list-controller',
+    'module/user/controller/site-user-update-controller'
 ], function (angular, module) {
     module.config(function ($stateProvider) {
             $stateProvider.state('site.user', {

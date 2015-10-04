@@ -2,11 +2,11 @@
 
 define([
     'angular',
-    'page.module.js',
-    'css!css/page',
-    'controller/site-page-controller',
-    'controller/site-page-list-controller',
-    'controller/site-page-update-controller'
+    'module/page/page.module',
+    'css!module/page/css/page',
+    'module/page/controller/site-page-controller',
+    'module/page/controller/site-page-list-controller',
+    'module/page/controller/site-page-update-controller'
 ], function (angular, module) {
     module.config(function ($stateProvider) {
             $stateProvider.state('site.page', {

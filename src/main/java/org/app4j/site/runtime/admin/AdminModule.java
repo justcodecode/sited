@@ -35,7 +35,6 @@ public class AdminModule extends InternalModule {
         AdminConfig adminConfig = new AdminConfigImpl();
         bind(AdminConfig.class).to(adminConfig).export();
 
-
         ResourceRepository resourceRepository;
 
         if (property("site.admin.dir").isPresent()) {

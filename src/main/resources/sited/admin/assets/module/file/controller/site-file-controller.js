@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../file.module.js'
+    'module/file/file.module',
 ], function (angular, module) {
     module.controller('SiteFileController', function () {
     });

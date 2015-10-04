@@ -2,7 +2,7 @@
 
 define([
     'angular',
-    '../page.module.js'
+    'module/page/page.module'
 ], function (angular, module) {
     module.controller('SitePageUpdateController', ['$scope', '$rootScope', '$http', '$stateParams', '$state', function ($scope, $rootScope, $http, $stateParams, $state) {
         $scope.page = {

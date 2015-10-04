@@ -1,5 +1,8 @@
 package org.app4j.site.runtime.template.web;
 
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
+import io.undertow.util.MimeMappings;
 import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.runtime.template.Resource;
 import org.app4j.site.web.Handler;
@@ -20,9 +23,15 @@ public class AssetsHandler implements Handler {
 
     @Override
     public Response handle(Request request) throws IOException {
-        String path = request.path();
-        Md5Path md5Path = new Md5Path(path);
-        Resource resource = assetsConfig.get(md5Path.path());
-        return Response.bytes(resource.content());
+        Resource resource = assetsConfig.get(new Md5Path(request.path()).path());
+
+        String contentType = MimeMappings.DEFAULT_MIME_MAPPINGS.get(Files.getFileExtension(request.path()));
+        if (Strings.isNullOrEmpty(contentType)) {
+            contentType = "application/octet-stream";
+        }
+
+        return Response.bytes(resource.content())
+                .setContentType(contentType)
+                .setStatusCode(200);
     }
 }
