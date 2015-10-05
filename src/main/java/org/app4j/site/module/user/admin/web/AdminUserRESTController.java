@@ -7,6 +7,7 @@ import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author chi
@@ -21,10 +22,11 @@ public class AdminUserRESTController {
     public Response findByUsername(Request request) throws IOException {
         String name = request.query("username").get();
 
-        User user = userService.findByUsername(name);
-        if (user == null) {
+        Optional<User> userOptional = userService.findByUsername(name);
+        if (!userOptional.isPresent()) {
             throw new NotFoundException(request.path());
         }
+        User user = userOptional.get();
         user.setPassword(null);
         return Response.bean(user);
     }

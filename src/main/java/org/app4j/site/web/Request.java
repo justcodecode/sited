@@ -23,6 +23,8 @@ public interface Request extends Scope {
 
     String schema();
 
+    String accept();
+
     String path();
 
     Parameter<String> path(String name);

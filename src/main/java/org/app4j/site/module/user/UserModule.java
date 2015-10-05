@@ -15,6 +15,8 @@ import org.app4j.site.runtime.admin.service.AdminUser;
 import org.app4j.site.runtime.event.Event;
 import org.app4j.site.runtime.event.EventHandler;
 import org.app4j.site.web.Request;
+import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.UnauthorizedException;
 
 import java.util.Date;
 import java.util.Optional;
@@ -74,6 +76,14 @@ public class UserModule extends Module {
                 user.setRoles(Lists.newArrayList("admin"));
                 userService.save(user);
             }
+        });
+
+
+        error().on(UnauthorizedException.class, (request, e) -> {
+            if ("application/json".equalsIgnoreCase(request.accept())) {
+                return Response.empty().setStatusCode(401);
+            }
+            return Response.redirect("/login.html?from=" + request.path());
         });
     }
 

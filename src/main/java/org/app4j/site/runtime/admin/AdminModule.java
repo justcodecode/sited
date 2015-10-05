@@ -19,7 +19,6 @@ import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
-import org.app4j.site.web.exception.UnauthorizedException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -72,8 +71,6 @@ public class AdminModule extends InternalModule {
 
         adminConfig.route()
                 .get("/admin/api/template/", request -> Response.bean(template().all()));
-
-        error().on(UnauthorizedException.class, (request, e) -> Response.redirect("/admin/login.html"));
     }
 
     private class AdminConfigImpl implements AdminConfig {

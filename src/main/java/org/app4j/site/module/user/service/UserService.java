@@ -24,12 +24,14 @@ public class UserService {
         this.documents = db.getCollection("cms.User", User.class);
     }
 
-    public User findByUsername(String username) {
-        return documents.find(new Document("username", username).append("status", 1)).first();
+    public Optional<User> findByUsername(String username) {
+        User user = documents.find(new Document("username", username).append("status", 1)).first();
+        return user == null ? Optional.empty() : Optional.of(user);
     }
 
-    public User findByUserId(String id) {
-        return documents.find(new Document("_id", new ObjectId(id)).append("status", 1)).first();
+    public Optional<User> findByUserId(String id) {
+        User user = documents.find(new Document("_id", new ObjectId(id)).append("status", 1)).first();
+        return user == null ? Optional.empty() : Optional.of(user);
     }
 
     public FindView<User> findUsers(int offset, int fetchSize) {
@@ -44,7 +46,7 @@ public class UserService {
     public Optional<User> user(Request request) {
         Value<String> userId = request.cookie(USER_COOKIE_NAME);
         if (userId.isPresent()) {
-            return Optional.of(findByUserId(userId.get()));
+            return findByUserId(userId.get());
         }
         return Optional.empty();
     }
@@ -58,7 +60,7 @@ public class UserService {
 
     public void update(User user) {
         Preconditions.checkNotNull(user.getId(), "%s missing id", user.getUsername());
-        User old = findByUsername(user.getUsername());
+        User old = findByUsername(user.getUsername()).get();
         Date now = new Date();
         user.setCreateTime(old != null ? old.getCreateTime() : now);
         user.setLastUpdateTime(now);
@@ -70,7 +72,7 @@ public class UserService {
     }
 
     public User decode(String key) {
-        return findByUsername(key);
+        return findByUsername(key).get();
     }
 
     public void delete(String id) {

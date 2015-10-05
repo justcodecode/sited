@@ -33,7 +33,7 @@ public class PageHandler implements Handler {
         if (pageOptional.isPresent()) {
             Page page = pageOptional.get();
             Map<String, Object> context = Maps.newHashMap();
-            context.put("__request__", request);
+            context.put("request", request);
             if (pageRef.isDirectory()) {
                 context.put("page", new DirectoryObjectImpl(page, pageService, pageRef.pageNumber()));
             } else {
@@ -42,7 +42,7 @@ public class PageHandler implements Handler {
             return Response.template(page.getTemplate(), context);
         } else {
             Map<String, Object> context = Maps.newHashMap();
-            context.put("__request__", request);
+            context.put("request", request);
             return Response.template(pageRef.template(), context);
         }
     }

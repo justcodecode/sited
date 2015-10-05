@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:j="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<form action="/login" method="post">
+    <input type="hidden" name="toURL" j:value="${request.query('from').orElse('').get()}"/>
+    <input type="text" name="username"/>
+    <input type="text" name="password"/>
+    <button type="submit">Login</button>
+</form>
+</body>
+</html>

@@ -88,6 +88,11 @@ public class RequestImpl extends DefaultScope implements Request {
     }
 
     @Override
+    public String accept() {
+        return header("accept").orElse(null).get();
+    }
+
+    @Override
     public String path() {
         return exchange.getRequestPath();
     }
