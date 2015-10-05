@@ -76,4 +76,8 @@ public class UserService {
     public void delete(String id) {
         documents.updateOne(new Document("_id", new ObjectId(id)), new Document("$set", new Document("lastUpdateTime", new Date()).append("status", 0)));
     }
+
+    public void save(User user) {
+        documents.insertOne(user);
+    }
 }

@@ -13,11 +13,12 @@ import java.io.IOException;
 public class AdminUser implements JsonSerializable {
     private final String username;
     private final String email;
+    private final String password;
 
-
-    public AdminUser(String username, String email) {
+    public AdminUser(String username, String email, String password) {
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     public String username() {
@@ -26,6 +27,10 @@ public class AdminUser implements JsonSerializable {
 
     public String email() {
         return email;
+    }
+
+    public String password() {
+        return password;
     }
 
     @Override

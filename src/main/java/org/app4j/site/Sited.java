@@ -1,11 +1,12 @@
 package org.app4j.site;
 
-import com.google.common.collect.Lists;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import org.app4j.site.module.page.PageModule;
+import org.app4j.site.module.user.UserModule;
 import org.app4j.site.web.impl.SiteHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class Sited {
     }
 
     protected List<Class<? extends Module>> scanModules() {
-        return Lists.newArrayList(PageModule.class);
+        return Arrays.asList(PageModule.class, UserModule.class);
     }
 
     public void start() {

@@ -3,8 +3,11 @@ package org.app4j.site.runtime.admin;
 import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.admin.codec.ProfileCodec;
 import org.app4j.site.runtime.admin.service.AdminResourceRepository;
 import org.app4j.site.runtime.admin.service.Console;
+import org.app4j.site.runtime.admin.service.ProfileService;
+import org.app4j.site.runtime.admin.web.AdminController;
 import org.app4j.site.runtime.admin.web.AdminHandler;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
@@ -36,8 +39,13 @@ public class AdminModule extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
+        database().codecs().add(new ProfileCodec());
+
+        ProfileService profileService = new ProfileService(database().get());
+        bind(ProfileService.class).to(profileService);
+
         AdminConfig adminConfig = new AdminConfigImpl();
-        bind(AdminConfig.class).to(adminConfig).export();
+        bind(AdminConfig.class).to(adminConfig);
 
         ResourceRepository resourceRepository;
 
@@ -47,19 +55,23 @@ public class AdminModule extends InternalModule {
             resourceRepository = new AdminResourceRepository(new ClasspathResourceRepository("sited/", 0));
         }
 
-
         template().add(resourceRepository);
         template().assets().add(resourceRepository);
 
-        bind(AdminModule.class).to(this).export();
-
         AssetsHandler assetsHandler = new AssetsHandler(template().assets());
+        route().get("/admin/assets/lib/*", assetsHandler);
         route().get("/admin/login.html", assetsHandler);
 
+        AdminController adminController = new AdminController(site(), profileService, template().assets());
+        route().get("/admin/install.html", adminController::install)
+                .post("/admin/profile", adminController::profile)
+                .get("/admin/index.html", adminController::index);
+
         adminConfig.route()
-                .get("/admin/api/template/", request -> Response.bean(template().all()))
-                .get("/admin/index.html", assetsHandler)
                 .get("/admin/assets/*", assetsHandler);
+
+        adminConfig.route()
+                .get("/admin/api/template/", request -> Response.bean(template().all()));
 
         error().on(UnauthorizedException.class, (request, e) -> Response.redirect("/admin/login.html"));
     }

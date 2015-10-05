@@ -1,5 +1,6 @@
 package org.app4j.site.module.user;
 
+import com.google.common.collect.Lists;
 import org.app4j.site.Module;
 import org.app4j.site.module.user.admin.web.AdminUserRESTController;
 import org.app4j.site.module.user.codec.PermissionCodec;
@@ -11,8 +12,11 @@ import org.app4j.site.module.user.service.RoleService;
 import org.app4j.site.module.user.service.UserService;
 import org.app4j.site.module.user.web.UserController;
 import org.app4j.site.runtime.admin.service.AdminUser;
+import org.app4j.site.runtime.event.Event;
+import org.app4j.site.runtime.event.EventHandler;
 import org.app4j.site.web.Request;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -40,7 +44,7 @@ public class UserModule extends Module {
             Optional<User> userOptional = userService.user(request);
             if (userOptional.isPresent() && userOptional.get().hasRole("admin")) {
                 User user = userOptional.get();
-                return new AdminUser(user.getUsername(), user.getEmail());
+                return new AdminUser(user.getUsername(), user.getEmail(), null);
             }
             return null;
         }).export();
@@ -54,6 +58,23 @@ public class UserModule extends Module {
         admin().route()
                 .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
                 .get("/admin/api/user/", adminUserRESTController::findUsers);
+
+        event().on(AdminUser.class, new EventHandler<AdminUser>() {
+            @Override
+            public void on(Event<AdminUser> event) {
+                AdminUser adminUser = event.target();
+                User user = new User();
+                user.setUsername(adminUser.username());
+                user.setEmail(adminUser.email());
+                user.setPassword(adminUser.password());
+                user.setCreateTime(new Date());
+                user.setLastUpdateTime(new Date());
+                user.setStatus(1);
+
+                user.setRoles(Lists.newArrayList("admin"));
+                userService.save(user);
+            }
+        });
     }
 
 }
