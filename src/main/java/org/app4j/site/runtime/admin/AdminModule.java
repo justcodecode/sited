@@ -16,6 +16,7 @@ import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.UnauthorizedException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -52,10 +53,15 @@ public class AdminModule extends InternalModule {
 
         bind(AdminModule.class).to(this).export();
 
+        AssetsHandler assetsHandler = new AssetsHandler(template().assets());
+        route().get("/admin/login.html", assetsHandler);
+
         adminConfig.route()
                 .get("/admin/api/template/", request -> Response.bean(template().all()))
-                .get("/admin/index.html", new AdminHandler(site(), new AssetsHandler(template().assets())))
-                .get("/admin/assets/*", new AdminHandler(site(), new AssetsHandler(template().assets())));
+                .get("/admin/index.html", assetsHandler)
+                .get("/admin/assets/*", assetsHandler);
+
+        error().on(UnauthorizedException.class, (request, e) -> Response.redirect("/admin/login.html"));
     }
 
     private class AdminConfigImpl implements AdminConfig {

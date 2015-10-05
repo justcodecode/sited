@@ -5,15 +5,19 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.user.domain.User;
 import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.util.Value;
+import org.app4j.site.web.Request;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author chi
  */
 public class UserService {
+    private static final String USER_COOKIE_NAME = "uid";
     private final MongoCollection<User> documents;
 
     public UserService(MongoDatabase db) {
@@ -24,6 +28,10 @@ public class UserService {
         return documents.find(new Document("username", username).append("status", 1)).first();
     }
 
+    public User findByUserId(String id) {
+        return documents.find(new Document("_id", new ObjectId(id)).append("status", 1)).first();
+    }
+
     public FindView<User> findUsers(int offset, int fetchSize) {
         FindView<User> users = new FindView<>(offset, count());
         return documents.find(new Document("status", 1)).sort(new Document("lastUpdateTime", -1)).skip(offset).limit(fetchSize).into(users);
@@ -31,6 +39,14 @@ public class UserService {
 
     public long count() {
         return documents.count(new Document("status", 1));
+    }
+
+    public Optional<User> user(Request request) {
+        Value<String> userId = request.cookie(USER_COOKIE_NAME);
+        if (userId.isPresent()) {
+            return Optional.of(findByUserId(userId.get()));
+        }
+        return Optional.empty();
     }
 
     public void insert(User user) {

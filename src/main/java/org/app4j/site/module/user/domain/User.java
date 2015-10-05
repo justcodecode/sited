@@ -79,4 +79,8 @@ public class User {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public boolean hasRole(String role) {
+        return roles.contains(role);
+    }
 }
