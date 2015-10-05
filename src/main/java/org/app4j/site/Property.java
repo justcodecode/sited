@@ -1,6 +1,7 @@
 package org.app4j.site;
 
 import com.google.common.base.Preconditions;
+import org.app4j.site.util.Asserts;
 import org.app4j.site.util.Value;
 
 /**
@@ -16,7 +17,7 @@ public class Property<T> extends Value<T> {
         return value;
     }
 
-    public Property<T> assertThat(Matcher<T> matcher) {
+    public Property<T> assertThat(Asserts.Matcher<T> matcher) {
         Preconditions.checkState(matcher.matches(value), "property %s's value %s doesn't match %s", name, value, matcher);
         return this;
     }

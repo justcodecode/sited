@@ -2,6 +2,7 @@ package org.app4j.site.web;
 
 
 import com.google.common.base.Preconditions;
+import org.app4j.site.util.Asserts;
 import org.app4j.site.util.Value;
 
 /**
@@ -19,7 +20,7 @@ public class Parameter<T> extends Value<T> {
     }
 
     @Override
-    public Parameter<T> assertThat(Matcher<T> matcher) {
+    public Parameter<T> assertThat(Asserts.Matcher<T> matcher) {
         Preconditions.checkState(matcher.matches(value), "parameter %s's value %s doesn't match %s", name, value, matcher);
         return this;
     }

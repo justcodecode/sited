@@ -28,12 +28,9 @@ public class Value<T> {
         return value;
     }
 
-    public Value<T> assertThat(Matcher<T> matcher) {
+    public Value<T> assertThat(Asserts.Matcher<T> matcher) {
         Preconditions.checkState(matcher.matches(value), "%s's value %s doesn't match %s", name, value, matcher);
         return this;
     }
 
-    public interface Matcher<T> {
-        boolean matches(T value);
-    }
 }
