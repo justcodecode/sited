@@ -1,7 +1,7 @@
 package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.module.page.web.api.PagePageObject;
+import org.app4j.site.module.page.variable.PageObject;
 import org.app4j.site.runtime.template.TemplateDialect;
 import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
 import org.app4j.site.util.JSON;
@@ -31,11 +31,11 @@ public class PageJsonLdElementProcessor extends AbstractElementTagProcessor impl
 
     @Override
     protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, String tagTemplateName, int tagLine, int tagCol, IElementTagStructureHandler structureHandler) {
-        PagePageObject pageObject = (PagePageObject) eval(tag.getAttributes().getValue("page"), processingContext);
+        PageObject pageObject = (PageObject) eval(tag.getAttributes().getValue("page"), processingContext);
         structureHandler.replaceWith("<script type=\"application/ld+json\">" + jsonLd(pageObject) + "</script>", false);
     }
 
-    String jsonLd(PagePageObject page) {
+    String jsonLd(PageObject page) {
         Map<String, Object> json = Maps.newHashMap();
 
         json.put("@context", "http://schema.org");

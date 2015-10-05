@@ -10,6 +10,8 @@ import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
+import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.NotFoundException;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.cache.StandardCacheManager;
@@ -19,6 +21,8 @@ import org.thymeleaf.resource.StringResource;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +110,18 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         }
 
         templateEngine.addTemplateResolver(templateResolver);
+
+        error().on(NotFoundException.class, (request, e) -> {
+            StringWriter stackTrace = new StringWriter();
+            e.printStackTrace(new PrintWriter(stackTrace));
+            return Response.text(stackTrace.toString(), "text/html").setStatusCode(404);
+        });
+
+        error().on(Throwable.class, (request, e) -> {
+            StringWriter stackTrace = new StringWriter();
+            e.printStackTrace(new PrintWriter(stackTrace));
+            return Response.text(stackTrace.toString(), "text/html").setStatusCode(500);
+        });
     }
 
     @Override

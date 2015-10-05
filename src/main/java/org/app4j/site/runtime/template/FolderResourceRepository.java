@@ -50,7 +50,7 @@ public class FolderResourceRepository implements ResourceRepository {
             java.nio.file.Files.walkFileTree(dir.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Resource resource = new Resource(dir.toPath().resolve(file).toString(), null);
+                    Resource resource = new Resource(dir.toPath().relativize(file).toString(), null);
                     all.add(resource);
                     return FileVisitResult.CONTINUE;
                 }

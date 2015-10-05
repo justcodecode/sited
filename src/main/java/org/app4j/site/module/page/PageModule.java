@@ -14,7 +14,6 @@ import org.app4j.site.module.user.UserModule;
 import org.app4j.site.runtime.template.FolderResourceRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.web.Response;
-import org.app4j.site.web.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,9 +78,5 @@ public class PageModule extends Module {
                 .put("/admin/api/page/:id", adminPageRESTController::updatePage)
                 .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
                 .post("/admin/draft/*", adminPagePreviewHandler);
-
-        error().on(NotFoundException.class, (request, e) -> Response.empty().setStatusCode(404));
-        error().on(Throwable.class, (request, e) -> Response.empty().setStatusCode(500));
     }
-
 }

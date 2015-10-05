@@ -48,7 +48,9 @@ public class SiteHandler implements HttpHandler {
                 exchange.setStatusCode(response.statusCode);
                 response.cookies.forEach(cookie -> exchange.getResponseCookies().put(cookie.getName(), cookie));
                 response.headers.forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));
-                exchange.startBlocking();
+                if (!exchange.isBlocking()) {
+                    exchange.startBlocking();
+                }
                 ByteStreams.copy(inputStream, exchange.getOutputStream());
             }
         } catch (Throwable e) {

@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import org.app4j.site.Site;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.module.page.web.api.impl.DirectoryPageObjectImpl;
+import org.app4j.site.module.page.variable.DirectoryObjectImpl;
+import org.app4j.site.module.page.variable.PageObjectImpl;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -29,12 +30,15 @@ public class PageHandler implements Handler {
     public Response handle(Request request) throws IOException {
         PageRef pageRef = new PageRef(request);
         Optional<Page> pageOptional = page(pageRef);
-
         if (pageOptional.isPresent()) {
             Page page = pageOptional.get();
             Map<String, Object> context = Maps.newHashMap();
-            context.put("__page__", new DirectoryPageObjectImpl(page, pageService, pageRef.pageNumber()));
             context.put("__request__", request);
+            if (pageRef.isDirectory()) {
+                context.put("page", new DirectoryObjectImpl(page, pageService, pageRef.pageNumber()));
+            } else {
+                context.put("page", new PageObjectImpl(page, pageService));
+            }
             return Response.template(page.getTemplate(), context);
         } else {
             Map<String, Object> context = Maps.newHashMap();
