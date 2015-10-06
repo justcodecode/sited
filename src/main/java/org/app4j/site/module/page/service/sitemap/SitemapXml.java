@@ -1,4 +1,4 @@
-package org.app4j.site.module.page.sitemap;
+package org.app4j.site.module.page.service.sitemap;
 
 import com.google.common.collect.Lists;
 

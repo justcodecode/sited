@@ -2,9 +2,9 @@ package org.app4j.site.module.page.service;
 
 import com.google.common.base.Charsets;
 import org.app4j.site.module.page.domain.Page;
-import org.app4j.site.module.page.sitemap.SitemapBuilder;
-import org.app4j.site.module.page.sitemap.SitemapURL;
-import org.app4j.site.module.page.sitemap.SitemapURLLoader;
+import org.app4j.site.module.page.service.sitemap.SitemapBuilder;
+import org.app4j.site.module.page.service.sitemap.SitemapURL;
+import org.app4j.site.module.page.service.sitemap.SitemapURLLoader;
 import org.app4j.site.runtime.cache.service.DiskCache;
 
 import java.io.ByteArrayInputStream;
