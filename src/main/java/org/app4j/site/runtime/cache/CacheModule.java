@@ -46,7 +46,7 @@ public class CacheModule extends InternalModule implements CacheConfig {
     @Override
     public DiskCache createDiskCache(String name, long expireTime, TimeUnit timeUnit) {
         Preconditions.checkState(!caches.containsKey(name), "disk cache %s already exists", name);
-        DiskCache cache = new DiskCache(dir, expireTime, timeUnit);
+        DiskCache cache = new DiskCache(new File(dir, name), expireTime, timeUnit);
         caches.put(name, cache);
         return cache;
     }

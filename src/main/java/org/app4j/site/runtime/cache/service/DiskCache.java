@@ -2,6 +2,7 @@ package org.app4j.site.runtime.cache.service;
 
 import com.google.common.io.ByteStreams;
 import org.app4j.site.runtime.cache.Cache;
+import org.app4j.site.util.Dirs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +49,7 @@ public class DiskCache implements Cache<InputStream> {
     @Override
     public Cache<InputStream> put(String key, InputStream value) {
         File file = new File(dir, key);
+        Dirs.createParentDirs(file);
         try (OutputStream outputStream = new FileOutputStream(file)) {
             ByteStreams.copy(value, outputStream);
             return this;

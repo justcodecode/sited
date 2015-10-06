@@ -9,11 +9,13 @@ import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.module.page.service.codec.PageCodec;
 import org.app4j.site.module.page.web.PageHandler;
+import org.app4j.site.module.page.web.SitemapController;
 import org.app4j.site.module.page.web.admin.AdminPagePreviewHandler;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
 import org.app4j.site.module.page.web.admin.AdminSitemapRESTController;
 import org.app4j.site.module.track.TrackModule;
 import org.app4j.site.module.user.UserModule;
+import org.app4j.site.runtime.cache.service.DiskCache;
 import org.app4j.site.runtime.index.service.Index;
 import org.app4j.site.runtime.template.FolderResourceRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
@@ -46,8 +48,9 @@ public class PageModule extends Module {
         PageService pageService = new PageService(database().get());
         bind(PageService.class).to(pageService).export();
 
+        DiskCache sitemapDiskCache = cache().createDiskCache("sitemap", Integer.MAX_VALUE, TimeUnit.DAYS);
         SitemapService sitemapService = new SitemapService(site().baseURL(), pageService,
-                cache().createDiskCache("sitemap", Integer.MAX_VALUE, TimeUnit.DAYS));
+                sitemapDiskCache);
         bind(SitemapService.class).to(sitemapService);
 
         Index<Page> index = index().createIndex("page", Page.class, pageService.dumper());
@@ -56,11 +59,16 @@ public class PageModule extends Module {
         Dirs.createIfNoneExists(templateDir);
 
         FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir, 1000);
-        template().add(resourceRepository);
+        template()
+                .add(resourceRepository);
+
         template().dialect()
                 .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
 
-        template().assets().add(resourceRepository);
+        template()
+                .assets()
+                .add(resourceRepository);
+
         AssetsHandler assetsHandler = new AssetsHandler(template().assets());
         route().get("/assets/*", assetsHandler);
         route().get("/robots.txt", assetsHandler);
@@ -69,6 +77,10 @@ public class PageModule extends Module {
         PageHandler pageHandler = new PageHandler(site(), pageService);
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
+
+        SitemapController sitemapController = new SitemapController(sitemapDiskCache);
+        route().get("/sitemap.xml", sitemapController::sitemap);
+        route().get("/sitemap/*", sitemapController::sitemap);
 
         AdminPageRESTController adminPageRESTController = new AdminPageRESTController(index, pageService, event());
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);

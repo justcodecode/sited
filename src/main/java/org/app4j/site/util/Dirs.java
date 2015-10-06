@@ -1,12 +1,23 @@
 package org.app4j.site.util;
 
+import com.google.common.io.Files;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Stack;
 
 public interface Dirs {
     static void createIfNoneExists(File dir) {
         if (!dir.exists()) {
             dir.mkdirs();
+        }
+    }
+
+    static void createParentDirs(File file) {
+        try {
+            Files.createParentDirs(file);
+        } catch (IOException e) {
+            throw new Error(e);
         }
     }
 
