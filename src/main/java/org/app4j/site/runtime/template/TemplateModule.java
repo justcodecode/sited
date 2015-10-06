@@ -11,6 +11,7 @@ import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
 import org.app4j.site.web.Response;
+import org.app4j.site.web.exception.BadRequestException;
 import org.app4j.site.web.exception.NotFoundException;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.TemplateEngine;
@@ -110,6 +111,12 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         }
 
         templateEngine.addTemplateResolver(templateResolver);
+
+        error().on(BadRequestException.class, (request, e) -> {
+            StringWriter stackTrace = new StringWriter();
+            e.printStackTrace(new PrintWriter(stackTrace));
+            return Response.text(stackTrace.toString(), "text/html").setStatusCode(401);
+        });
 
         error().on(NotFoundException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
