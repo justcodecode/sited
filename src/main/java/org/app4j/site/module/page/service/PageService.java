@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.runtime.index.service.Index;
 import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -18,20 +19,19 @@ import java.util.Optional;
  * @author chi
  */
 public class PageService {
+    private final Index<Page> index;
     private final MongoCollection<Page> documents;
-    private final PageIndexService pageIndexService;
 
-    public PageService(MongoDatabase db) {
-        this.documents = db.getCollection("cms.Page", Page.class);
+    public PageService(MongoDatabase db, Index<Page> index) {
+        this.index = index;
+        this.documents = db.getCollection("site.Page", Page.class);
         if (documents.listIndexes().into(Lists.newArrayList()).size() < 2) {
             documents.createIndex(new Document("lastUpdateTime", -1).append("title", 1));
         }
-
-        pageIndexService = new PageIndexService();
     }
 
-    public PageIndexService indexService() {
-        return pageIndexService;
+    public Index<Page> index() {
+        return index;
     }
 
     public Page root() {

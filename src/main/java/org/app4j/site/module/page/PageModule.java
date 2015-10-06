@@ -3,6 +3,7 @@ package org.app4j.site.module.page;
 import com.google.common.collect.Maps;
 import org.app4j.site.Module;
 import org.app4j.site.module.file.FileModule;
+import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.service.codec.PageCodec;
@@ -11,8 +12,10 @@ import org.app4j.site.module.page.web.admin.AdminPagePreviewHandler;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
 import org.app4j.site.module.track.TrackModule;
 import org.app4j.site.module.user.UserModule;
+import org.app4j.site.runtime.index.service.MongoCollectionIndexLoader;
 import org.app4j.site.runtime.template.FolderResourceRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.util.Dirs;
 import org.app4j.site.web.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +39,14 @@ public class PageModule extends Module {
     @Override
     public void configure() throws Exception {
         database().codecs().add(new PageCodec());
-        PageService pageService = new PageService(database().get());
+
+        PageService pageService = new PageService(database().get(),
+                index().createIndex("page", Page.class, new MongoCollectionIndexLoader<>(database().get().getCollection("site.Page", Page.class))));
         bind(PageService.class).to(pageService).export();
 
+        File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
+        Dirs.createIfNoneExists(templateDir);
 
-        File templateDir = new File(property("template.dir").orElse(site().dir("template").getAbsolutePath()).get());
-        if (!templateDir.exists()) {
-            templateDir.mkdirs();
-        }
         FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir, 1000);
         template().add(resourceRepository);
         template().dialect()
@@ -64,7 +67,7 @@ public class PageModule extends Module {
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
 
-        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService);
+        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, event());
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
         admin().route()
                 .get("/admin/api/site", request -> {
@@ -77,6 +80,7 @@ public class PageModule extends Module {
                 .get("/admin/api/page/:id", adminPageRESTController::getPage)
                 .put("/admin/api/page/:id", adminPageRESTController::updatePage)
                 .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
+                .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex)
                 .post("/admin/draft/*", adminPagePreviewHandler);
     }
 }

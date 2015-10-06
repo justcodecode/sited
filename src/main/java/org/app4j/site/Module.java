@@ -10,6 +10,7 @@ import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorModule;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.EventModule;
+import org.app4j.site.runtime.index.IndexConfig;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
@@ -82,6 +83,10 @@ public abstract class Module extends DefaultScope {
 
     protected AdminConfig admin() {
         return site().admin();
+    }
+
+    protected IndexConfig index(){
+        return site().index();
     }
 
     protected <T> Property<T> property(String key, Class<T> type) {

@@ -1,5 +1,8 @@
 package org.app4j.site.runtime.index;
 
+import org.app4j.site.runtime.index.service.Index;
+import org.app4j.site.runtime.index.service.IndexLoader;
+
 /**
  * @author chi
  */

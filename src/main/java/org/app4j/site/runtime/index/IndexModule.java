@@ -5,6 +5,9 @@ import com.google.common.collect.Maps;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.database.SimpleCodecRegistry;
+import org.app4j.site.runtime.event.Task;
+import org.app4j.site.runtime.index.service.Index;
+import org.app4j.site.runtime.index.service.IndexLoader;
 
 import java.io.File;
 import java.util.Map;
@@ -28,6 +31,15 @@ public class IndexModule extends Module implements IndexConfig {
     public <T> Index<T> createIndex(String name, Class<T> type, IndexLoader<T> indexLoader) {
         Index<T> index = new Index<>(new File(indexDir, name), indexLoader, new StandardAnalyzer(), codecRegistry.domainCodec(type));
         indices.put(name, index);
+
+        if (index.isEmpty()) {
+            event().scheduler().execute(new Task(name) {
+                @Override
+                public void run() {
+                    index.rebuild();
+                }
+            });
+        }
         return index;
     }
 

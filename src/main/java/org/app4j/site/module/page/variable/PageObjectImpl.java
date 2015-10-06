@@ -25,7 +25,7 @@ public class PageObjectImpl extends Page implements PageObject {
 
     @Override
     public FindView<PageObject> relatedPages(int offset, int fetchSize) {
-        FindView<Page> pages = pageService.indexService().findRelatedPages(page, offset, fetchSize);
+        FindView<Page> pages = pageService.index().search(page.getTitle(), offset, fetchSize);
         FindView<PageObject> results = new FindView<>(offset, pages.total());
         results.addAll(pages.stream().map(page -> new PageObjectImpl(page, pageService)).collect(Collectors.toList()));
         return results;

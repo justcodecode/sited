@@ -2,6 +2,8 @@ package org.app4j.site.module.page.web.admin;
 
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageService;
+import org.app4j.site.runtime.event.EventConfig;
+import org.app4j.site.runtime.event.Task;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -14,9 +16,11 @@ import java.io.IOException;
  */
 public class AdminPageRESTController {
     private final PageService pageService;
+    private final EventConfig eventConfig;
 
-    public AdminPageRESTController(PageService pageService) {
+    public AdminPageRESTController(PageService pageService, EventConfig eventConfig) {
         this.pageService = pageService;
+        this.eventConfig = eventConfig;
     }
 
     public Response getPage(Request request) throws IOException {
@@ -49,6 +53,16 @@ public class AdminPageRESTController {
     public Response deletePage(Request request) throws IOException {
         String pageId = request.path(":id").get();
         pageService.deletePage(new ObjectId(pageId));
+        return Response.empty();
+    }
+
+    public Response rebuildIndex(Request request) {
+        eventConfig.scheduler().execute(new Task("page:full-index") {
+            @Override
+            public void run() {
+                pageService.index().rebuild();
+            }
+        });
         return Response.empty();
     }
 }

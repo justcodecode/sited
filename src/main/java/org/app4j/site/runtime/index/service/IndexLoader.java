@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.index;
+package org.app4j.site.runtime.index.service;
 
 /**
  * @author chi

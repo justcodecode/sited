@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.index;
+package org.app4j.site.runtime.index.service;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
@@ -44,7 +44,7 @@ public class Index<T> {
         this.analyzer = analyzer;
         this.codec = codec;
         try {
-            Dirs.create(dir);
+            Dirs.createIfNoneExists(dir);
 
             directory = FSDirectory.open(dir.toPath());
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -53,6 +53,10 @@ public class Index<T> {
         } catch (IOException e) {
             throw new Error(e);
         }
+    }
+
+    public boolean isEmpty() {
+        return dir.listFiles() == null;
     }
 
     public void stop() {
@@ -77,6 +81,14 @@ public class Index<T> {
         return indexLoader;
     }
 
+    public void rebuild() {
+        clear();
+
+        for (T object : loader()) {
+            index(object);
+        }
+    }
+
     IndexSearcher indexSearcher() {
         if (indexSearcher == null) {
             try {
@@ -88,24 +100,34 @@ public class Index<T> {
         return indexSearcher;
     }
 
-    public Index<T> update(T object) {
+    public Index<T> index(T object) {
         Document document = codec.to(object);
 
         try {
-            TopDocs topDocs = indexSearcher().search(new TermQuery(new Term("_id", document.getObjectId("_id").toHexString())), 1);
-            if (topDocs.totalHits > 0) {
+            if (isIndexExists(document)) {
                 logger.debug("update index {} -> {}", dir.getName(), document.getObjectId("_id").toHexString());
                 indexWriter.updateDocument(new Term("_id", document.getObjectId("_id").toHexString()), parse(document));
             } else {
-                logger.debug("update index {} -> {}", dir.getName(), document.getObjectId("_id").toHexString());
+                logger.debug("create index {} -> {}", dir.getName(), document.getObjectId("_id").toHexString());
                 indexWriter.addDocument(parse(document));
             }
-
             indexSearcher = null;
         } catch (IOException e) {
             throw new Error(e);
         }
         return this;
+    }
+
+    boolean isIndexExists(Document document) {
+        if (indexSearcher == null) {
+            return false;
+        }
+        try {
+            TopDocs topDocs = indexSearcher().search(new TermQuery(new Term("_id", document.getObjectId("_id").toHexString())), 1);
+            return topDocs.totalHits > 0;
+        } catch (IOException e) {
+            throw new Error(e);
+        }
     }
 
     org.apache.lucene.document.Document parse(Document document) {

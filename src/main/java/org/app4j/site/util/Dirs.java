@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Stack;
 
 public interface Dirs {
-    static void create(File dir) {
+    static void createIfNoneExists(File dir) {
         if (!dir.exists()) {
             dir.mkdirs();
         }

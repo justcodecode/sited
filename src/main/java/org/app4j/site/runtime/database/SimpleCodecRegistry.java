@@ -39,7 +39,7 @@ public class SimpleCodecRegistry implements CodecRegistry {
 
     @SuppressWarnings("unchecked")
     public <T> DomainCodec<T> domainCodec(Class<T> type) {
-        Preconditions.checkState(codecs.containsKey(type), "missing codec for %s", type.getName());
+        Preconditions.checkState(domainCodecs.containsKey(type), "missing codec for %s", type.getName());
         return (DomainCodec<T>) domainCodecs.get(type);
     }
 

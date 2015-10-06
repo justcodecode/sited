@@ -17,6 +17,8 @@ import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.error.ErrorModule;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.EventModule;
+import org.app4j.site.runtime.index.IndexConfig;
+import org.app4j.site.runtime.index.IndexModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
@@ -69,6 +71,7 @@ public class Site extends DefaultScope {
     private final ErrorModule errorModule;
     private final AdminModule adminModule;
     private final CacheModule cacheModule;
+    private final IndexModule indexModule;
 
     public Site(MongoClientURI mongoClientURI) {
         super(null);
@@ -110,6 +113,8 @@ public class Site extends DefaultScope {
         install(errorModule);
         adminModule = new AdminModule();
         install(adminModule);
+        indexModule = new IndexModule();
+        install(indexModule);
 
         bind(Site.class).to(this);
     }
@@ -289,5 +294,9 @@ public class Site extends DefaultScope {
 
     public final List<String> baseCdnURLs() {
         return baseCdnURLs;
+    }
+
+    public IndexConfig index() {
+        return indexModule;
     }
 }

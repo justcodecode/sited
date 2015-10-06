@@ -2,6 +2,8 @@ package org.app4j.site.runtime.database;
 
 import org.bson.Document;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
  * @author chi
  */
@@ -10,7 +12,8 @@ public interface DomainCodec<T> {
 
     Document to(T object);
 
+    @SuppressWarnings("unchecked")
     default Class<T> domainType() {
-        return null;
+        return (Class<T>) ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 }
