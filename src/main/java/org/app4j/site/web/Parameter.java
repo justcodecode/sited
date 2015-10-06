@@ -4,6 +4,7 @@ package org.app4j.site.web;
 import com.google.common.base.Preconditions;
 import org.app4j.site.util.Asserts;
 import org.app4j.site.util.Value;
+import org.app4j.site.web.exception.BadRequestException;
 
 /**
  * @author chi
@@ -19,9 +20,10 @@ public class Parameter<T> extends Value<T> {
         return value;
     }
 
-    @Override
     public Parameter<T> assertThat(Asserts.Matcher<T> matcher) {
-        Preconditions.checkState(matcher.matches(value), "parameter %s's value %s doesn't match %s", name, value, matcher);
+        if (!matcher.matches(value)) {
+            throw new BadRequestException(name, value, "value not match " + matcher.toString());
+        }
         return this;
     }
 }

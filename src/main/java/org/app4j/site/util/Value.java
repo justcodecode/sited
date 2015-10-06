@@ -27,10 +27,4 @@ public class Value<T> {
         Preconditions.checkNotNull(value, "value can't be null");
         return value;
     }
-
-    public Value<T> assertThat(Asserts.Matcher<T> matcher) {
-        Preconditions.checkState(matcher.matches(value), "%s's value %s doesn't match %s", name, value, matcher);
-        return this;
-    }
-
 }

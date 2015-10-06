@@ -2,6 +2,7 @@ package org.app4j.site.util;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.app4j.site.web.exception.BadRequestException;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -16,7 +17,7 @@ public class Asserts {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})");
 
     private boolean failFast = false;
-    private List<AssertError> errors = Lists.newArrayList();
+    private List<AssertionErrorMessage> assertionErrorMessages = Lists.newArrayList();
 
     public static Asserts.Matcher<String> username() {
         return value -> !Strings.isNullOrEmpty(value) && USERNAME_PATTERN.matcher(value).matches();
@@ -30,7 +31,7 @@ public class Asserts {
         return value -> !Strings.isNullOrEmpty(value) && PASSWORD_PATTERN.matcher(value).matches();
     }
 
-    public <T> Assert<Asserts, T> assertThat(T value) {
+    public <T> Assert<Asserts, T> assertThat(Value<T> value) {
         return new Assert<>(this, value);
     }
 
@@ -39,21 +40,13 @@ public class Asserts {
         return this;
     }
 
-    public List<AssertError> errors() {
-        return errors;
-    }
-
-    public boolean hasError() {
-        return !errors.isEmpty();
+    public List<AssertionErrorMessage> errors() {
+        return assertionErrorMessages;
     }
 
     public void throwIfAny() {
-        if (!errors.isEmpty()) {
-            StringBuilder b = new StringBuilder();
-            for (AssertError error : errors) {
-                b.append(error.message).append('\n');
-            }
-            throw new IllegalArgumentException(b.toString());
+        if (!assertionErrorMessages.isEmpty()) {
+            throw new BadRequestException(assertionErrorMessages);
         }
     }
 
@@ -61,17 +54,41 @@ public class Asserts {
         boolean matches(T value);
     }
 
+    public static class AssertionErrorMessage {
+        private final String name;
+        private final Object value;
+        private final String message;
+
+        public AssertionErrorMessage(String name, Object value, String message) {
+            this.name = name;
+            this.value = value;
+            this.message = message;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
     public class Assert<H, T> {
         private final H holder;
-        private final T value;
+        private final Value<T> value;
 
-        public Assert(H holder, T value) {
+        public Assert(H holder, Value<T> value) {
             this.holder = holder;
             this.value = value;
         }
 
         public H is(Matcher<T> matcher) {
-            if (matcher.matches(value)) {
+            if (matcher.matches(value.value)) {
                 return holder;
             }
             return fail(String.format("value %s doesn't match %s", value, matcher));
@@ -81,7 +98,7 @@ public class Asserts {
             if (failFast) {
                 throw new IllegalArgumentException(message);
             } else {
-                errors.add(new AssertError(value, message));
+                assertionErrorMessages.add(new AssertionErrorMessage(value.name, value.value, message));
             }
 
             return holder;
@@ -92,16 +109,6 @@ public class Asserts {
                 fail("value can't be null");
             }
             return holder;
-        }
-    }
-
-    public class AssertError {
-        final Object value;
-        final String message;
-
-        public AssertError(Object value, String message) {
-            this.value = value;
-            this.message = message;
         }
     }
 }
