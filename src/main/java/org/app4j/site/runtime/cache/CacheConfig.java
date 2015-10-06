@@ -1,5 +1,7 @@
 package org.app4j.site.runtime.cache;
 
+import org.app4j.site.runtime.cache.service.DiskCache;
+
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -9,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 public interface CacheConfig {
     <T> Cache<T> cache(String name);
 
-    <T> CacheConfig createCache(String name, Class<T> type, long expireTime, TimeUnit timeUnit);
+    <T> Cache<T> createCache(String name, Class<T> type, long expireTime, TimeUnit timeUnit);
 
     Cache<InputStream> diskCache(String name);
 
-    CacheConfig createDiskCache(String name, long expireTime, TimeUnit timeUnit);
+    DiskCache createDiskCache(String name, long expireTime, TimeUnit timeUnit);
 }

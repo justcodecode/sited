@@ -29,26 +29,26 @@ public class CacheModule extends InternalModule implements CacheConfig {
     }
 
     @Override
-    public <T> CacheConfig createCache(String name, Class<T> type, long expireTime, TimeUnit timeUnit) {
+    public <T> Cache<T> createCache(String name, Class<T> type, long expireTime, TimeUnit timeUnit) {
         Preconditions.checkState(caches.containsKey(name), "cache %s already exists", name);
         MemCache<T> cache = new MemCache<>(expireTime, timeUnit);
         caches.put(name, cache);
-        return this;
+        return cache;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Cache<InputStream> diskCache(String name) {
-        Preconditions.checkState(caches.containsKey(name), "missing disk cache %s", name);
+        Preconditions.checkState(!caches.containsKey(name), "missing disk cache %s", name);
         return (Cache<InputStream>) caches.get(name);
     }
 
     @Override
-    public CacheConfig createDiskCache(String name, long expireTime, TimeUnit timeUnit) {
-        Preconditions.checkState(caches.containsKey(name), "disk cache %s already exists", name);
+    public DiskCache createDiskCache(String name, long expireTime, TimeUnit timeUnit) {
+        Preconditions.checkState(!caches.containsKey(name), "disk cache %s already exists", name);
         DiskCache cache = new DiskCache(dir, expireTime, timeUnit);
         caches.put(name, cache);
-        return this;
+        return cache;
     }
 
     @Override

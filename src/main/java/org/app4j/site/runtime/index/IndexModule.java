@@ -7,7 +7,7 @@ import org.app4j.site.Module;
 import org.app4j.site.runtime.database.SimpleCodecRegistry;
 import org.app4j.site.runtime.event.Task;
 import org.app4j.site.runtime.index.service.Index;
-import org.app4j.site.runtime.index.service.IndexLoader;
+import org.app4j.site.runtime.database.Dumper;
 
 import java.io.File;
 import java.util.Map;
@@ -28,8 +28,8 @@ public class IndexModule extends Module implements IndexConfig {
     }
 
     @Override
-    public <T> Index<T> createIndex(String name, Class<T> type, IndexLoader<T> indexLoader) {
-        Index<T> index = new Index<>(new File(indexDir, name), indexLoader, new StandardAnalyzer(), codecRegistry.domainCodec(type));
+    public <T> Index<T> createIndex(String name, Class<T> type, Dumper<T> dumper) {
+        Index<T> index = new Index<>(new File(indexDir, name), dumper, new StandardAnalyzer(), codecRegistry.domainCodec(type));
         indices.put(name, index);
 
         if (index.isEmpty()) {

@@ -4,6 +4,7 @@ import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.runtime.event.EventConfig;
 import org.app4j.site.runtime.event.Task;
+import org.app4j.site.runtime.index.service.Index;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -15,10 +16,12 @@ import java.io.IOException;
  * @author chi
  */
 public class AdminPageRESTController {
+    private final Index<Page> index;
     private final PageService pageService;
     private final EventConfig eventConfig;
 
-    public AdminPageRESTController(PageService pageService, EventConfig eventConfig) {
+    public AdminPageRESTController(Index<Page> index, PageService pageService, EventConfig eventConfig) {
+        this.index = index;
         this.pageService = pageService;
         this.eventConfig = eventConfig;
     }
@@ -60,7 +63,7 @@ public class AdminPageRESTController {
         eventConfig.scheduler().execute(new Task("page:full-index") {
             @Override
             public void run() {
-                pageService.index().rebuild();
+                index.rebuild();
             }
         });
         return Response.empty();

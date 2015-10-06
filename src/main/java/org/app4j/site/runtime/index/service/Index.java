@@ -16,6 +16,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.app4j.site.runtime.database.DomainCodec;
 import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.runtime.database.Dumper;
 import org.app4j.site.util.Dirs;
 import org.app4j.site.util.JSON;
 import org.bson.Document;
@@ -32,15 +33,15 @@ public class Index<T> {
     private final Logger logger = LoggerFactory.getLogger(Index.class);
     private final File dir;
     private final IndexWriter indexWriter;
-    private final IndexLoader<T> indexLoader;
+    private final Dumper<T> dumper;
     private final Directory directory;
     private final Analyzer analyzer;
     private final DomainCodec<T> codec;
     private volatile IndexSearcher indexSearcher;
 
-    public Index(File dir, IndexLoader<T> indexLoader, Analyzer analyzer, DomainCodec<T> codec) {
+    public Index(File dir, Dumper<T> dumper, Analyzer analyzer, DomainCodec<T> codec) {
         this.dir = dir;
-        this.indexLoader = indexLoader;
+        this.dumper = dumper;
         this.analyzer = analyzer;
         this.codec = codec;
         try {
@@ -77,8 +78,8 @@ public class Index<T> {
         }
     }
 
-    public IndexLoader<T> loader() {
-        return indexLoader;
+    public Dumper<T> loader() {
+        return dumper;
     }
 
     public void rebuild() {

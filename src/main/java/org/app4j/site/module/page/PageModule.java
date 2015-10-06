@@ -6,13 +6,15 @@ import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
 import org.app4j.site.module.page.service.PageService;
+import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.module.page.service.codec.PageCodec;
 import org.app4j.site.module.page.web.PageHandler;
 import org.app4j.site.module.page.web.admin.AdminPagePreviewHandler;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
+import org.app4j.site.module.page.web.admin.AdminSitemapRESTController;
 import org.app4j.site.module.track.TrackModule;
 import org.app4j.site.module.user.UserModule;
-import org.app4j.site.runtime.index.service.MongoCollectionIndexLoader;
+import org.app4j.site.runtime.index.service.Index;
 import org.app4j.site.runtime.template.FolderResourceRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.util.Dirs;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chi
@@ -40,9 +43,14 @@ public class PageModule extends Module {
     public void configure() throws Exception {
         database().codecs().add(new PageCodec());
 
-        PageService pageService = new PageService(database().get(),
-                index().createIndex("page", Page.class, new MongoCollectionIndexLoader<>(database().get().getCollection("site.Page", Page.class))));
+        PageService pageService = new PageService(database().get());
         bind(PageService.class).to(pageService).export();
+
+        SitemapService sitemapService = new SitemapService(site().baseURL(), pageService,
+                cache().createDiskCache("sitemap", Integer.MAX_VALUE, TimeUnit.DAYS));
+        bind(SitemapService.class).to(sitemapService);
+
+        Index<Page> index = index().createIndex("page", Page.class, pageService.dumper());
 
         File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
         Dirs.createIfNoneExists(templateDir);
@@ -58,16 +66,11 @@ public class PageModule extends Module {
         route().get("/robots.txt", assetsHandler);
         route().get("/favicon.ico", assetsHandler);
 
-//        SiteMapService siteMapService = new SiteMapService(siteEngine.baseUrl())
-//                .setCache(site().cache().register("sitemap", 1, TimeUnit.DAYS))
-//                .setPageService(pageService)
-//                .setTrackingService(require(TrackingService.class));
-
         PageHandler pageHandler = new PageHandler(site(), pageService);
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
 
-        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, event());
+        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(index, pageService, event());
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
         admin().route()
                 .get("/admin/api/site", request -> {
@@ -82,5 +85,8 @@ public class PageModule extends Module {
                 .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
                 .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex)
                 .post("/admin/draft/*", adminPagePreviewHandler);
+
+        AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, event());
+        admin().route().get("/admin/api/page/rebuild-sitemap", adminSitemapRESTController::rebuildSitemap);
     }
 }

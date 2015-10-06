@@ -6,7 +6,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.runtime.database.FindView;
-import org.app4j.site.runtime.index.service.Index;
+import org.app4j.site.runtime.database.Dumper;
+import org.app4j.site.runtime.database.MongoCollectionDumper;
 import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -19,19 +20,17 @@ import java.util.Optional;
  * @author chi
  */
 public class PageService {
-    private final Index<Page> index;
     private final MongoCollection<Page> documents;
 
-    public PageService(MongoDatabase db, Index<Page> index) {
-        this.index = index;
+    public PageService(MongoDatabase db) {
         this.documents = db.getCollection("site.Page", Page.class);
         if (documents.listIndexes().into(Lists.newArrayList()).size() < 2) {
             documents.createIndex(new Document("lastUpdateTime", -1).append("title", 1));
         }
     }
 
-    public Index<Page> index() {
-        return index;
+    public Dumper<Page> dumper() {
+        return new MongoCollectionDumper<>(documents);
     }
 
     public Page root() {

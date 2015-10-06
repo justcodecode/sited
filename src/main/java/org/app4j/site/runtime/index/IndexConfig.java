@@ -1,7 +1,7 @@
 package org.app4j.site.runtime.index;
 
 import org.app4j.site.runtime.index.service.Index;
-import org.app4j.site.runtime.index.service.IndexLoader;
+import org.app4j.site.runtime.database.Dumper;
 
 /**
  * @author chi
@@ -9,5 +9,5 @@ import org.app4j.site.runtime.index.service.IndexLoader;
 public interface IndexConfig {
     <T> Index<?> index(String name);
 
-    <T> Index<T> createIndex(String name, Class<T> type, IndexLoader<T> indexLoader);
+    <T> Index<T> createIndex(String name, Class<T> type, Dumper<T> dumper);
 }

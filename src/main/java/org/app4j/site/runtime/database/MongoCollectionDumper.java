@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.index.service;
+package org.app4j.site.runtime.database;
 
 import com.mongodb.client.MongoCollection;
 
@@ -7,10 +7,10 @@ import java.util.Iterator;
 /**
  * @author chi
  */
-public class MongoCollectionIndexLoader<T> implements IndexLoader<T> {
+public class MongoCollectionDumper<T> implements Dumper<T> {
     private final MongoCollection<T> documents;
 
-    public MongoCollectionIndexLoader(MongoCollection<T> documents) {
+    public MongoCollectionDumper(MongoCollection<T> documents) {
         this.documents = documents;
     }
 
