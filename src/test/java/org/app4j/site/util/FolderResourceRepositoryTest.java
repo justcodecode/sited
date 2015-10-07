@@ -1,7 +1,5 @@
 package org.app4j.site.util;
 
-import org.app4j.site.runtime.template.FolderResourceRepository;
-import org.app4j.site.runtime.template.Resource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,15 +23,15 @@ public class FolderResourceRepositoryTest {
     @Before
     public void setup() throws IOException {
         File root = this.dir.getRoot();
-        folderResourceRepository = new FolderResourceRepository(root, 100);
+        folderResourceRepository = new FolderResourceRepository(root);
 
         dir.newFile("index.html").createNewFile();
     }
 
     @Test
     public void load() {
-        Optional<Resource> resource = folderResourceRepository.load("index.html");
+        Optional<Resource> resource = folderResourceRepository.resolve("index.html");
         Assert.assertEquals("index.html", resource.get().path());
-        Assert.assertFalse(folderResourceRepository.load("none.html").isPresent());
+        Assert.assertFalse(folderResourceRepository.resolve("none.html").isPresent());
     }
 }

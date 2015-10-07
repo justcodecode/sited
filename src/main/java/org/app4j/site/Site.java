@@ -23,6 +23,7 @@ import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
+import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.util.Graph;
 import org.app4j.site.util.JSON;
 import org.app4j.site.web.Handler;
@@ -44,6 +45,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -199,10 +201,12 @@ public class Site extends DefaultScope {
 
     public Response render(String templatePath, Map<String, Object> model) {
         try {
-            if (!template().get(templatePath).isPresent()) {
+            Optional<Template> template = template().get(templatePath);
+            if (!template.isPresent()) {
                 throw new NotFoundException(templatePath);
             }
             Context context = new Context();
+            context.setVariable("template", template);
             context.setVariables(model);
             return Response.text(template().engine().process(templatePath, context), "text/html");
         } catch (Throwable e) {

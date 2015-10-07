@@ -4,6 +4,8 @@ import com.google.common.base.Charsets;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import org.app4j.site.runtime.cache.service.DiskCache;
+import org.app4j.site.util.Resource;
+import org.app4j.site.util.ResourceRepository;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ import java.util.TreeSet;
  */
 public class AssetsConfig {
     private final DiskCache cache;
-    private final Set<ResourceRepository> assetsRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
+    private final Set<ResourceRepository> assetsRepositories = new TreeSet<>((o1, o2) -> o2.hashCode() - o1.hashCode());
 
     public AssetsConfig(DiskCache cache) {
         this.cache = cache;
@@ -42,7 +44,7 @@ public class AssetsConfig {
                 return cache.get();
             }
 
-            JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(new String(resource.content(), Charsets.UTF_8)),
+            JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(new String(resource.bytes(), Charsets.UTF_8)),
                     new JsErrorReporter(resource.path()));
             ByteArrayOutputStream minified = new ByteArrayOutputStream();
             OutputStreamWriter out = new OutputStreamWriter(minified);
@@ -64,7 +66,7 @@ public class AssetsConfig {
                 return cache.get();
             }
 
-            CssCompressor compressor = new CssCompressor(new StringReader(new String(resource.content(), Charsets.UTF_8)));
+            CssCompressor compressor = new CssCompressor(new StringReader(new String(resource.bytes(), Charsets.UTF_8)));
             ByteArrayOutputStream minified = new ByteArrayOutputStream();
             OutputStreamWriter out = new OutputStreamWriter(minified);
             compressor.compress(out, -1);
@@ -80,7 +82,7 @@ public class AssetsConfig {
 
     public Optional<Resource> get(String path) {
         for (ResourceRepository resourceRepository : assetsRepositories) {
-            Optional<Resource> resourceOptional = resourceRepository.load(path);
+            Optional<Resource> resourceOptional = resourceRepository.resolve(path);
             if (resourceOptional.isPresent()) {
                 return Optional.of(resourceOptional.get());
             }

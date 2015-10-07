@@ -1,5 +1,8 @@
 package org.app4j.site.runtime.template;
 
+import org.app4j.site.runtime.template.service.Template;
+import org.app4j.site.runtime.template.service.TemplateDialect;
+import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.thymeleaf.TemplateEngine;
 
 import java.util.List;
@@ -15,9 +18,9 @@ public interface TemplateConfig {
 
     AssetsConfig assets();
 
-    TemplateConfig add(ResourceRepository resourceRepository);
+    TemplateConfig add(TemplateRepository resourceRepository);
 
-    Optional<Resource> get(String templatePath);
+    Optional<Template> get(String templatePath);
 
-    List<Resource> all();
+    List<Template> all();
 }

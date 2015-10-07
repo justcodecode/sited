@@ -1,7 +1,7 @@
 package org.app4j.site.runtime.template.processor;
 
 import com.google.common.base.Strings;
-import org.app4j.site.Site;
+import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.util.JSON;
 import org.app4j.site.util.Value;
 import org.app4j.site.web.Request;
@@ -72,12 +72,12 @@ public interface TemplateProcessorSupport {
         return baseCdnUrls.get(Math.abs(path.hashCode()) % baseCdnUrls.size()) + path;
     }
 
-    default Site site(ITemplateProcessingContext iTemplateProcessingContext) {
-        return (Site) iTemplateProcessingContext.getVariables().getVariable("__site__");
-    }
-
     default Request request(ITemplateProcessingContext iTemplateProcessingContext) {
         return (Request) iTemplateProcessingContext.getVariables().getVariable("request");
+    }
+
+    default Template template(ITemplateProcessingContext iTemplateProcessingContext) {
+        return (Template) iTemplateProcessingContext.getVariables().getVariable("template");
     }
 
     default <T> Value<T> attribute(String attributeName, IProcessableElementTag tag, Class<T> type) {

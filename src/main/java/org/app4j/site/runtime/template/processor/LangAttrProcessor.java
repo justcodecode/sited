@@ -1,6 +1,6 @@
 package org.app4j.site.runtime.template.processor;
 
-import org.app4j.site.runtime.template.TemplateDialect;
+import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IProcessableElementTag;

@@ -7,7 +7,7 @@ import org.app4j.site.runtime.admin.service.AdminUser;
 import org.app4j.site.runtime.admin.service.ProfileService;
 import org.app4j.site.runtime.event.Event;
 import org.app4j.site.runtime.template.AssetsConfig;
-import org.app4j.site.runtime.template.Resource;
+import org.app4j.site.util.Resource;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -39,7 +39,7 @@ public class AdminController {
 
             if (site.isAdminEnabled()) {
                 Resource resource = assetsConfig.get("/admin/index.html").get();
-                return Response.pipe(resource.inputStream())
+                return Response.pipe(resource.openStream())
                         .setContentType("text/html")
                         .setStatusCode(200);
             } else {
@@ -55,7 +55,7 @@ public class AdminController {
             throw new NotFoundException(request.path());
         }
         Resource resource = assetsConfig.get("/admin/install.html").get();
-        return Response.pipe(resource.inputStream())
+        return Response.pipe(resource.openStream())
                 .setContentType("text/html")
                 .setStatusCode(200);
     }

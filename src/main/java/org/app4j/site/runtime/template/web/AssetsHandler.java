@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import io.undertow.util.MimeMappings;
 import org.app4j.site.runtime.template.AssetsConfig;
-import org.app4j.site.runtime.template.Resource;
+import org.app4j.site.util.Resource;
 import org.app4j.site.util.Value;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
@@ -97,7 +97,7 @@ public class AssetsHandler implements Handler {
         } else if (isCSSResource(resource) && minifyCSSEnabled) {
             return assetsConfig.minifyCss(resource);
         } else {
-            return resource.inputStream();
+            return resource.openStream();
         }
     }
 

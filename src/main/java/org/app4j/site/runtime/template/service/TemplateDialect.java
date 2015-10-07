@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.template;
+package org.app4j.site.runtime.template.service;
 
 import com.google.common.collect.Sets;
 import org.thymeleaf.processor.IProcessor;

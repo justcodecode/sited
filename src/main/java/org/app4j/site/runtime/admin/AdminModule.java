@@ -4,18 +4,17 @@ import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.admin.codec.ProfileCodec;
-import org.app4j.site.runtime.admin.service.AdminResourceRepository;
+import org.app4j.site.runtime.admin.service.AdminTemplateRepository;
 import org.app4j.site.runtime.admin.service.Console;
 import org.app4j.site.runtime.admin.service.ProfileService;
 import org.app4j.site.runtime.admin.web.AdminController;
 import org.app4j.site.runtime.admin.web.AdminHandler;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
-import org.app4j.site.runtime.template.ClasspathResourceRepository;
-import org.app4j.site.runtime.template.FolderResourceRepository;
-import org.app4j.site.runtime.template.ResourceRepository;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.util.ClasspathResourceRepository;
+import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -46,16 +45,16 @@ public class AdminModule extends InternalModule {
         AdminConfig adminConfig = new AdminConfigImpl();
         bind(AdminConfig.class).to(adminConfig);
 
-        ResourceRepository resourceRepository;
+        AdminTemplateRepository resourceRepository;
 
         if (property("site.admin.dir").isPresent()) {
-            resourceRepository = new AdminResourceRepository(new FolderResourceRepository(new File(property("site.admin.dir").get()), 0));
+            resourceRepository = new AdminTemplateRepository(new FolderResourceRepository(new File(property("site.admin.dir").get())));
         } else {
-            resourceRepository = new AdminResourceRepository(new ClasspathResourceRepository("sited/", 0));
+            resourceRepository = new AdminTemplateRepository(new ClasspathResourceRepository("sited/"));
         }
 
         template().add(resourceRepository);
-        template().assets().add(resourceRepository);
+
 
         AssetsHandler assetsHandler = new AssetsHandler(template().assets()).enableCache().cacheExpireAfter(120);
         route().get("/admin/assets/lib/*", assetsHandler)

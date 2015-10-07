@@ -1,7 +1,7 @@
 package org.app4j.site.runtime.template.processor;
 
 import com.google.common.base.Strings;
-import org.app4j.site.runtime.template.TemplateDialect;
+import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -23,6 +23,8 @@ public class TemplateHrefAttrProcessor extends AbstractAttributeTagProcessor imp
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         this.baseCdnUrls = baseCdnUrls;
     }
+
+
 
     @Override
     protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, String attributeTemplateName, int attributeLine, int attributeCol, IElementTagStructureHandler structureHandler) {

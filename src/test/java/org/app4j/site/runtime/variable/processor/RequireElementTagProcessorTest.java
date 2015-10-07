@@ -1,6 +1,6 @@
 package org.app4j.site.runtime.variable.processor;
 
-import org.app4j.site.runtime.template.TemplateDialect;
+import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.variable.VariableConfig;
 import org.app4j.site.runtime.variable.VariableModule;
 import org.junit.Assert;

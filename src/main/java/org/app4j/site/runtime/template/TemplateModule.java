@@ -9,7 +9,11 @@ import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
+import org.app4j.site.runtime.template.service.Template;
+import org.app4j.site.runtime.template.service.TemplateDialect;
+import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.util.ResourceRepository;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.BadRequestException;
@@ -40,7 +44,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     private final TemplateDialect templateDialect = new TemplateDialect();
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
-    private final Set<ResourceRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
+    private final Set<TemplateRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
 
     private AssetsConfig assetsConfig;
 
@@ -55,17 +59,24 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     }
 
     public TemplateModule add(ResourceRepository resourceRepository) {
-        templateRepositories.add(resourceRepository);
+        templateRepositories.add(new TemplateRepository(resourceRepository));
         assetsConfig.add(resourceRepository);
         return this;
     }
 
     @Override
-    public Optional<Resource> get(String templatePath) {
-        for (ResourceRepository templateLoader : templateRepositories) {
-            Optional<Resource> resourceOptional = templateLoader.load(templatePath);
-            if (resourceOptional.isPresent()) {
-                return Optional.of(resourceOptional.get());
+    public TemplateConfig add(TemplateRepository resourceRepository) {
+        templateRepositories.add(resourceRepository);
+        assetsConfig.add(resourceRepository.raw());
+        return this;
+    }
+
+    @Override
+    public Optional<Template> get(String templatePath) {
+        for (TemplateRepository repository : templateRepositories) {
+            Optional<Template> template = repository.resolve(templatePath);
+            if (template.isPresent()) {
+                return template;
             }
         }
         return Optional.empty();
@@ -98,8 +109,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
             @Override
             public IResource resolveResource(IEngineConfiguration configuration, IContext context, String resource, String characterEncoding) {
-                Resource template = get(resource).get();
-                return new StringResource(template.path(), new String(template.content(), Charsets.UTF_8));
+                Template template = get(resource).get();
+                return new StringResource(template.path(), template.text());
             }
         });
 
@@ -146,8 +157,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     }
 
     @Override
-    public List<Resource> all() {
-        List<Resource> templates = Lists.newArrayList();
+    public List<Template> all() {
+        List<Template> templates = Lists.newArrayList();
         templateRepositories.stream().forEach(templateRepository -> {
             templates.addAll(Lists.newArrayList(templateRepository)
                     .stream()

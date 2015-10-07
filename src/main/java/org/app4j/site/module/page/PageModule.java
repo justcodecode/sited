@@ -17,8 +17,9 @@ import org.app4j.site.module.track.TrackModule;
 import org.app4j.site.module.user.UserModule;
 import org.app4j.site.runtime.cache.service.DiskCache;
 import org.app4j.site.runtime.index.service.Index;
-import org.app4j.site.runtime.template.FolderResourceRepository;
+import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.util.Files;
+import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.web.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,16 +58,11 @@ public class PageModule extends Module {
         File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
         Files.createDirIfNoneExists(templateDir);
 
-        FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir, 1000);
         template()
-                .add(resourceRepository);
+                .add(new TemplateRepository(new FolderResourceRepository(templateDir)));
 
         template().dialect()
                 .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
-
-        template()
-                .assets()
-                .add(resourceRepository);
 
 
         PageHandler pageHandler = new PageHandler(site(), pageService);
