@@ -20,7 +20,7 @@ import java.util.Optional;
 public class AssetsHandler implements Handler {
     private final AssetsConfig assetsConfig;
     private boolean cacheEnabled = false;
-    private int expireSeconds = 3600 * 24;
+    private int expireSeconds = 3600;
     private boolean hashPathEnabled = false;
 
     public AssetsHandler(AssetsConfig assetsConfig) {
@@ -34,7 +34,6 @@ public class AssetsHandler implements Handler {
 
     public AssetsHandler enableMd5Path() {
         cacheEnabled = true;
-        expireSeconds = Integer.MAX_VALUE;
         hashPathEnabled = false;
         return this;
     }
@@ -62,7 +61,8 @@ public class AssetsHandler implements Handler {
         if (cacheEnabled) {
             Value<String> etag = request.header("If-None-Match");
             if (etag.isPresent() && resource.get().md5().equals(etag.get())) {
-                return Response.empty().setStatusCode(304);
+                return Response.empty()
+                        .setStatusCode(304);
             }
         }
 
