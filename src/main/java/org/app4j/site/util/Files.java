@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 
-public interface Resources {
+public interface Files {
     static void createDirIfNoneExists(File dir) {
         if (!dir.exists()) {
             dir.mkdirs();
