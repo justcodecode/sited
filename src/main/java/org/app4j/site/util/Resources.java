@@ -1,13 +1,11 @@
 package org.app4j.site.util;
 
-import com.google.common.io.Files;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 
-public interface Dirs {
-    static void createIfNoneExists(File dir) {
+public interface Resources {
+    static void createDirIfNoneExists(File dir) {
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -15,13 +13,13 @@ public interface Dirs {
 
     static void createParentDirs(File file) {
         try {
-            Files.createParentDirs(file);
+            com.google.common.io.Files.createParentDirs(file);
         } catch (IOException e) {
             throw new Error(e);
         }
     }
 
-    static void delete(File dir) {
+    static void deleteDir(File dir) {
         Stack<File> stack = new Stack<>();
         stack.push(dir);
         while (!stack.isEmpty()) {

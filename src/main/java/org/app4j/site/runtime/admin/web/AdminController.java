@@ -38,8 +38,8 @@ public class AdminController {
             }
 
             if (site.isAdminEnabled()) {
-                Resource resource = assetsConfig.get("/admin/index.html");
-                return Response.bytes(resource.content())
+                Resource resource = assetsConfig.get("/admin/index.html").get();
+                return Response.pipe(resource.inputStream())
                         .setContentType("text/html")
                         .setStatusCode(200);
             } else {
@@ -54,8 +54,8 @@ public class AdminController {
         if (profileService.isInstalled()) {
             throw new NotFoundException(request.path());
         }
-        Resource resource = assetsConfig.get("/admin/install.html");
-        return Response.bytes(resource.content())
+        Resource resource = assetsConfig.get("/admin/install.html").get();
+        return Response.pipe(resource.inputStream())
                 .setContentType("text/html")
                 .setStatusCode(200);
     }

@@ -5,11 +5,13 @@ import com.google.common.net.MediaType;
 import org.app4j.site.web.impl.BeanBody;
 import org.app4j.site.web.impl.ByteArrayBody;
 import org.app4j.site.web.impl.FileBody;
+import org.app4j.site.web.impl.InputStreamBody;
 import org.app4j.site.web.impl.ResponseImpl;
 import org.app4j.site.web.impl.TemplateBody;
 import org.app4j.site.web.impl.TextBody;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -74,6 +76,11 @@ public interface Response {
         return new ResponseImpl(new TextBody(""))
                 .setHeader("location", url)
                 .setStatusCode(statusCode);
+    }
+
+    static Response pipe(InputStream inputStream) {
+        return new ResponseImpl(new InputStreamBody(inputStream))
+                .setStatusCode(200);
     }
 
     Response setHeader(String name, String value);

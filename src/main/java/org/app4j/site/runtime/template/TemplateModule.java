@@ -10,6 +10,8 @@ import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
+import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.web.Handler;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.BadRequestException;
 import org.app4j.site.web.exception.NotFoundException;
@@ -53,6 +55,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     public TemplateModule add(ResourceRepository resourceRepository) {
         templateRepositories.add(resourceRepository);
+        assetsConfig.add(resourceRepository);
         return this;
     }
 
@@ -111,6 +114,14 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         }
 
         templateEngine.addTemplateResolver(templateResolver);
+
+        Handler assetsHandler = new AssetsHandler(assetsConfig)
+                .enableMd5Path();
+
+        route().get("/assets/*", assetsHandler)
+                .get("/robots.txt", assetsHandler)
+                .get("/favicon.ico", assetsHandler);
+
 
         error().on(BadRequestException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();

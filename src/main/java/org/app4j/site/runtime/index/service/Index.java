@@ -17,7 +17,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.app4j.site.runtime.database.DomainCodec;
 import org.app4j.site.runtime.database.FindView;
 import org.app4j.site.runtime.database.Dumper;
-import org.app4j.site.util.Dirs;
+import org.app4j.site.util.Resources;
 import org.app4j.site.util.JSON;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class Index<T> {
         this.analyzer = analyzer;
         this.codec = codec;
         try {
-            Dirs.createIfNoneExists(dir);
+            Resources.createDirIfNoneExists(dir);
 
             directory = FSDirectory.open(dir.toPath());
             IndexWriterConfig config = new IndexWriterConfig(analyzer);

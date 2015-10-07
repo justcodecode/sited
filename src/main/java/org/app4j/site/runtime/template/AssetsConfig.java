@@ -1,7 +1,5 @@
 package org.app4j.site.runtime.template;
 
-import org.app4j.site.web.exception.NotFoundException;
-
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,13 +15,13 @@ public class AssetsConfig {
         return this;
     }
 
-    public Resource get(String path) {
+    public Optional<Resource> get(String path) {
         for (ResourceRepository resourceRepository : assetsRepositories) {
             Optional<Resource> resourceOptional = resourceRepository.load(path);
             if (resourceOptional.isPresent()) {
-                return resourceOptional.get();
+                return Optional.of(resourceOptional.get());
             }
         }
-        throw new NotFoundException(path);
+        return Optional.empty();
     }
 }

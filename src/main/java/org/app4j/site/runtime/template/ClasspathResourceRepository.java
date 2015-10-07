@@ -1,7 +1,6 @@
 package org.app4j.site.runtime.template;
 
 import com.google.common.base.Preconditions;
-import com.google.common.io.ByteStreams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +32,7 @@ public class ClasspathResourceRepository implements ResourceRepository {
                 return Optional.empty();
             }
 
-            return Optional.of(new Resource(path, ByteStreams.toByteArray(inputStream)));
+            return Optional.of(new Resource(path, () -> ClasspathResourceRepository.class.getClassLoader().getResourceAsStream(prefix + path)));
         } catch (IOException e) {
             throw new Error(e);
         }

@@ -207,7 +207,7 @@ public class Site extends DefaultScope {
             return Response.text(template().engine().process(templatePath, context), "text/html");
         } catch (Throwable e) {
             ErrorHandler errorHandler = error().handler(e.getClass());
-            return errorHandler.handle((Request) model.get("__request__"), e);
+            return errorHandler.handle((Request) model.get("request"), e);
         }
     }
 

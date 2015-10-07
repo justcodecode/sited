@@ -2,7 +2,7 @@ package org.app4j.site.runtime.cache.service;
 
 import com.google.common.io.ByteStreams;
 import org.app4j.site.runtime.cache.Cache;
-import org.app4j.site.util.Dirs;
+import org.app4j.site.util.Resources;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +34,7 @@ public class DiskCache implements Cache<InputStream> {
 
         if (file.exists()) {
             try {
-                BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+                BasicFileAttributes attr = java.nio.file.Files.readAttributes(file.toPath(), BasicFileAttributes.class);
                 if (System.currentTimeMillis() - attr.creationTime().toMillis() < timeUnit.toMillis(expireTime)) {
                     return Optional.of(new FileInputStream(file));
                 }
@@ -49,7 +48,7 @@ public class DiskCache implements Cache<InputStream> {
     @Override
     public Cache<InputStream> put(String key, InputStream value) {
         File file = new File(dir, key);
-        Dirs.createParentDirs(file);
+        Resources.createParentDirs(file);
         try (OutputStream outputStream = new FileOutputStream(file)) {
             ByteStreams.copy(value, outputStream);
             return this;

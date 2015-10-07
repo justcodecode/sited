@@ -27,6 +27,7 @@ public class SiteHandler implements HttpHandler {
         handlers.put(ByteArrayBody.class, new ByteArrayBodyResponseHandler());
         handlers.put(FileBody.class, new FileBodyResponseHandler());
         handlers.put(TemplateBody.class, new TemplateBodyResponseHandler(site));
+        handlers.put(InputStreamBody.class, new InputStreamBodyHandler());
     }
 
     @Override

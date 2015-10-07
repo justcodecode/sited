@@ -1,9 +1,10 @@
 package org.app4j.site.runtime.template;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -29,11 +30,13 @@ public class FolderResourceRepository implements ResourceRepository {
     public Optional<Resource> load(String path) {
         File file = new File(dir, path);
         if (file.exists() && file.isFile()) {
-            try {
-                return Optional.of(new Resource(path, Files.toByteArray(file)));
-            } catch (IOException e) {
-                throw new Error(e);
-            }
+            return Optional.of(new Resource(path, () -> {
+                try {
+                    return new FileInputStream(file);
+                } catch (FileNotFoundException e) {
+                    throw new Error(e);
+                }
+            }));
         }
         return Optional.empty();
     }

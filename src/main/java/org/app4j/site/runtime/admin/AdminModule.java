@@ -57,9 +57,9 @@ public class AdminModule extends InternalModule {
         template().add(resourceRepository);
         template().assets().add(resourceRepository);
 
-        AssetsHandler assetsHandler = new AssetsHandler(template().assets());
-        route().get("/admin/assets/lib/*", assetsHandler);
-        route().get("/admin/login.html", assetsHandler);
+        AssetsHandler assetsHandler = new AssetsHandler(template().assets()).enableCache().cacheExpireAfter(120);
+        route().get("/admin/assets/lib/*", assetsHandler)
+                .get("/admin/login.html", assetsHandler);
 
         AdminController adminController = new AdminController(site(), profileService, template().assets());
         route().get("/admin/install.html", adminController::install)
