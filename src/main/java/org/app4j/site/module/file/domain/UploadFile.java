@@ -9,7 +9,7 @@ import java.util.List;
 public class UploadFile {
     private String id;
     private String path;
-    private String title;
+    private String fileName;
     private String description;
     private List<String> tags;
     private Date createTime;
@@ -32,12 +32,12 @@ public class UploadFile {
         this.path = path;
     }
 
-    public String getTitle() {
-        return title;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getDescription() {

@@ -1,7 +1,9 @@
 package org.app4j.site.module.file.web;
 
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 import org.app4j.site.module.file.service.FileRepository;
+import org.app4j.site.module.file.service.ImageScalar;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -17,6 +19,7 @@ public class FileController {
     private final Pattern pattern = Pattern.compile("^/i/(\\d+)x(\\d+)/f/(.+)$");
 
     private final FileRepository fileRepository;
+    private final ImageScalar imageScalar = new ImageScalar();
 
     public FileController(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
@@ -30,11 +33,11 @@ public class FileController {
     public Response image(Request request) throws IOException {
         Matcher matcher = pattern.matcher(request.path());
         if (matcher.matches()) {
-//            int width = Integer.parseInt(matcher.group(1));
-//            int height = Integer.parseInt(matcher.group(2));
+            int width = Integer.parseInt(matcher.group(1));
+            int height = Integer.parseInt(matcher.group(2));
             String file = matcher.group(3);
             byte[] image = ByteStreams.toByteArray(fileRepository.get(file));
-            return Response.bytes(image);
+            return Response.bytes(imageScalar.scale(image, Files.getFileExtension(request.path()), width, height));
         } else {
             throw new NotFoundException(request.path());
         }

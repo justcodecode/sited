@@ -26,7 +26,7 @@ public class UploadFileCodec implements Codec<UploadFile> {
         uploadFile.setId(document.getObjectId("_id").toHexString());
         uploadFile.setPath(document.getString("path"));
         uploadFile.setDescription(document.getString("description"));
-        uploadFile.setTitle(document.getString("title"));
+        uploadFile.setFileName(document.getString("title"));
         uploadFile.setTags(document.get("tags", List.class));
         uploadFile.setCreateTime(document.getDate("createTime"));
         uploadFile.setLastUpdateTime(document.getDate("lastUpdateTime"));
@@ -43,7 +43,7 @@ public class UploadFileCodec implements Codec<UploadFile> {
         }
         document.put("path", uploadFile.getPath());
         document.put("description", uploadFile.getDescription());
-        document.put("title", uploadFile.getTitle());
+        document.put("title", uploadFile.getFileName());
         document.put("tags", uploadFile.getTags());
         document.put("createTime", uploadFile.getCreateTime());
         document.put("lastUpdateTime", uploadFile.getLastUpdateTime());

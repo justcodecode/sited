@@ -27,13 +27,14 @@ public class AdminUploadController {
 
     public Response upload(Request request) throws IOException {
         File file = request.body(File.class);
+        String fileName = request.query("fileName").orElse(file.getName()).get();
         try (InputStream in = new FileInputStream(file)) {
-            String path = uploadFileService.repository().put(in, file.getName());
+            String path = uploadFileService.repository().put(in, fileName);
 
             UploadFile uploadFile = new UploadFile();
             uploadFile.setPath("/f/" + path);
-            uploadFile.setTitle(file.getName());
-            uploadFile.setTitle(request.query("fileName").orElse(file.getName()).get());
+            uploadFile.setFileName(file.getName());
+            uploadFile.setFileName(fileName);
             uploadFile.setCreateTime(new Date());
             uploadFile.setLastUpdateTime(new Date());
             uploadFile.setStatus(1);
