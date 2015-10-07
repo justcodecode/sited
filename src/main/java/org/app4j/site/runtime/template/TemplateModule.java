@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import org.app4j.site.Module;
-import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +41,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
     private final Set<ResourceRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
-    private final AssetsConfig assetsConfig = new AssetsConfig();
+
+    private AssetsConfig assetsConfig;
 
     public TemplateModule() {
         templateEngine.setCacheManager(cacheManager);
@@ -85,7 +86,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     @Override
     protected void configure() throws Exception {
-        Site site = site();
+        assetsConfig = new AssetsConfig(cache().createDiskCache("assets", Integer.MAX_VALUE, TimeUnit.DAYS));
 
         TemplateResolver templateResolver = new TemplateResolver();
         templateResolver.setCharacterEncoding(Charsets.UTF_8.name());
@@ -108,7 +109,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
                 .add(new LangAttrProcessor(dialect()));
 
 
-        if (site.isDebugEnabled()) {
+        if (site().isDebugEnabled()) {
             cacheManager.setTemplateCacheMaxSize(0);
             templateResolver.setCacheable(false);
         }
@@ -116,6 +117,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         templateEngine.addTemplateResolver(templateResolver);
 
         Handler assetsHandler = new AssetsHandler(assetsConfig)
+                .enableMinifyCSS()
+                .enableMinifyJS()
                 .enableMd5Path();
 
         route().get("/assets/*", assetsHandler)

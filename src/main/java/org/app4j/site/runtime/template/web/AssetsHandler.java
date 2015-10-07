@@ -12,6 +12,7 @@ import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 /**
@@ -22,6 +23,8 @@ public class AssetsHandler implements Handler {
     private boolean cacheEnabled = false;
     private int expireSeconds = 3600;
     private boolean hashPathEnabled = false;
+    private boolean minifyJSEnabled = false;
+    private boolean minifyCSSEnabled = false;
 
     public AssetsHandler(AssetsConfig assetsConfig) {
         this.assetsConfig = assetsConfig;
@@ -40,6 +43,16 @@ public class AssetsHandler implements Handler {
 
     public AssetsHandler cacheExpireAfter(int seconds) {
         expireSeconds = seconds;
+        return this;
+    }
+
+    public AssetsHandler enableMinifyCSS() {
+        minifyCSSEnabled = true;
+        return this;
+    }
+
+    public AssetsHandler enableMinifyJS() {
+        minifyJSEnabled = true;
         return this;
     }
 
@@ -66,7 +79,7 @@ public class AssetsHandler implements Handler {
             }
         }
 
-        Response response = Response.pipe(resource.get().inputStream())
+        Response response = Response.pipe(body(resource.get()))
                 .setContentType(contentType(request.path()))
                 .setStatusCode(200);
 
@@ -76,6 +89,24 @@ public class AssetsHandler implements Handler {
         }
 
         return response;
+    }
+
+    InputStream body(Resource resource) {
+        if (isJSResource(resource) && minifyJSEnabled) {
+            return assetsConfig.minifyJs(resource);
+        } else if (isCSSResource(resource) && minifyCSSEnabled) {
+            return assetsConfig.minifyCss(resource);
+        } else {
+            return resource.inputStream();
+        }
+    }
+
+    boolean isJSResource(Resource resource) {
+        return "js".equalsIgnoreCase(Files.getFileExtension(resource.path()));
+    }
+
+    boolean isCSSResource(Resource resource) {
+        return "css".equalsIgnoreCase(Files.getFileExtension(resource.path()));
     }
 
     String contentType(String path) {

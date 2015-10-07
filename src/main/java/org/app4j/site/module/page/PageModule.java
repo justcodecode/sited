@@ -18,8 +18,7 @@ import org.app4j.site.module.user.UserModule;
 import org.app4j.site.runtime.cache.service.DiskCache;
 import org.app4j.site.runtime.index.service.Index;
 import org.app4j.site.runtime.template.FolderResourceRepository;
-import org.app4j.site.runtime.template.web.AssetsHandler;
-import org.app4j.site.util.Resources;
+import org.app4j.site.util.Files;
 import org.app4j.site.web.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class PageModule extends Module {
         Index<Page> index = index().createIndex("page", Page.class, pageService.dumper());
 
         File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
-        Resources.createDirIfNoneExists(templateDir);
+        Files.createDirIfNoneExists(templateDir);
 
         FolderResourceRepository resourceRepository = new FolderResourceRepository(templateDir, 1000);
         template()
@@ -70,7 +69,6 @@ public class PageModule extends Module {
                 .add(resourceRepository);
 
 
-
         PageHandler pageHandler = new PageHandler(site(), pageService);
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
@@ -78,7 +76,6 @@ public class PageModule extends Module {
         SitemapController sitemapController = new SitemapController(sitemapDiskCache);
         route().get("/sitemap.xml", sitemapController::sitemap);
         route().get("/sitemap/*", sitemapController::sitemap);
-
 
 
         AdminPageRESTController adminPageRESTController = new AdminPageRESTController(index, pageService, event());
