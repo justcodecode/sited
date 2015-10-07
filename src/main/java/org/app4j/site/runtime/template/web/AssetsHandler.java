@@ -92,9 +92,9 @@ public class AssetsHandler implements Handler {
     }
 
     InputStream body(Resource resource) {
-        if (isJSResource(resource) && minifyJSEnabled) {
+        if (isJSResource(resource) && minifyJSEnabled && !resource.path().endsWith(".min.js")) {
             return assetsConfig.minifyJs(resource);
-        } else if (isCSSResource(resource) && minifyCSSEnabled) {
+        } else if (isCSSResource(resource) && minifyCSSEnabled && !resource.path().endsWith(".min.css")) {
             return assetsConfig.minifyCss(resource);
         } else {
             return resource.openStream();
