@@ -17,15 +17,13 @@ import java.io.File;
 public class FileModule extends Module {
     @Override
     public void configure() {
-        File fileDir = new File(site().dir(), "file");
-
-        if (!fileDir.exists()) {
-            fileDir.mkdirs();
-        }
+        File dir = property("site.file.dir").isPresent()
+                ? new File(property("site.file.dir").get())
+                : site().dir("file");
 
         database().codecs().add(new UploadFileCodec());
 
-        UploadFileService uploadFileService = new UploadFileService(database().get(), new FolderFileRepository(fileDir));
+        UploadFileService uploadFileService = new UploadFileService(database().get(), new FolderFileRepository(dir));
         bind(UploadFileService.class).to(uploadFileService).export();
 
         FileController fileController = new FileController(uploadFileService.repository());
