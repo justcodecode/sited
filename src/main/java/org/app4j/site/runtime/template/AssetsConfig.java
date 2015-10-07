@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import org.app4j.site.runtime.cache.service.DiskCache;
+import org.app4j.site.runtime.template.web.Md5Path;
 import org.app4j.site.util.Resource;
 import org.app4j.site.util.ResourceRepository;
 import org.mozilla.javascript.ErrorReporter;
@@ -39,7 +40,8 @@ public class AssetsConfig {
 
     public InputStream minifyJs(Resource resource) {
         try {
-            Optional<InputStream> cache = this.cache.get(resource.path());
+            String hashedPath = new Md5Path(resource.path(), resource.md5()).hashedPath();
+            Optional<InputStream> cache = this.cache.get(hashedPath);
             if (cache.isPresent()) {
                 return cache.get();
             }
@@ -52,7 +54,7 @@ public class AssetsConfig {
             out.flush();
 
             byte[] content = minified.toByteArray();
-            this.cache.put(resource.path(), new ByteArrayInputStream(content));
+            this.cache.put(hashedPath, new ByteArrayInputStream(content));
             return new ByteArrayInputStream(content);
         } catch (IOException e) {
             throw new Error(e);
@@ -61,7 +63,8 @@ public class AssetsConfig {
 
     public InputStream minifyCss(Resource resource) {
         try {
-            Optional<InputStream> cache = this.cache.get(resource.path());
+            String hashedPath = new Md5Path(resource.path(), resource.md5()).hashedPath();
+            Optional<InputStream> cache = this.cache.get(hashedPath);
             if (cache.isPresent()) {
                 return cache.get();
             }
@@ -73,7 +76,7 @@ public class AssetsConfig {
             out.flush();
 
             byte[] content = minified.toByteArray();
-            this.cache.put(resource.path(), new ByteArrayInputStream(content));
+            this.cache.put(hashedPath, new ByteArrayInputStream(content));
             return new ByteArrayInputStream(content);
         } catch (IOException e) {
             throw new Error(e);
