@@ -15,7 +15,6 @@ import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.util.ResourceRepository;
-import org.app4j.site.web.Handler;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.BadRequestException;
 import org.app4j.site.web.exception.NotFoundException;
@@ -132,10 +131,12 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
         templateEngine.addTemplateResolver(templateResolver);
 
-        Handler assetsHandler = new AssetsHandler(assetsConfig)
-                .enableMinifyCSS()
-                .enableMinifyJS()
+        AssetsHandler assetsHandler = new AssetsHandler(assetsConfig)
                 .enableMd5Path();
+
+        if (!site().isDebugEnabled()) {
+            assetsHandler.enableMinifyJS().enableMinifyCSS();
+        }
 
         route().get("/assets/*", assetsHandler)
                 .get("/robots.txt", assetsHandler)
