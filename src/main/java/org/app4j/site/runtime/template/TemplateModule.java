@@ -13,6 +13,7 @@ import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
+import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.util.ResourceRepository;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Response;
@@ -27,6 +28,7 @@ import org.thymeleaf.resource.StringResource;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -42,15 +44,32 @@ import java.util.stream.Collectors;
  */
 public class TemplateModule extends InternalModule implements TemplateConfig {
     private final TemplateDialect templateDialect = new TemplateDialect();
+    private final TemplateResolver templateResolver = new TemplateResolver();
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
     private final Set<TemplateRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
+    private final File dir;
 
     private AssetsConfig assetsConfig;
 
-    public TemplateModule() {
+    public TemplateModule(File dir) {
+        this.dir = dir;
         templateEngine.setCacheManager(cacheManager);
         templateEngine.setDialect(templateDialect);
+
+        templateResolver.setCharacterEncoding(Charsets.UTF_8.name());
+        templateResolver.setResourceResolver(new IResourceResolver() {
+            @Override
+            public String getName() {
+                return "template";
+            }
+
+            @Override
+            public IResource resolveResource(IEngineConfiguration configuration, IContext context, String resource, String characterEncoding) {
+                Template template = get(resource).get();
+                return new StringResource(template.path(), template.text());
+            }
+        });
     }
 
     @Override
@@ -98,21 +117,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     @Override
     protected void configure() throws Exception {
         assetsConfig = new AssetsConfig(cache().createDiskCache("assets", Integer.MAX_VALUE, TimeUnit.DAYS));
-
-        TemplateResolver templateResolver = new TemplateResolver();
-        templateResolver.setCharacterEncoding(Charsets.UTF_8.name());
-        templateResolver.setResourceResolver(new IResourceResolver() {
-            @Override
-            public String getName() {
-                return "template";
-            }
-
-            @Override
-            public IResource resolveResource(IEngineConfiguration configuration, IContext context, String resource, String characterEncoding) {
-                Template template = get(resource).get();
-                return new StringResource(template.path(), template.text());
-            }
-        });
+        add(new TemplateRepository(new FolderResourceRepository(dir)));
 
         templateDialect
                 .add(new TemplateHrefAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
@@ -135,7 +140,6 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         route().get("/assets/*", assetsHandler)
                 .get("/robots.txt", assetsHandler)
                 .get("/favicon.ico", assetsHandler);
-
 
         error().on(BadRequestException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
