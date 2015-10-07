@@ -77,8 +77,8 @@ public class Site extends DefaultScope {
 
     public Site(MongoClientURI mongoClientURI) {
         super(null);
-
         SiteLogger siteLogger = new SiteLogger();
+
         host = property("site.host").orElse("0.0.0.0").get();
         port = property("site.port", Integer.class).orElse(8080).get();
         this.dir = new File(property("site.dir").orElse(defaultDir().toString()).get());
@@ -86,7 +86,7 @@ public class Site extends DefaultScope {
         locale = Locale.forLanguageTag(property("site.locale").orElse(Locale.getDefault().toLanguageTag()).get());
         debugEnabled = property("site.debug", Boolean.class).orElse(false).get();
         adminEnabled = property("site.admin", Boolean.class).orElse(true).get();
-        baseURL = property("site.baseURL").orElse("/").get();
+        baseURL = property("site.baseURL").orElse(defaultBaseURL()).get();
         if (property("site.baseCdnURLs").isPresent()) {
             baseCdnURLs = Arrays.stream(property("site.baseCdnURLs").get().split(","))
                     .filter(s -> !Strings.isNullOrEmpty(s))
@@ -124,6 +124,17 @@ public class Site extends DefaultScope {
     private Path defaultDir() {
         return new File(property("user.home").get(), host()).toPath();
     }
+
+    private String defaultBaseURL() {
+        StringBuilder b = new StringBuilder();
+        b.append("http://");
+        b.append(host());
+        if (port() != 80 && port() != 443) {
+            b.append(':').append(port());
+        }
+        return b.toString();
+    }
+
 
     public final String host() {
         return host;
