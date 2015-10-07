@@ -16,6 +16,7 @@ public class TrackingCodec implements Codec<Tracking> {
     private final DocumentCodec documentCodec = new DocumentCodec();
 
     @Override
+    @SuppressWarnings("unchecked")
     public Tracking decode(BsonReader reader, DecoderContext decoderContext) {
         Document document = documentCodec.decode(reader, decoderContext);
         Tracking tracking = new Tracking();

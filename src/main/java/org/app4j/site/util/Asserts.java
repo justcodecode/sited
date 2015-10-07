@@ -15,9 +15,8 @@ public class Asserts {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})");
-
+    private final List<AssertionErrorMessage> assertionErrorMessages = Lists.newArrayList();
     private boolean failFast = false;
-    private List<AssertionErrorMessage> assertionErrorMessages = Lists.newArrayList();
 
     public static Asserts.Matcher<String> username() {
         return value -> !Strings.isNullOrEmpty(value) && USERNAME_PATTERN.matcher(value).matches();

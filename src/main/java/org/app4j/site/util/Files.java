@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 public interface Files {
@@ -15,14 +16,12 @@ public interface Files {
         }
     }
 
-    static Iterator<File> allFiles(File dir) {
-        return new Iterator<File>() {
-            Deque<File> stack = Lists.newLinkedList();
-            File current;
+    static Iterator<File> iterate(File dir) {
+        Deque<File> stack = Lists.newLinkedList();
+        stack.add(dir);
 
-            {
-                stack.push(dir);
-            }
+        return new Iterator<File>() {
+            File current;
 
             @Override
             public boolean hasNext() {
@@ -43,6 +42,9 @@ public interface Files {
 
             @Override
             public File next() {
+                if (current == null) {
+                    throw new NoSuchElementException();
+                }
                 File next = current;
                 current = null;
                 return next;

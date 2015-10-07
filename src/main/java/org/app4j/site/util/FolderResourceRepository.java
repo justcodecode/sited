@@ -1,17 +1,9 @@
 package org.app4j.site.util;
 
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,26 +18,25 @@ public class FolderResourceRepository implements ResourceRepository {
 
     @Override
     public Iterator<Resource> iterator() {
-        List<Resource> all = Lists.newArrayList();
-        try {
-            java.nio.file.Files.walkFileTree(dir.toPath(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Resource resource = new Resource("/" + dir.toPath().relativize(file).toString(), () -> {
-                        try {
-                            return new FileInputStream(file.toFile());
-                        } catch (FileNotFoundException e) {
-                            throw new Error(e);
-                        }
-                    });
-                    all.add(resource);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException e) {
-            throw new Error(e);
-        }
-        return all.iterator();
+        Iterator<File> iterator = Files.iterate(dir);
+        return new Iterator<Resource>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public Resource next() {
+                File file = iterator.next();
+                return new Resource("/" + dir.toPath().relativize(file.toPath()).toString(), () -> {
+                    try {
+                        return new FileInputStream(file);
+                    } catch (FileNotFoundException e) {
+                        throw new Error(e);
+                    }
+                });
+            }
+        };
     }
 
     @Override

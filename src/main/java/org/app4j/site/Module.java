@@ -85,7 +85,7 @@ public abstract class Module extends DefaultScope {
         return site().admin();
     }
 
-    protected IndexConfig index(){
+    protected IndexConfig index() {
         return site().index();
     }
 

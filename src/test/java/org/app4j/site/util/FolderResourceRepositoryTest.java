@@ -15,23 +15,20 @@ import java.util.Optional;
  */
 public class FolderResourceRepositoryTest {
     @Rule
-    public TemporaryFolder dir = new TemporaryFolder();
-
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
     FolderResourceRepository folderResourceRepository;
-
 
     @Before
     public void setup() throws IOException {
-        File root = this.dir.getRoot();
-        folderResourceRepository = new FolderResourceRepository(root);
-
-        dir.newFile("index.html").createNewFile();
+        File dir = temporaryFolder.newFolder("some");
+        folderResourceRepository = new FolderResourceRepository(dir);
+        new File(dir, "index.html").createNewFile();
     }
 
     @Test
     public void load() {
-        Optional<Resource> resource = folderResourceRepository.resolve("index.html");
-        Assert.assertEquals("index.html", resource.get().path());
-        Assert.assertFalse(folderResourceRepository.resolve("none.html").isPresent());
+        Optional<Resource> resource = folderResourceRepository.resolve("/index.html");
+        Assert.assertEquals("/index.html", resource.get().path());
+        Assert.assertFalse(folderResourceRepository.resolve("/none.html").isPresent());
     }
 }

@@ -53,7 +53,7 @@ public class Resource implements JsonSerializable {
     @Override
     public void serialize(JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("path", path.toString());
+        jsonGenerator.writeStringField("path", path);
         jsonGenerator.writeEndObject();
     }
 

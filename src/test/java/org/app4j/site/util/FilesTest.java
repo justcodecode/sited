@@ -33,7 +33,7 @@ public class FilesTest {
 
     @Test
     public void allFiles() {
-        ArrayList<File> files = Lists.newArrayList(Files.allFiles(temporaryFolder.getRoot()));
+        ArrayList<File> files = Lists.newArrayList(Files.iterate(temporaryFolder.getRoot()));
         Assert.assertEquals(3, files.size());
     }
 }
