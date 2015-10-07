@@ -50,7 +50,7 @@ public class AdminModule extends InternalModule {
         if (property("site.admin.dir").isPresent()) {
             resourceRepository = new AdminTemplateRepository(new FolderResourceRepository(new File(property("site.admin.dir").get())));
         } else {
-            resourceRepository = new AdminTemplateRepository(new ClasspathResourceRepository("sited/"));
+            resourceRepository = new AdminTemplateRepository(new ClasspathResourceRepository("/sited"));
         }
 
         template().add(resourceRepository);
