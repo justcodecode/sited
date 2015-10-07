@@ -20,7 +20,8 @@ dependencies {
             'org.apache.lucene:lucene-analyzers-common:5.3.1',
             'org.apache.lucene:lucene-queryparser:5.3.1',
             'com.fasterxml.jackson.core:jackson-databind:2.6.2',
-            'com.yahoo.platform.yui:yuicompressor:2.4.8'
+            'com.yahoo.platform.yui:yuicompressor:2.4.8',
+            'org.jsoup:jsoup:1.8.3'
     )
     testCompile(
             'junit:junit:4.12',

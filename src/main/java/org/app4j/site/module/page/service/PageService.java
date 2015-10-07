@@ -1,16 +1,22 @@
 package org.app4j.site.module.page.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.page.domain.Page;
-import org.app4j.site.runtime.database.FindView;
 import org.app4j.site.runtime.database.Dumper;
+import org.app4j.site.runtime.database.FindView;
 import org.app4j.site.runtime.database.MongoCollectionDumper;
 import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import java.util.Date;
 import java.util.List;
@@ -84,23 +90,23 @@ public class PageService {
         page.setCategories(parseCategories(path));
         page.setType(path.endsWith("/") ? "directory" : "page");
 
-//        String content = page.getContent();
+        String content = page.getContent();
 
-//        if (!Strings.isNullOrEmpty(content)) {
-//            org.jsoup.nodes.Document doc = Jsoup.parseBodyFragment(content);
-//            Cleaner cleaner = new Cleaner(Whitelist.basic());
-//            cleaner.clean(doc);
-//
-//            Element body = doc.body();
-//            Elements imageElements = body.select("img");
-//            if (!imageElements.isEmpty()) {
-//                page.setImageUrl(imageElements.attr("src"));
-//            }
-//
-//            page.setContent(body.html());
-//        } else {
-//            page.setContent("");
-//        }
+        if (!Strings.isNullOrEmpty(content)) {
+            org.jsoup.nodes.Document doc = Jsoup.parseBodyFragment(content);
+            Cleaner cleaner = new Cleaner(Whitelist.basic());
+            cleaner.clean(doc);
+
+            Element body = doc.body();
+            Elements imageElements = body.select("img");
+            if (!imageElements.isEmpty()) {
+                page.setImageURL(imageElements.attr("src"));
+            }
+
+            page.setContent(body.html());
+        } else {
+            page.setContent("");
+        }
 
         page.setStatus(1);
         page.setLastUpdateTime(new Date());

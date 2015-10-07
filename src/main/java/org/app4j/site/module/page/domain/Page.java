@@ -172,11 +172,11 @@ public class Page extends Document {
         put("subTitle", subTitle);
     }
 
-    public String getImageUrl() {
-        return getString("imageUrl");
+    public String getImageURL() {
+        return getString("imageURL");
     }
 
-    public void setImageUrl(String imageUrl) {
-        put("imageUrl", imageUrl);
+    public void setImageURL(String imageURL) {
+        put("imageURL", imageURL);
     }
 }

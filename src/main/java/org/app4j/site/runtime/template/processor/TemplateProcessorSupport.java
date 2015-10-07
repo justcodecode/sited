@@ -72,6 +72,10 @@ public interface TemplateProcessorSupport {
         return baseCdnUrls.get(Math.abs(path.hashCode()) % baseCdnUrls.size()) + path;
     }
 
+    default boolean isRelativePath(String path) {
+        return !Strings.isNullOrEmpty(path) && !path.startsWith("http://") && !path.startsWith("https://");
+    }
+
     default Request request(ITemplateProcessingContext iTemplateProcessingContext) {
         return (Request) iTemplateProcessingContext.getVariables().getVariable("request");
     }

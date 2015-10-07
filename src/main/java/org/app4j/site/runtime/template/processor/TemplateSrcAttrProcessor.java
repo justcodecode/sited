@@ -26,14 +26,20 @@ public class TemplateSrcAttrProcessor extends AbstractAttributeTagProcessor impl
 
     @Override
     protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, String attributeTemplateName, int attributeLine, int attributeCol, IElementTagStructureHandler structureHandler) {
-        String path = attributeValue == null ? tag.getAttributes().getValue(ATTRIBUTE_NAME) : evalAsString(attributeValue, processingContext);
-
-        if (Strings.isNullOrEmpty(path)) {
-            return;
-        }
+        String path = Strings.isNullOrEmpty(attributeValue)
+                ? src(processingContext, tag)
+                : evalAsString(attributeValue, processingContext);
         path = path.startsWith("/") ? path : "/" + path;
 
-        if (isImageElement(tag) || isScriptElement(tag)) {
+        if (isImageElement(tag)) {
+            path = "/i/" + tag.getAttributes().getValue("width") + 'x' + tag.getAttributes().getValue("height") + path;
+            if (isCdnEnabled(tag)) {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
+                tag.getAttributes().removeAttribute("cdn");
+            } else {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
+            }
+        } else if (isScriptElement(tag)) {
             if (isCdnEnabled(tag)) {
                 tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
                 tag.getAttributes().removeAttribute("cdn");
@@ -43,5 +49,13 @@ public class TemplateSrcAttrProcessor extends AbstractAttributeTagProcessor impl
         } else {
             throw new Error(String.format("attribute href is not allowed on element %s", tag.getElementName()));
         }
+    }
+
+    String src(ITemplateProcessingContext processingContext, IProcessableElementTag tag) {
+        String src = tag.getAttributes().getValue(ATTRIBUTE_NAME);
+        if (isRelativePath(src)) {
+            return template(processingContext).resolve(src).toString();
+        }
+        return src;
     }
 }
