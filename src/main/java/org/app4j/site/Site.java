@@ -217,7 +217,7 @@ public class Site extends DefaultScope {
                 throw new NotFoundException(templatePath);
             }
             Context context = new Context();
-            context.setVariable("template", template);
+            context.setVariable("template", template.get());
             context.setVariables(model);
             return Response.text(template().engine().process(templatePath, context), "text/html");
         } catch (Throwable e) {
