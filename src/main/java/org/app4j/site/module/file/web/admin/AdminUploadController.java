@@ -1,7 +1,5 @@
 package org.app4j.site.module.file.web.admin;
 
-import com.google.common.collect.Lists;
-import io.undertow.server.handlers.form.FormData;
 import org.app4j.site.module.file.domain.UploadFile;
 import org.app4j.site.module.file.service.UploadFileService;
 import org.app4j.site.web.Request;
@@ -12,8 +10,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.Deque;
-import java.util.List;
 
 /**
  * @author chi
@@ -42,28 +38,5 @@ public class AdminUploadController {
 
             return Response.bean(uploadFile);
         }
-    }
-
-    String formData(String field, FormData formData) {
-        Deque<FormData.FormValue> formValues = formData.get(field);
-        if (formValues == null) {
-            return null;
-        }
-
-        return formValues.peekFirst().getValue();
-    }
-
-    List<String> listFormData(String field, FormData formData) {
-        List<String> values = Lists.newArrayList();
-
-        Deque<FormData.FormValue> formValues = formData.get(field);
-        if (formValues == null) {
-            return null;
-        }
-
-        for (FormData.FormValue formValue : formValues) {
-            values.add(formValue.getValue());
-        }
-        return values;
     }
 }
