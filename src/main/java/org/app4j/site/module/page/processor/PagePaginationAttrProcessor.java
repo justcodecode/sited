@@ -1,8 +1,8 @@
 package org.app4j.site.module.page.processor;
 
 import org.app4j.site.runtime.database.Pageable;
-import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
+import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractElementTagProcessor;
@@ -27,7 +27,9 @@ public class PagePaginationAttrProcessor extends AbstractElementTagProcessor imp
         int display = evalAsInteger(tag.getAttributes().getValue("display"), processingContext, 20);
         String prefix = evalAsString(tag.getAttributes().getValue("prefix"), processingContext);
 
-        int current = (int) findView.offset() / pageSize + 1;
+        int current = findView.offset() % pageSize == 0
+                ? (int) findView.offset() / pageSize
+                : (int) findView.offset() / pageSize + 1;
         int total = (int) (findView.total() % pageSize == 0 ? findView.total() / pageSize : findView.total() / pageSize + 1);
 
         int start = current - display / 2 > 0 ? current - display / 2 : 1;
@@ -41,11 +43,11 @@ public class PagePaginationAttrProcessor extends AbstractElementTagProcessor imp
             } else {
                 b.append("<li>");
             }
-            b.append("<a href=\"").append(baseUrl).append(prefix).append(i)
-                    .append("/\">")
-                    .append(i)
-                    .append("</a></li>");
-
+            b.append("<a href=\"").append(baseUrl).append(prefix);
+            if (i != 1) {
+                b.append(i).append('/');
+            }
+            b.append("\">").append(i).append("</a></li>");
         }
         b.append("</ul>");
 
