@@ -50,8 +50,8 @@ public class Page extends Document {
         put("description", description);
     }
 
-    public String getType() {
-        return getString("type");
+    public Type getType() {
+        return Type.valueOf(getString("type"));
     }
 
     public void setType(String type) {
@@ -172,11 +172,19 @@ public class Page extends Document {
         put("subTitle", subTitle);
     }
 
-    public String getImageURL() {
-        return getString("imageURL");
+    public String getImageUrl() {
+        return getString("imageUrl");
     }
 
-    public void setImageURL(String imageURL) {
-        put("imageURL", imageURL);
+    public void setImageUrl(String imageUrl) {
+        put("imageUrl", imageUrl);
+    }
+
+    public boolean isDirectory() {
+        return Type.DIRECTORY.equals(getType());
+    }
+
+    public enum Type {
+        PAGE, DIRECTORY
     }
 }

@@ -1,5 +1,6 @@
 package org.app4j.site.runtime.template.processor;
 
+import com.google.common.base.Strings;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.engine.AttributeName;
@@ -25,28 +26,36 @@ public class TemplateSrcAttrProcessor extends AbstractAttributeTagProcessor impl
 
     @Override
     protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, String attributeTemplateName, int attributeLine, int attributeCol, IElementTagStructureHandler structureHandler) {
-        String path = src(processingContext, tag);
-        if (isRelativePath(path)) {
-            if (isImageElement(tag)) {
-                path = "/i/" + tag.getAttributes().getValue("width") + 'x' + tag.getAttributes().getValue("height") + path;
-                if (isCdnEnabled(tag)) {
-                    tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
-                    tag.getAttributes().removeAttribute("cdn");
-                } else {
-                    tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
-                }
-            } else if (isScriptElement(tag)) {
-                if (isCdnEnabled(tag)) {
-                    tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
-                    tag.getAttributes().removeAttribute("cdn");
-                } else {
-                    tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
-                }
-            } else {
-                throw new Error(String.format("attribute href is not allowed on element %s", tag.getElementName()));
-            }
+        tag.getAttributes().removeAttribute(attributeName);
+
+        String path = evalAsString(attributeValue, processingContext);
+
+        if (Strings.isNullOrEmpty(path)) {
+            path = src(processingContext, tag);
         }
-        tag.getAttributes().removeAttribute(ATTRIBUTE_NAME);
+
+        if (!isRelativePath(path)) {
+            return;
+        }
+
+        if (isImageElement(tag)) {
+            path = "/i/" + tag.getAttributes().getValue("width") + 'x' + tag.getAttributes().getValue("height") + path;
+            if (isCdnEnabled(tag)) {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
+                tag.getAttributes().removeAttribute("cdn");
+            } else {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
+            }
+        } else if (isScriptElement(tag)) {
+            if (isCdnEnabled(tag)) {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
+                tag.getAttributes().removeAttribute("cdn");
+            } else {
+                tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
+            }
+        } else {
+            throw new Error(String.format("attribute href is not allowed on element %s", tag.getElementName()));
+        }
     }
 
     String src(ITemplateProcessingContext processingContext, IProcessableElementTag tag) {

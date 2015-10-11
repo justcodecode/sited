@@ -29,7 +29,7 @@ public class Template implements JsonSerializable {
     }
 
     public Path resolve(String path) {
-        return Paths.get(path).getParent().resolve(path).normalize();
+        return Paths.get(resource.path()).getParent().resolve(path).normalize();
     }
 
     @Override

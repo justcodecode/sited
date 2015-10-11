@@ -1,5 +1,6 @@
 package org.app4j.site.runtime.template.processor;
 
+import com.google.common.base.Strings;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.engine.AttributeName;
@@ -26,7 +27,12 @@ public class TemplateHrefAttrProcessor extends AbstractAttributeTagProcessor imp
 
     @Override
     protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, String attributeTemplateName, int attributeLine, int attributeCol, IElementTagStructureHandler structureHandler) {
-        String path = href(processingContext, tag);
+        String path = evalAsString(attributeValue, processingContext);
+
+        if (Strings.isNullOrEmpty(path)) {
+            path = href(processingContext, tag);
+        }
+
         if (isRelativePath(path)) {
             if (isCdnEnabled(tag)) {
                 tag.getAttributes().setAttribute(ATTRIBUTE_NAME, cdnUrl(baseCdnUrls, path));
@@ -35,7 +41,7 @@ public class TemplateHrefAttrProcessor extends AbstractAttributeTagProcessor imp
                 tag.getAttributes().setAttribute(ATTRIBUTE_NAME, baseUrl + path);
             }
         }
-        tag.getAttributes().removeAttribute(ATTRIBUTE_NAME);
+        tag.getAttributes().removeAttribute(attributeName);
     }
 
     String href(ITemplateProcessingContext processingContext, IProcessableElementTag tag) {

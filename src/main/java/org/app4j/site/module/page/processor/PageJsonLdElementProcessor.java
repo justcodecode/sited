@@ -1,7 +1,7 @@
 package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.module.page.variable.PageObject;
+import org.app4j.site.module.page.template.PageObject;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
 import org.app4j.site.util.JSON;
