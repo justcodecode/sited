@@ -5,6 +5,7 @@ import org.app4j.site.Module;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
+import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.module.page.service.codec.PageCodec;
@@ -46,7 +47,7 @@ public class PageModule extends Module {
         database().codecs().add(new PageCodec());
 
         PageService pageService = new PageService(database().get());
-        bind(PageService.class).to(pageService).export();
+        bind(PageService.class).to(pageService);
 
         DiskCache sitemapDiskCache = cache().createDiskCache("sitemap", Integer.MAX_VALUE, TimeUnit.DAYS);
         SitemapService sitemapService = new SitemapService(site().baseURL(), pageService,
@@ -54,6 +55,8 @@ public class PageModule extends Module {
         bind(SitemapService.class).to(sitemapService);
 
         Index<Page> index = index().createIndex("page", Page.class, pageService.dumper());
+        PageIndexService pageIndexService = new PageIndexService(index);
+        bind(PageIndexService.class).to(pageIndexService);
 
         File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
         Files.createDirIfNoneExists(templateDir);
@@ -65,7 +68,7 @@ public class PageModule extends Module {
                 .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
 
 
-        PageHandler pageHandler = new PageHandler(site(), pageService);
+        PageHandler pageHandler = new PageHandler(site(), pageService, pageIndexService);
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
 
@@ -74,8 +77,8 @@ public class PageModule extends Module {
         route().get("/sitemap/*", sitemapController::sitemap);
 
 
-        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(index, pageService, event());
-        AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService);
+        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, event());
+        AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService, pageIndexService);
         admin().route()
                 .get("/admin/api/site", request -> {
                     Map<String, Object> site = Maps.newHashMap();

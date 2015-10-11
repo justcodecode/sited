@@ -9,7 +9,7 @@ import java.util.Map;
  * @author chi
  */
 public interface PageObject extends Map<String, Object> {
-    FindView<PageObject> relatedPages(int offset, int fetchSize);
+    FindView<PageObject> relatedPages(int fetchSize);
 
     DirectoryObject directory();
 

@@ -3,6 +3,7 @@ package org.app4j.site.runtime.index.service;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -113,6 +114,7 @@ public class Index<T> {
                 indexWriter.addDocument(parse(document));
             }
             indexSearcher = null;
+            indexWriter.commit();
         } catch (IOException e) {
             throw new Error(e);
         }
@@ -134,7 +136,7 @@ public class Index<T> {
     org.apache.lucene.document.Document parse(Document document) {
         org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document();
         doc.add(new StringField("_id", document.getObjectId("_id").toHexString(), Field.Store.YES));
-        doc.add(new StringField("body", JSON.stringify(document), Field.Store.YES));
+        doc.add(new TextField("body", JSON.stringify(document), Field.Store.YES));
         return doc;
     }
 
@@ -148,9 +150,9 @@ public class Index<T> {
 
     public FindView<T> search(Query query, int offset, int fetchSize) {
         try {
-            TopDocs topDocs = indexSearcher.search(query, (offset + 1) * fetchSize);
+            TopDocs topDocs = indexSearcher().search(query, (offset + 1) * fetchSize);
             FindView<T> results = new FindView<>(offset, topDocs.totalHits);
-            for (int i = offset; i < offset + fetchSize; i++) {
+            for (int i = offset; i < offset + fetchSize && i < topDocs.totalHits; i++) {
                 Document document = JSON.parse(indexSearcher().doc(topDocs.scoreDocs[i].doc).get("body"), Document.class);
                 results.add(codec.from(document));
             }

@@ -2,6 +2,7 @@ package org.app4j.site.module.page.template.impl;
 
 import com.google.common.base.Objects;
 import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.template.DirectoryObject;
 import org.app4j.site.module.page.template.PageObject;
@@ -15,8 +16,8 @@ import java.util.stream.Collectors;
 public class DirectoryObjectImpl extends PageObjectImpl implements DirectoryObject {
     private final int pageNumber;
 
-    public DirectoryObjectImpl(Page page, PageService pageService, int pageNumber) {
-        super(page, pageService);
+    public DirectoryObjectImpl(Page page, PageService pageService, PageIndexService pageIndexService, int pageNumber) {
+        super(page, pageService, pageIndexService);
         this.pageNumber = pageNumber;
     }
 
@@ -24,7 +25,7 @@ public class DirectoryObjectImpl extends PageObjectImpl implements DirectoryObje
     public FindView<PageObject> pages(int offset, int fetchSize) {
         FindView<Page> pages = pageService.find(offset, fetchSize);
         FindView<PageObject> results = new FindView<>(offset, pages.total());
-        results.addAll(pages.stream().map(page1 -> new PageObjectImpl(page1, pageService)).collect(Collectors.toList()));
+        results.addAll(pages.stream().map(page1 -> new PageObjectImpl(page1, pageService, pageIndexService)).collect(Collectors.toList()));
         return results;
     }
 
@@ -32,7 +33,7 @@ public class DirectoryObjectImpl extends PageObjectImpl implements DirectoryObje
     public FindView<DirectoryObject> directories(int offset, int fetchSize) {
         FindView<Page> pages = pageService.findByCategory(page.getPath(), offset, fetchSize, "directory");
         FindView<DirectoryObject> results = new FindView<>(offset, pages.total());
-        results.addAll(pages.stream().map(page1 -> new DirectoryObjectImpl(page1, pageService, 0)).collect(Collectors.toList()));
+        results.addAll(pages.stream().map(page1 -> new DirectoryObjectImpl(page1, pageService, pageIndexService, 0)).collect(Collectors.toList()));
         return results;
     }
 

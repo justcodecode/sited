@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div j:each="page : ${page.relatedPages(10)}">
+    <span j:text="${page.title}"></span>
+</div>
+</body>
+</html>

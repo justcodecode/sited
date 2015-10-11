@@ -3,6 +3,7 @@ package org.app4j.site.module.page.web;
 import com.google.common.collect.Maps;
 import org.app4j.site.Site;
 import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.template.impl.DirectoryObjectImpl;
 import org.app4j.site.module.page.template.impl.PageObjectImpl;
@@ -18,12 +19,14 @@ import java.util.Optional;
  * @author chi
  */
 public class PageHandler implements Handler {
-    protected final PageService pageService;
     protected final Site site;
+    protected final PageService pageService;
+    protected final PageIndexService pageIndexService;
 
-    public PageHandler(Site site, PageService pageService) {
+    public PageHandler(Site site, PageService pageService, PageIndexService pageIndexService) {
         this.pageService = pageService;
         this.site = site;
+        this.pageIndexService = pageIndexService;
     }
 
     @Override
@@ -35,9 +38,9 @@ public class PageHandler implements Handler {
             Map<String, Object> context = Maps.newHashMap();
             context.put("request", request);
             if (pageRef.isDirectory()) {
-                context.put("page", new DirectoryObjectImpl(page, pageService, pageRef.pageNumber()));
+                context.put("page", new DirectoryObjectImpl(page, pageService, pageIndexService, pageRef.pageNumber()));
             } else {
-                context.put("page", new PageObjectImpl(page, pageService));
+                context.put("page", new PageObjectImpl(page, pageService, pageIndexService));
             }
             return Response.template(page.getTemplate(), context);
         } else {
