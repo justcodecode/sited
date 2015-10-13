@@ -64,6 +64,7 @@ require([
         'app'
     ], function (angular) {
         angular.element().ready(function () {
+            angular.element('.spinner').hide();
             angular.bootstrap(document, ['app']);
         });
     }

@@ -2,6 +2,19 @@ html, body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.aside {
+    height: 100%;
+    background: #b94a48;
+    width: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;;
+}
+
+.main {
+    padding-left: 80px;
+}
+
 .top {
     background: #f5f5f5;
     clear: both;
@@ -109,7 +122,68 @@ input[type='file'] {
     border: 0;
 }
 
-.some {
-
+.spinner {
+    white-space: nowrap;
+    text-align: center;
+    display: inline;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -4px;
+    margin-left: -12px;
 }
 
+.spinner > div {
+    width: 8px;
+    height: 8px;
+    background-color: #333;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: bouncedelay 1s infinite ease-in-out;
+    animation: bouncedelay 1s infinite ease-in-out;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+.navbar .spinner > div {
+    background-color: #ecf0f1;
+}
+
+.spinner.large > div {
+    width: 24px;
+    height: 24px;
+}
+
+.spinner .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes bouncedelay {
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+    }
+    40% {
+        -webkit-transform: scale(1);
+    }
+}
+
+@keyframes bouncedelay {
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+        -webkit-transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+    }
+}
