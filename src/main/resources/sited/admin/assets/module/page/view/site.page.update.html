@@ -18,60 +18,67 @@
 </div>
 
 <div class="body" ng-if="editor == 'summernote'">
-    <form>
-        <div class="form-group">
-            <label class="control-label">Path</label>
-            <input type="text" class="form-control" placeholder="path" ng-model="page.path">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <form>
+                    <div class="form-group">
+                        <label class="control-label">Title</label>
+                        <input type="text" class="form-control" placeholder="Title" ng-model="page.title">
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Content</label>
+                        <summernote
+                                config="editorOptions"
+                                ng-model="page.content"
+                                on-image-upload="imageUpload(files, editor)"
+                                on-change="change(contents)"
+                                editable="editorOptions.editable" style="height: 400px;"></summernote>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <form>
+                    <div class="form-group">
+                        <label class="control-label">path</label>
+                        <input type="text" class="form-control" placeholder="path" ng-model="page.path">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">template</label>
+                        <ui-select ng-model="page.template">
+                            <ui-select-match placeholder="select one">{{page.template}}</ui-select-match>
+                            <ui-select-choices repeat="template.path as template in templates">
+                                <span>{{template.path}}</span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">description</label>
+                        <textarea class="form-control" placeholder="description" ng-model="page.description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">tags</label>
+                        <ui-select multiple tagging tagging-label="" ng-model="page.tags">
+                            <ui-select-match placeholder="select colors...">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="tag in page.tags | filter:$select.search">
+                                {{tag}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">author</label>
+                        <input type="text" class="form-control" placeholder="author" ng-model="page.author">
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label class="control-label">Template</label>
-            <ui-select ng-model="page.template">
-                <ui-select-match placeholder="Select one">{{page.template}}</ui-select-match>
-                <ui-select-choices repeat="template.path as template in templates">
-                    <span>{{template.path}}</span>
-                </ui-select-choices>
-            </ui-select>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Title</label>
-            <input type="text" class="form-control" placeholder="Title" ng-model="page.title">
-
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Description</label>
-            <textarea class="form-control" placeholder="Description" ng-model="page.description"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Tags</label>
-            <ui-select multiple tagging tagging-label="" ng-model="page.tags">
-                <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
-                <ui-select-choices repeat="tag in page.tags | filter:$select.search">
-                    {{tag}}
-                </ui-select-choices>
-            </ui-select>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Content</label>
-            <summernote
-                    config="editorOptions"
-                    ng-model="page.content"
-                    on-image-upload="imageUpload(files, editor)"
-                    on-change="change(contents)"
-                    editable="editorOptions.editable" style="height: 400px;"></summernote>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label">Author</label>
-            <input type="text" class="form-control" placeholder="Author" ng-model="page.author">
-        </div>
-
-
-    </form>
+    </div>
 </div>
 
 <div>
