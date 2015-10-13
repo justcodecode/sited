@@ -113,9 +113,7 @@ define([
         $scope.createPage = function () {
             $http.post('/admin/api/page', $scope.page).success(function (data) {
                 alert('saved');
-                $state.go('site.page.update', {
-                    id: data._id
-                })
+                $state.go('site.page.list');
             });
         };
 
