@@ -2,9 +2,11 @@
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title j:text="${page.title}">Page title</title>
 </head>
 <body>
+
+<h1 j:text="${page.title}">Page title</h1>
 
 <div j:each="page : ${page.relatedPages(10)}">
     <span j:text="${page.title}"></span>

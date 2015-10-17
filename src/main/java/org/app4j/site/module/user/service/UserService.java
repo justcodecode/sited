@@ -21,7 +21,7 @@ public class UserService {
     private final MongoCollection<User> documents;
 
     public UserService(MongoDatabase db) {
-        this.documents = db.getCollection("cms.User", User.class);
+        this.documents = db.getCollection("site.User", User.class);
     }
 
     public Optional<User> findByUsername(String username) {
