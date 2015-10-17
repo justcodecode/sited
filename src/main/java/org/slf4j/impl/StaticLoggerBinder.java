@@ -39,10 +39,11 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder, ILoggerFac
 
     private Logger createLogger(String name) {
         if (name.startsWith("com.mchange")
-                || name.startsWith("org.elasticsearch")
-                || name.startsWith("org.mongodb")
-                || name.startsWith("org.xnio")
-                || name.startsWith("org.apache")) {
+            || name.startsWith("org.elasticsearch")
+            || name.startsWith("org.mongodb")
+            || name.startsWith("org.xnio")
+            || name.startsWith("org.thymeleaf")
+            || name.startsWith("org.apache")) {
             return new LoggerImpl(name, Message.Level.WARNING);
         } else {
             return new LoggerImpl(name, Message.Level.DEBUG);

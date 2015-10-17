@@ -85,6 +85,8 @@ public class Site extends DefaultScope {
         this.dir = dir;
         this.properties = loadProperties();
 
+        logger.info("hello");
+
         host = property("site.host").orElse("0.0.0.0").get();
         port = property("site.port", Integer.class).orElse(8080).get();
         charset = Charset.forName(property("site.charset").orElse(Charsets.UTF_8.name()).get());
@@ -163,7 +165,7 @@ public class Site extends DefaultScope {
     }
 
     public Site install(Module module) {
-        logger.info("install module [{}]", module.getClass().getCanonicalName());
+        logger.info("install module [%s]", module.getClass().getName());
         modules.put(module.getClass(), module);
 
         Queue<Class<? extends Module>> dependencies = new LinkedList<>();

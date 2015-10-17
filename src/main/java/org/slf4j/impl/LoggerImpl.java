@@ -1,16 +1,14 @@
 package org.slf4j.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.Marker;
+import org.slf4j.helpers.MarkerIgnoringBase;
 
 import java.io.PrintStream;
 
 /**
  * @author chi
  */
-class LoggerImpl implements Logger {
+class LoggerImpl extends MarkerIgnoringBase {
     private final PrintStream output = System.out;
-    private final String name;
     private final Message.Level level;
 
     LoggerImpl(String name, Message.Level level) {
@@ -18,9 +16,8 @@ class LoggerImpl implements Logger {
         this.level = level;
     }
 
-    @Override
-    public String getName() {
-        return null;
+    void log(Message message) {
+        output.print(message.toString());
     }
 
     @Override
@@ -44,7 +41,7 @@ class LoggerImpl implements Logger {
     }
 
     @Override
-    public void trace(String format, Object[] argArray) {
+    public void trace(String format, Object... arguments) {
 
     }
 
@@ -54,38 +51,8 @@ class LoggerImpl implements Logger {
     }
 
     @Override
-    public boolean isTraceEnabled(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void trace(Marker marker, String msg) {
-
-    }
-
-    @Override
-    public void trace(Marker marker, String format, Object arg) {
-
-    }
-
-    @Override
-    public void trace(Marker marker, String format, Object arg1, Object arg2) {
-
-    }
-
-    @Override
-    public void trace(Marker marker, String format, Object[] argArray) {
-
-    }
-
-    @Override
-    public void trace(Marker marker, String msg, Throwable t) {
-
-    }
-
-    @Override
     public boolean isDebugEnabled() {
-        return level.ordinal() >= Message.Level.DEBUG.ordinal();
+        return Message.Level.DEBUG.ordinal() >= level.ordinal();
     }
 
     @Override
@@ -104,229 +71,122 @@ class LoggerImpl implements Logger {
     }
 
     @Override
-    public void debug(String format, Object[] argArray) {
+    public void debug(String format, Object... arguments) {
         if (isDebugEnabled()) {
-            Message message = new Message(Message.Level.DEBUG, System.currentTimeMillis(), name, format, argArray, null);
+            Throwable throwable = arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable
+                ? (Throwable) arguments[arguments.length - 1] : null;
+            Message message = new Message(Message.Level.DEBUG, System.currentTimeMillis(), name, format, arguments, throwable);
             log(message);
         }
     }
 
     @Override
     public void debug(String msg, Throwable t) {
-
-    }
-
-    @Override
-    public boolean isDebugEnabled(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void debug(Marker marker, String msg) {
-
-    }
-
-    @Override
-    public void debug(Marker marker, String format, Object arg) {
-
-    }
-
-    @Override
-    public void debug(Marker marker, String format, Object arg1, Object arg2) {
-
-    }
-
-    @Override
-    public void debug(Marker marker, String format, Object[] argArray) {
-
-    }
-
-    @Override
-    public void debug(Marker marker, String msg, Throwable t) {
-
+        debug(msg, new Object[]{t});
     }
 
     @Override
     public boolean isInfoEnabled() {
-        return false;
+        return Message.Level.INFO.ordinal() >= level.ordinal();
     }
 
     @Override
     public void info(String msg) {
-
+        info(msg, new Object[]{});
     }
 
     @Override
     public void info(String format, Object arg) {
-
+        info(format, new Object[]{arg});
     }
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-
+        info(format, new Object[]{arg1, arg2});
     }
 
     @Override
-    public void info(String format, Object[] argArray) {
-
+    public void info(String format, Object... arguments) {
+        if (isInfoEnabled()) {
+            Throwable throwable = arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable
+                ? (Throwable) arguments[arguments.length - 1] : null;
+            Message message = new Message(Message.Level.INFO, System.currentTimeMillis(), name, format, arguments, throwable);
+            log(message);
+        }
     }
 
     @Override
     public void info(String msg, Throwable t) {
-
-    }
-
-    @Override
-    public boolean isInfoEnabled(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void info(Marker marker, String msg) {
-
-    }
-
-    @Override
-    public void info(Marker marker, String format, Object arg) {
-
-    }
-
-    @Override
-    public void info(Marker marker, String format, Object arg1, Object arg2) {
-
-    }
-
-    @Override
-    public void info(Marker marker, String format, Object[] argArray) {
-
-    }
-
-    @Override
-    public void info(Marker marker, String msg, Throwable t) {
-
+        info(msg, new Object[]{t});
     }
 
     @Override
     public boolean isWarnEnabled() {
-        return false;
+        return Message.Level.WARNING.ordinal() >= level.ordinal();
     }
 
     @Override
     public void warn(String msg) {
-
+        warn(msg, new Object[]{});
     }
 
     @Override
     public void warn(String format, Object arg) {
-
+        warn(format, new Object[]{arg});
     }
 
     @Override
-    public void warn(String format, Object[] argArray) {
-
+    public void warn(String format, Object... arguments) {
+        if (isWarnEnabled()) {
+            Throwable throwable = arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable
+                ? (Throwable) arguments[arguments.length - 1] : null;
+            Message message = new Message(Message.Level.WARNING, System.currentTimeMillis(), name, format, arguments, throwable);
+            log(message);
+        }
     }
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-
+        warn(format, new Object[]{arg1, arg2});
     }
 
     @Override
     public void warn(String msg, Throwable t) {
-
-    }
-
-    @Override
-    public boolean isWarnEnabled(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void warn(Marker marker, String msg) {
-
-    }
-
-    @Override
-    public void warn(Marker marker, String format, Object arg) {
-
-    }
-
-    @Override
-    public void warn(Marker marker, String format, Object arg1, Object arg2) {
-
-    }
-
-    @Override
-    public void warn(Marker marker, String format, Object[] argArray) {
-
-    }
-
-    @Override
-    public void warn(Marker marker, String msg, Throwable t) {
-
+        warn(msg, new Object[]{t});
     }
 
     @Override
     public boolean isErrorEnabled() {
-        return false;
+        return Message.Level.INFO.ordinal() >= level.ordinal();
     }
 
     @Override
     public void error(String msg) {
-
+        error(msg, new Object[]{});
     }
 
     @Override
     public void error(String format, Object arg) {
-
+        error(format, new Object[]{arg});
     }
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-
+        error(format, new Object[]{arg1, arg2});
     }
 
     @Override
-    public void error(String format, Object[] argArray) {
-
+    public void error(String format, Object... arguments) {
+        if (isErrorEnabled()) {
+            Throwable throwable = arguments.length > 0 && arguments[arguments.length - 1] instanceof Throwable
+                ? (Throwable) arguments[arguments.length - 1] : null;
+            Message message = new Message(Message.Level.ERROR, System.currentTimeMillis(), name, format, arguments, throwable);
+            log(message);
+        }
     }
 
     @Override
     public void error(String msg, Throwable t) {
-
-    }
-
-    @Override
-    public boolean isErrorEnabled(Marker marker) {
-        return false;
-    }
-
-    @Override
-    public void error(Marker marker, String msg) {
-
-    }
-
-    @Override
-    public void error(Marker marker, String format, Object arg) {
-
-    }
-
-    @Override
-    public void error(Marker marker, String format, Object arg1, Object arg2) {
-
-    }
-
-    @Override
-    public void error(Marker marker, String format, Object[] argArray) {
-
-    }
-
-    @Override
-    public void error(Marker marker, String msg, Throwable t) {
-
-    }
-
-    void log(Message message) {
-        output.print(message.toString());
+        error(msg, new Object[]{t});
     }
 }
