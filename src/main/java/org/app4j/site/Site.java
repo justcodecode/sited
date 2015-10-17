@@ -15,8 +15,8 @@ import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.error.ErrorModule;
-import org.app4j.site.runtime.event.EventConfig;
-import org.app4j.site.runtime.event.EventModule;
+import org.app4j.site.runtime.scheduler.SchedulerConfig;
+import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.app4j.site.runtime.index.IndexConfig;
 import org.app4j.site.runtime.index.IndexModule;
 import org.app4j.site.runtime.route.RouteConfig;
@@ -99,7 +99,7 @@ public class Site extends DefaultScope {
         install(DatabaseModule.class);
         install(RouteModule.class);
         install(TemplateModule.class);
-        install(EventModule.class);
+        install(SchedulerModule.class);
         install(CacheModule.class);
         install(ErrorModule.class);
         install(AdminModule.class);
@@ -311,8 +311,8 @@ public class Site extends DefaultScope {
         return require(CacheConfig.class);
     }
 
-    public EventConfig event() {
-        return require(EventConfig.class);
+    public SchedulerConfig scheduler() {
+        return require(SchedulerConfig.class);
     }
 
     public DatabaseConfig database() {

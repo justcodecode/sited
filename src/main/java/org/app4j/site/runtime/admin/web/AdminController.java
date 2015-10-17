@@ -5,7 +5,7 @@ import org.app4j.site.Site;
 import org.app4j.site.runtime.admin.domain.Profile;
 import org.app4j.site.runtime.admin.service.AdminUser;
 import org.app4j.site.runtime.admin.service.ProfileService;
-import org.app4j.site.runtime.event.Event;
+import org.app4j.site.runtime.scheduler.Event;
 import org.app4j.site.runtime.template.AssetsConfig;
 import org.app4j.site.util.Resource;
 import org.app4j.site.web.Request;
@@ -76,7 +76,7 @@ public class AdminController {
 
         profileService.save(profile);
 
-        site.event().trigger(new Event<>(new AdminUser(profileRequest.getAdminUsername(), profileRequest.getAdminEmail(), profileRequest.getAdminPassword()), Maps.newHashMap()));
+        site.scheduler().trigger(new Event<>(new AdminUser(profileRequest.getAdminUsername(), profileRequest.getAdminEmail(), profileRequest.getAdminPassword()), Maps.newHashMap()));
         return Response.redirect("/admin/index.html");
     }
 }

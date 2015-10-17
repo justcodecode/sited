@@ -3,8 +3,8 @@ package org.app4j.site.module.page.web.admin;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.runtime.event.EventConfig;
-import org.app4j.site.runtime.event.Task;
+import org.app4j.site.runtime.scheduler.SchedulerConfig;
+import org.app4j.site.runtime.scheduler.Task;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -19,9 +19,9 @@ public class AdminPageRESTController {
     //    private final Index<Page> index;
     private final PageIndexService pageIndexService;
     private final PageService pageService;
-    private final EventConfig eventConfig;
+    private final SchedulerConfig eventConfig;
 
-    public AdminPageRESTController(PageService pageService, PageIndexService pageIndexService, EventConfig eventConfig) {
+    public AdminPageRESTController(PageService pageService, PageIndexService pageIndexService, SchedulerConfig eventConfig) {
         this.pageIndexService = pageIndexService;
         this.pageService = pageService;
         this.eventConfig = eventConfig;
@@ -61,7 +61,7 @@ public class AdminPageRESTController {
     }
 
     public Response rebuildIndex(Request request) {
-        eventConfig.scheduler().execute(new Task("page:full-index") {
+        eventConfig.execute(new Task("page:full-index") {
             @Override
             public void run() {
                 pageIndexService.rebuild();

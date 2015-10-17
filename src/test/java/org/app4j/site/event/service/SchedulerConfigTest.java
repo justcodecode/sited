@@ -1,7 +1,7 @@
 package org.app4j.site.event.service;
 
-import org.app4j.site.runtime.event.Event;
-import org.app4j.site.runtime.event.EventModule;
+import org.app4j.site.runtime.scheduler.Event;
+import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class SchedulerConfigTest {
     @Test
     public void pop() {
-        EventModule schedulerConfig = new EventModule(null);
+        SchedulerModule schedulerConfig = new SchedulerModule(null);
         schedulerConfig.on(Object.class,
             event -> {
                 Assert.assertNotNull(event.target());

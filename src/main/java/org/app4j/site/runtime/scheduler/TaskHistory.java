@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.event;
+package org.app4j.site.runtime.scheduler;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;

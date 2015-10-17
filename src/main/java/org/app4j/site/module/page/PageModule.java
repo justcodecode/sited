@@ -83,7 +83,7 @@ public class PageModule extends Module {
         route().get("/sitemap/*", sitemapController::sitemap);
 
 
-        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, event());
+        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, scheduler());
         AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService, pageIndexService);
         admin().route()
             .get("/admin/api/site", request -> {
@@ -99,7 +99,7 @@ public class PageModule extends Module {
             .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex)
             .post("/admin/draft/*", adminPagePreviewHandler);
 
-        AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, event());
+        AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, scheduler());
         admin().route().get("/admin/api/page/rebuild-sitemap", adminSitemapRESTController::rebuildSitemap);
     }
 }

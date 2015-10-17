@@ -8,11 +8,11 @@ import org.app4j.site.runtime.database.DatabaseConfig;
 import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorModule;
-import org.app4j.site.runtime.event.EventConfig;
-import org.app4j.site.runtime.event.EventModule;
 import org.app4j.site.runtime.index.IndexConfig;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
+import org.app4j.site.runtime.scheduler.SchedulerConfig;
+import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.track.TrackConfig;
@@ -37,8 +37,8 @@ public abstract class Module extends DefaultScope {
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(AdminModule.class,
             CacheModule.class, DatabaseModule.class,
-            ErrorModule.class, EventModule.class,
-            EventModule.class, RouteModule.class,
+            ErrorModule.class, SchedulerModule.class,
+            SchedulerModule.class, RouteModule.class,
             TemplateModule.class, VariableModule.class);
     }
 
@@ -64,8 +64,8 @@ public abstract class Module extends DefaultScope {
         return site().database();
     }
 
-    protected EventConfig event() {
-        return site().event();
+    protected SchedulerConfig scheduler() {
+        return site().scheduler();
     }
 
     protected TemplateConfig template() {

@@ -13,8 +13,8 @@ import org.app4j.site.module.user.service.RoleService;
 import org.app4j.site.module.user.service.UserService;
 import org.app4j.site.module.user.web.UserController;
 import org.app4j.site.runtime.admin.service.AdminUser;
-import org.app4j.site.runtime.event.Event;
-import org.app4j.site.runtime.event.EventHandler;
+import org.app4j.site.runtime.scheduler.Event;
+import org.app4j.site.runtime.scheduler.EventHandler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.UnauthorizedException;
@@ -66,7 +66,7 @@ public class UserModule extends Module {
             .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
             .get("/admin/api/user/", adminUserRESTController::findUsers);
 
-        event().on(AdminUser.class, new EventHandler<AdminUser>() {
+        scheduler().on(AdminUser.class, new EventHandler<AdminUser>() {
             @Override
             public void on(Event<AdminUser> event) {
                 AdminUser adminUser = event.target();
