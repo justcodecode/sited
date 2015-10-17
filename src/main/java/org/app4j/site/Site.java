@@ -24,6 +24,7 @@ import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.template.service.Template;
+import org.app4j.site.runtime.track.TrackConfig;
 import org.app4j.site.util.Graph;
 import org.app4j.site.util.JSON;
 import org.app4j.site.web.Handler;
@@ -317,6 +318,10 @@ public class Site extends DefaultScope {
 
     public AdminConfig admin() {
         return require(AdminConfig.class);
+    }
+
+    public TrackConfig track() {
+        return require(TrackConfig.class);
     }
 
     @Override

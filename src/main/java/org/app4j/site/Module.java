@@ -15,6 +15,7 @@ import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
+import org.app4j.site.runtime.track.TrackConfig;
 import org.app4j.site.runtime.variable.VariableModule;
 
 import java.util.Arrays;
@@ -87,6 +88,10 @@ public abstract class Module extends DefaultScope {
 
     protected IndexConfig index() {
         return site().index();
+    }
+
+    protected TrackConfig track() {
+        return site().track();
     }
 
     protected <T> Property<T> property(String key, Class<T> type) {
