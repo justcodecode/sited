@@ -13,6 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class StaticLoggerBinder implements LoggerFactoryBinder, ILoggerFactory {
     public static final String REQUESTED_API_VERSION = "1.6";
     private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+
+    static {
+        System.setProperty("org.jboss.logging.provider", "slf4j");
+    }
+
     private final Map<String, Logger> loggers = new ConcurrentHashMap<>();
 
     private StaticLoggerBinder() {
