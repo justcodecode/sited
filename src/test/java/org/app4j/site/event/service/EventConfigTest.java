@@ -13,11 +13,11 @@ import org.junit.Test;
 public class EventConfigTest {
     @Test
     public void pop() {
-        EventConfig eventConfig = new EventModule();
+        EventConfig eventConfig = new EventModule(null);
         eventConfig.on(Object.class,
-                event -> {
-                    Assert.assertNotNull(event.target());
-                });
+            event -> {
+                Assert.assertNotNull(event.target());
+            });
         Assert.assertTrue(eventConfig.trigger(new Event<>(new Object(), Maps.<String, Object>newHashMap())));
     }
 }

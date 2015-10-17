@@ -3,6 +3,7 @@ package org.app4j.site.runtime.variable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.app4j.site.Scope;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 
 import java.util.Map;
@@ -12,6 +13,10 @@ import java.util.Map;
  */
 public class VariableModule extends InternalModule implements VariableConfig {
     private final Map<String, Variable<?>> variables = Maps.newHashMap();
+
+    public VariableModule(Site site) {
+        super(site);
+    }
 
     @Override
     protected void configure() throws Exception {

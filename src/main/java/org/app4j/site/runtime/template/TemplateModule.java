@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
@@ -51,8 +52,9 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     private AssetsConfig assetsConfig;
 
-    public TemplateModule(File dir) {
-        this.dir = dir;
+    public TemplateModule(Site site) {
+        super(site);
+        this.dir = site.dir("web");
         templateEngine.setCacheManager(cacheManager);
         templateEngine.setDialect(templateDialect);
 

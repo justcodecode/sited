@@ -2,6 +2,7 @@ package org.app4j.site.runtime.admin;
 
 import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.admin.codec.ProfileCodec;
 import org.app4j.site.runtime.admin.service.AdminTemplateRepository;
@@ -29,6 +30,10 @@ import java.util.Map;
  */
 public class AdminModule extends InternalModule {
     private final Console console = new Console();
+
+    public AdminModule(Site site) {
+        super(site);
+    }
 
     @Override
     public List<Class<? extends Module>> dependencies() {

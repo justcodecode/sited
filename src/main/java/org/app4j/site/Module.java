@@ -25,17 +25,14 @@ import java.util.List;
  * @author chi
  */
 public abstract class Module extends DefaultScope {
-    public Module() {
-        super(null);
+    private final Site site;
+
+    public Module(Site site) {
+        super(site);
+        this.site = site;
     }
 
     protected abstract void configure() throws Exception;
-
-    final void configure(DefaultScope parent) throws Exception {
-        this.parent = parent;
-        configure();
-    }
-
 
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(AdminModule.class,
@@ -59,7 +56,7 @@ public abstract class Module extends DefaultScope {
     }
 
     protected Site site() {
-        return require(Site.class);
+        return site;
     }
 
     protected DatabaseConfig database() {

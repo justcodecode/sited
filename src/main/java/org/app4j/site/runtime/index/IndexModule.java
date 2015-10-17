@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.database.Dumper;
 import org.app4j.site.runtime.database.SimpleCodecRegistry;
 import org.app4j.site.runtime.event.Task;
@@ -19,6 +20,10 @@ public class IndexModule extends Module implements IndexConfig {
     private final Map<String, Index<?>> indices = Maps.newHashMap();
     private File indexDir;
     private SimpleCodecRegistry codecRegistry;
+
+    public IndexModule(Site site) {
+        super(site);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -46,7 +51,7 @@ public class IndexModule extends Module implements IndexConfig {
     @Override
     protected void configure() throws Exception {
         bind(IndexConfig.class).to(this).export();
-        
+
         indexDir = site().dir("index");
         codecRegistry = database().codecs();
         onShutdown(() -> indices.values().stream().forEach(Index::stop));

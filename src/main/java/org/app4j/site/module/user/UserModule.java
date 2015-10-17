@@ -2,6 +2,7 @@ package org.app4j.site.module.user;
 
 import com.google.common.collect.Lists;
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.module.user.admin.web.AdminUserRESTController;
 import org.app4j.site.module.user.codec.PermissionCodec;
 import org.app4j.site.module.user.codec.RoleCodec;
@@ -25,6 +26,10 @@ import java.util.Optional;
  * @author chi
  */
 public class UserModule extends Module {
+    public UserModule(Site site) {
+        super(site);
+    }
+
     @Override
     protected void configure() throws Exception {
         site().database().codecs()

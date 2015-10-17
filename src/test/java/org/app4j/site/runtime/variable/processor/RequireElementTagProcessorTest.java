@@ -19,7 +19,7 @@ public class RequireElementTagProcessorTest {
 
     @Before
     public void setup() {
-        VariableConfig variableConfig = new VariableModule();
+        VariableConfig variableConfig = new VariableModule(null);
         variableConfig.add("page", (ref, scope) -> new TestObject("some"));
 
         TemplateDialect templateDialect = new TemplateDialect();

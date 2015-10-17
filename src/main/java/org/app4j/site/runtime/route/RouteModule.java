@@ -1,5 +1,6 @@
 package org.app4j.site.runtime.route;
 
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
@@ -13,6 +14,10 @@ import java.util.Map;
  */
 public class RouteModule extends InternalModule implements RouteConfig {
     private final Map<Request.Method, Route<Handler>> routes = new HashMap<>();
+
+    public RouteModule(Site site) {
+        super(site);
+    }
 
     @Override
     public RouteModule get(String route, Handler handler) {

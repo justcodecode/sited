@@ -2,6 +2,7 @@ package org.app4j.site.runtime.cache;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.cache.service.DiskCache;
 import org.app4j.site.runtime.cache.service.MemCache;
@@ -18,8 +19,9 @@ public class CacheModule extends InternalModule implements CacheConfig {
     private final Map<String, Cache<?>> caches = Maps.newHashMap();
     private final File dir;
 
-    public CacheModule(File dir) {
-        this.dir = dir;
+    public CacheModule(Site site) {
+        super(site);
+        this.dir = site.dir("cache");
     }
 
     @SuppressWarnings("unchecked")

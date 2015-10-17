@@ -95,18 +95,17 @@ public class Site extends DefaultScope {
             baseCdnURLs = Lists.newArrayList(baseURL());
         }
 
-        install(new DatabaseModule());
-        install(new RouteModule());
-        install(new TemplateModule(dir("web")));
-        install(new EventModule());
-        install(new CacheModule(dir("cache")));
-        install(new ErrorModule());
-        install(new AdminModule());
-        install(new IndexModule());
+        install(DatabaseModule.class);
+        install(RouteModule.class);
+        install(TemplateModule.class);
+        install(EventModule.class);
+        install(CacheModule.class);
+        install(ErrorModule.class);
+        install(AdminModule.class);
+        install(IndexModule.class);
 
         bind(Site.class).to(this);
     }
-
 
     private Properties loadProperties() {
         Properties properties = new Properties();
@@ -148,40 +147,38 @@ public class Site extends DefaultScope {
         return this;
     }
 
-    public Site install(Module module) {
-        if (modules.containsKey(module.getClass())) {
+    public Site install(Class<? extends Module> moduleClass) {
+        if (modules.containsKey(moduleClass)) {
             return this;
         }
-        logger.info("install module [%s]", module.getClass().getName());
-        modules.put(module.getClass(), module);
+        logger.info("install module [%s]", moduleClass.getName());
 
-        Queue<Class<? extends Module>> dependencies = new LinkedList<>();
-        dependencies.addAll(module.dependencies());
-
-        while (!dependencies.isEmpty()) {
-            Class<? extends Module> dependentModuleType = dependencies.poll();
-            if (!modules.containsKey(dependentModuleType)) {
-                install(dependentModuleType);
-            }
-        }
-        return this;
-    }
-
-    public Site install(Class<? extends Module> moduleType) {
         try {
-            return install(moduleType.getDeclaredConstructor().newInstance());
+            Module module = moduleClass.getDeclaredConstructor(Site.class).newInstance(this);
+            modules.put(moduleClass, module);
+
+            Queue<Class<? extends Module>> dependencies = new LinkedList<>();
+            dependencies.addAll(module.dependencies());
+
+            while (!dependencies.isEmpty()) {
+                Class<? extends Module> dependency = dependencies.poll();
+                if (!modules.containsKey(dependency)) {
+                    install(dependency);
+                }
+            }
+            return this;
         } catch (Exception e) {
             throw new Error(e);
         }
     }
 
     public final void start() {
-        for (final Class<? extends Module> moduleType : dependencyGraph()) {
+        for (final Class<? extends Module> type : moduleGraph()) {
             try {
-                Module module = modules.get(moduleType);
-                module.configure(this);
+                Module module = modules.get(type);
+                module.configure();
             } catch (Exception e) {
-                logger.error("failed to start module {}", moduleType.getName(), e);
+                logger.error("failed to start module {}", type.getName(), e);
                 throw new Error(e);
             }
         }
@@ -194,7 +191,7 @@ public class Site extends DefaultScope {
         });
     }
 
-    private Graph<Class<? extends Module>> dependencyGraph() {
+    private Graph<Class<? extends Module>> moduleGraph() {
         Graph<Class<? extends Module>> graph = new Graph<>();
         for (Map.Entry<Class<? extends Module>, Module> entry : modules.entrySet()) {
             List<Class<? extends Module>> dependencies = new ArrayList<>();

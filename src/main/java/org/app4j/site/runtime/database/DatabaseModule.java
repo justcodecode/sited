@@ -5,6 +5,7 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 
 import java.util.List;
@@ -16,6 +17,10 @@ import java.util.stream.Collectors;
 public class DatabaseModule extends InternalModule implements DatabaseConfig {
     private final SimpleCodecRegistry simpleCodecRegistry = new SimpleCodecRegistry();
     private MongoDatabase database;
+
+    public DatabaseModule(Site site) {
+        super(site);
+    }
 
     public SimpleCodecRegistry codecs() {
         return simpleCodecRegistry;

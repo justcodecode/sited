@@ -13,7 +13,7 @@ import java.util.Map;
  * @author chi
  */
 public class RouteConfigTest {
-    RouteModule routeConfig = new RouteModule();
+    RouteModule routeConfig = new RouteModule(null);
 
     @Test
     public void get() {

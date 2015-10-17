@@ -1,6 +1,7 @@
 package org.app4j.site.module.comment;
 
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.module.comment.admin.web.AdminCommentRESTController;
 import org.app4j.site.module.comment.codec.CommentCodec;
 import org.app4j.site.module.comment.service.CommentService;
@@ -9,6 +10,10 @@ import org.app4j.site.module.comment.service.CommentService;
  * @author chi
  */
 public class CommentModule extends Module {
+    public CommentModule(Site site) {
+        super(site);
+    }
+
     @Override
     protected void configure() throws Exception {
         database().codecs().add(new CommentCodec());

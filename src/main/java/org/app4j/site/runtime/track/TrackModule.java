@@ -1,6 +1,7 @@
 package org.app4j.site.runtime.track;
 
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.track.service.TrackingCodec;
@@ -14,6 +15,10 @@ import java.util.Map;
  * @author chi
  */
 public class TrackModule extends InternalModule implements TrackConfig {
+    public TrackModule(Site site) {
+        super(site);
+    }
+
     @Override
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(DatabaseModule.class);
@@ -29,6 +34,5 @@ public class TrackModule extends InternalModule implements TrackConfig {
 
     @Override
     public void track(String operator, String action, String target, Map<String, Object> context) {
-
     }
 }

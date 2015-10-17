@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class SchedulerConfigTest {
     @Test
     public void pop() {
-        EventModule schedulerConfig = new EventModule();
+        EventModule schedulerConfig = new EventModule(null);
         schedulerConfig.on(Object.class,
             event -> {
                 Assert.assertNotNull(event.target());

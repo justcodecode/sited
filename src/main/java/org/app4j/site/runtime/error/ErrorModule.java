@@ -1,6 +1,7 @@
 package org.app4j.site.runtime.error;
 
 import com.google.common.collect.Maps;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 
 import java.util.Map;
@@ -10,6 +11,10 @@ import java.util.Map;
  */
 public class ErrorModule extends InternalModule implements ErrorConfig {
     private final Map<Class, ErrorHandler> handlers = Maps.newHashMap();
+
+    public ErrorModule(Site site) {
+        super(site);
+    }
 
     @Override
     protected void configure() throws Exception {

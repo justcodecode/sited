@@ -3,6 +3,7 @@ package org.app4j.site.runtime.event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 
 import java.util.List;
@@ -14,6 +15,10 @@ import java.util.Map;
 public class EventModule extends InternalModule implements EventConfig {
     private final Map<Class<?>, List<EventHandler<?>>> listeners = Maps.newHashMap();
     private final Scheduler scheduler = new Scheduler();
+
+    public EventModule(Site site) {
+        super(site);
+    }
 
     public Scheduler scheduler() {
         return scheduler;

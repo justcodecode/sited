@@ -2,6 +2,7 @@ package org.app4j.site.module.page;
 
 import com.google.common.collect.Maps;
 import org.app4j.site.Module;
+import org.app4j.site.Site;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
@@ -37,6 +38,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class PageModule extends Module {
     private final Logger logger = LoggerFactory.getLogger(PageModule.class);
+
+    public PageModule(Site site) {
+        super(site);
+    }
 
     @Override
     public List<Class<? extends Module>> dependencies() {
