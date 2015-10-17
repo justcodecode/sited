@@ -1,6 +1,7 @@
 package org.app4j.site;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -299,7 +300,6 @@ public class Site extends DefaultScope {
         return dir;
     }
 
-
     public File dir(String name) {
         File dir = new File(this.dir, name);
         if (!dir.exists()) {
@@ -330,5 +330,20 @@ public class Site extends DefaultScope {
 
     public IndexConfig index() {
         return indexModule;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("dir", dir)
+            .add("locale", locale)
+            .add("charset", charset)
+            .add("adminEnabled", adminEnabled)
+            .add("debugEnabled", debugEnabled)
+            .add("baseURL", baseURL)
+            .add("baseCdnURLs", baseCdnURLs)
+            .add("host", host)
+            .add("port", port)
+            .toString();
     }
 }

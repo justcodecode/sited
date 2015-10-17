@@ -1,18 +1,23 @@
 package org.app4j.site;
 
+import com.google.common.base.Stopwatch;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import org.app4j.site.module.page.PageModule;
 import org.app4j.site.module.user.UserModule;
 import org.app4j.site.web.impl.SiteHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chi
  */
 public class Sited {
+    private final Logger logger = LoggerFactory.getLogger(Sited.class);
     private final Site site;
     private final Undertow server;
 
@@ -34,9 +39,14 @@ public class Sited {
     }
 
     public void start() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         site.start();
-        server.start();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+
+        logger.info("%s", site);
+        logger.info("site started in %sms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        server.start();
+
     }
 
     public void stop() {
