@@ -20,13 +20,13 @@ public class Sited {
         this.site = site;
         scanModules().forEach(site::install);
         server = Undertow.builder()
-                .addHttpListener(site.port(),
-                        site.host())
-                .setHandler(new GracefulShutdownHandler(new SiteHandler(site))).build();
+            .addHttpListener(site.port(),
+                site.host())
+            .setHandler(new GracefulShutdownHandler(new SiteHandler(site))).build();
     }
 
     public static String usage() {
-        return "usage: sited mongodb://host:port/db";
+        return "usage: sited dir";
     }
 
     protected List<Class<? extends Module>> scanModules() {

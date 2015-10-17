@@ -1,4 +1,4 @@
-package org.app4j.site.module.track.domain;
+package org.app4j.site.runtime.track.domain;
 
 import java.util.Date;
 import java.util.Map;

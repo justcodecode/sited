@@ -15,15 +15,7 @@ import java.util.stream.Collectors;
  */
 public class DatabaseModule extends InternalModule implements DatabaseConfig {
     private final SimpleCodecRegistry simpleCodecRegistry = new SimpleCodecRegistry();
-    private final MongoDatabase database;
-
-    public DatabaseModule(MongoClientURI mongoClientURI) {
-        MongoClientOptions mongoClientOptions = MongoClientOptions.builder()
-                .codecRegistry(simpleCodecRegistry)
-                .build();
-        MongoClient mongoClient = new MongoClient(serverAddresses(mongoClientURI), mongoClientOptions);
-        database = mongoClient.getDatabase(mongoClientURI.getDatabase());
-    }
+    private MongoDatabase database;
 
     public SimpleCodecRegistry codecs() {
         return simpleCodecRegistry;
@@ -35,6 +27,13 @@ public class DatabaseModule extends InternalModule implements DatabaseConfig {
 
     @Override
     protected void configure() throws Exception {
+        MongoClientURI mongoClientURI = new MongoClientURI(property("site.db").get());
+        MongoClientOptions mongoClientOptions = MongoClientOptions.builder()
+            .codecRegistry(simpleCodecRegistry)
+            .build();
+        MongoClient mongoClient = new MongoClient(serverAddresses(mongoClientURI), mongoClientOptions);
+        database = mongoClient.getDatabase(mongoClientURI.getDatabase());
+
         bind(DatabaseConfig.class).to(this).export();
     }
 

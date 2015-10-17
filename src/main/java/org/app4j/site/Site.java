@@ -1,11 +1,10 @@
 package org.app4j.site;
 
-import ch.qos.logback.classic.Level;
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.mongodb.MongoClientURI;
 import org.app4j.site.runtime.admin.AdminConfig;
 import org.app4j.site.runtime.admin.AdminModule;
 import org.app4j.site.runtime.cache.CacheConfig;
@@ -35,7 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.thymeleaf.context.Context;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -56,6 +59,7 @@ public class Site extends DefaultScope {
     private final List<Runnable> shutdownHooks = Lists.newArrayList();
     private final Logger logger = LoggerFactory.getLogger(Site.class);
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
+    private final Properties properties;
 
     private final File dir;
     private final Locale locale;
@@ -66,6 +70,7 @@ public class Site extends DefaultScope {
     private final List<String> baseCdnURLs;
     private final String host;
     private final Integer port;
+
     private final DatabaseModule databaseModule;
     private final RouteModule routeModule;
     private final TemplateModule templateModule;
@@ -75,13 +80,13 @@ public class Site extends DefaultScope {
     private final CacheModule cacheModule;
     private final IndexModule indexModule;
 
-    public Site(MongoClientURI mongoClientURI) {
+    public Site(File dir) {
         super(null);
-        SiteLogger siteLogger = new SiteLogger();
+        this.dir = dir;
+        this.properties = loadProperties();
 
         host = property("site.host").orElse("0.0.0.0").get();
         port = property("site.port", Integer.class).orElse(8080).get();
-        this.dir = new File(property("site.dir").orElse(defaultDir().toString()).get());
         charset = Charset.forName(property("site.charset").orElse(Charsets.UTF_8.name()).get());
         locale = Locale.forLanguageTag(property("site.locale").orElse(Locale.getDefault().toLanguageTag()).get());
         debugEnabled = property("site.debug", Boolean.class).orElse(false).get();
@@ -89,19 +94,13 @@ public class Site extends DefaultScope {
         baseURL = property("site.baseURL").orElse(defaultBaseURL()).get();
         if (property("site.baseCdnURLs").isPresent()) {
             baseCdnURLs = Arrays.stream(property("site.baseCdnURLs").get().split(","))
-                    .filter(s -> !Strings.isNullOrEmpty(s))
-                    .map(String::trim)
-                    .collect(Collectors.toList());
+                .filter(s -> !Strings.isNullOrEmpty(s))
+                .map(String::trim)
+                .collect(Collectors.toList());
         } else {
             baseCdnURLs = Lists.newArrayList(baseURL());
         }
-
-        if (isDebugEnabled()) {
-            siteLogger.setLevel(Level.DEBUG);
-        }
-        logger.info("use dir {}", dir);
-
-        databaseModule = new DatabaseModule(mongoClientURI);
+        databaseModule = new DatabaseModule();
         install(databaseModule);
         routeModule = new RouteModule();
         install(routeModule);
@@ -119,6 +118,19 @@ public class Site extends DefaultScope {
         install(indexModule);
 
         bind(Site.class).to(this);
+    }
+
+
+    private Properties loadProperties() {
+        Properties properties = new Properties();
+        File file = new File(dir, "site.properties");
+        Preconditions.checkState(file.exists(), "missing config file, %s", file.getAbsolutePath());
+        try (InputStream inputStream = new FileInputStream(file)) {
+            properties.load(new InputStreamReader(inputStream, Charsets.UTF_8));
+        } catch (IOException e) {
+            throw new Error(e);
+        }
+        return properties;
     }
 
     private Path defaultDir() {
@@ -259,7 +271,7 @@ public class Site extends DefaultScope {
     }
 
     public <T> Property<T> property(String key, Class<T> type) {
-        String value = System.getProperty(key);
+        String value = properties.getProperty(key);
         if (value == null) {
             return new Property<>(key, null);
         }

@@ -1,7 +1,6 @@
 package org.app4j.site.module.page.service;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -12,11 +11,6 @@ import org.app4j.site.runtime.database.MongoCollectionDumper;
 import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
-import org.jsoup.select.Elements;
 
 import java.util.Date;
 import java.util.List;
@@ -56,9 +50,9 @@ public class PageService {
     public FindView<Page> findByCategory(String category, int offset, int fetchSize, String type) {
         FindView<Page> results = new FindView<>(offset, countByCategory(category));
         return documents.find(new Document("categories", category).append("type", type))
-                .skip(offset)
-                .limit(fetchSize)
-                .into(results);
+            .skip(offset)
+            .limit(fetchSize)
+            .into(results);
     }
 
 
@@ -91,22 +85,6 @@ public class PageService {
         page.setType(path.endsWith("/") ? "directory" : "page");
 
         String content = page.getContent();
-
-        if (!Strings.isNullOrEmpty(content)) {
-            org.jsoup.nodes.Document doc = Jsoup.parseBodyFragment(content);
-            Cleaner cleaner = new Cleaner(Whitelist.basic());
-            cleaner.clean(doc);
-
-            Element body = doc.body();
-            Elements imageElements = body.select("img");
-            if (!imageElements.isEmpty()) {
-                page.setImageURL(imageElements.attr("src"));
-            }
-
-            page.setContent(body.html());
-        } else {
-            page.setContent("");
-        }
 
         page.setStatus(1);
         page.setLastUpdateTime(new Date());
