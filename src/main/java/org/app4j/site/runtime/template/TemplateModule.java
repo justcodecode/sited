@@ -17,6 +17,7 @@ import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
 import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.util.ResourceRepository;
+import org.app4j.site.util.SortedList;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.BadRequestException;
 import org.app4j.site.web.exception.NotFoundException;
@@ -35,8 +36,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -48,9 +47,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     private final TemplateResolver templateResolver = new TemplateResolver();
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final StandardCacheManager cacheManager = new StandardCacheManager();
-    private final Set<TemplateRepository> templateRepositories = new TreeSet<>((o1, o2) -> o2.priority() - o1.priority());
+    private final SortedList<TemplateRepository> templateRepositories = new SortedList<>((o1, o2) -> o2.priority() - o1.priority());
     private final File dir;
-
     private AssetsConfig assetsConfig;
 
     public TemplateModule(Site site) {
@@ -110,7 +108,6 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     public TemplateEngine engine() {
         return templateEngine;
     }
-
 
     public TemplateDialect dialect() {
         return templateDialect;

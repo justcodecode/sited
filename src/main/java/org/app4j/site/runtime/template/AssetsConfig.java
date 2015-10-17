@@ -7,6 +7,7 @@ import org.app4j.site.runtime.cache.service.DiskCache;
 import org.app4j.site.runtime.template.web.Md5Path;
 import org.app4j.site.util.Resource;
 import org.app4j.site.util.ResourceRepository;
+import org.app4j.site.util.SortedList;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 import org.slf4j.Logger;
@@ -18,16 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * @author chi
  */
 public class AssetsConfig {
     private final DiskCache cache;
-    private final Set<ResourceRepository> assetsRepositories = new TreeSet<>((o1, o2) -> o2.hashCode() - o1.hashCode());
+    private final List<ResourceRepository> assetsRepositories = new SortedList<>((o1, o2) -> o2.hashCode() - o1.hashCode());
 
     public AssetsConfig(DiskCache cache) {
         this.cache = cache;
@@ -47,7 +47,7 @@ public class AssetsConfig {
             }
 
             JavaScriptCompressor compressor = new JavaScriptCompressor(new StringReader(new String(resource.bytes(), Charsets.UTF_8)),
-                    new JsErrorReporter(resource.path()));
+                new JsErrorReporter(resource.path()));
             ByteArrayOutputStream minified = new ByteArrayOutputStream();
             OutputStreamWriter out = new OutputStreamWriter(minified);
             compressor.compress(new OutputStreamWriter(minified), -1, true, false, false, false);
