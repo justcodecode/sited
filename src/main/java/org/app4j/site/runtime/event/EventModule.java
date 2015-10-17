@@ -21,7 +21,7 @@ public class EventModule extends InternalModule implements EventConfig {
 
     @Override
     protected void configure() throws Exception {
-        bind(EventModule.class).to(this).export();
+        bind(EventConfig.class).to(this).export();
     }
 
     @Override

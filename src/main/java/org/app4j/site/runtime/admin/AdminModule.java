@@ -37,39 +37,36 @@ public class AdminModule extends InternalModule {
 
     @Override
     protected void configure() throws Exception {
+        AdminConfig adminConfig = new AdminConfigImpl();
+        bind(AdminConfig.class).to(adminConfig).export();
+
         database().codecs().add(new ProfileCodec());
 
         ProfileService profileService = new ProfileService(database().get());
         bind(ProfileService.class).to(profileService);
 
-        AdminConfig adminConfig = new AdminConfigImpl();
-        bind(AdminConfig.class).to(adminConfig);
-
         AdminTemplateRepository resourceRepository;
-
         if (property("site.admin.dir").isPresent()) {
             resourceRepository = new AdminTemplateRepository(new FolderResourceRepository(new File(property("site.admin.dir").get())));
         } else {
             resourceRepository = new AdminTemplateRepository(new ClasspathResourceRepository("/sited"));
         }
-
         template().add(resourceRepository);
-
 
         AssetsHandler assetsHandler = new AssetsHandler(template().assets()).enableCache().cacheExpireAfter(120);
         route().get("/admin/assets/lib/*", assetsHandler)
-                .get("/admin/login.html", assetsHandler);
+            .get("/admin/login.html", assetsHandler);
 
         AdminController adminController = new AdminController(site(), profileService, template().assets());
         route().get("/admin/install.html", adminController::install)
-                .post("/admin/profile", adminController::profile)
-                .get("/admin/index.html", adminController::index);
+            .post("/admin/profile", adminController::profile)
+            .get("/admin/index.html", adminController::index);
 
         adminConfig.route()
-                .get("/admin/assets/*", assetsHandler);
+            .get("/admin/assets/*", assetsHandler);
 
         adminConfig.route()
-                .get("/admin/api/template/", request -> Response.bean(template().all()));
+            .get("/admin/api/template/", request -> Response.bean(template().all()));
     }
 
     private class AdminConfigImpl implements AdminConfig {

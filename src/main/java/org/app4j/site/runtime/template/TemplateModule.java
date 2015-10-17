@@ -115,13 +115,15 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     @Override
     protected void configure() throws Exception {
+        bind(TemplateConfig.class).to(this).export();
+
         assetsConfig = new AssetsConfig(cache().createDiskCache("assets", Integer.MAX_VALUE, TimeUnit.DAYS));
         add(new TemplateRepository(new FolderResourceRepository(dir)));
 
         templateDialect
-                .add(new TemplateHrefAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
-                .add(new TemplateSrcAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
-                .add(new LangAttrProcessor(dialect()));
+            .add(new TemplateHrefAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
+            .add(new TemplateSrcAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
+            .add(new LangAttrProcessor(dialect()));
 
 
         if (site().isDebugEnabled()) {
@@ -132,15 +134,15 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         templateEngine.addTemplateResolver(templateResolver);
 
         AssetsHandler assetsHandler = new AssetsHandler(assetsConfig)
-                .enableMd5Path();
+            .enableMd5Path();
 
         if (!site().isDebugEnabled()) {
             assetsHandler.enableMinifyJS().enableMinifyCSS();
         }
 
         route().get("/assets/*", assetsHandler)
-                .get("/robots.txt", assetsHandler)
-                .get("/favicon.ico", assetsHandler);
+            .get("/robots.txt", assetsHandler)
+            .get("/favicon.ico", assetsHandler);
 
         error().on(BadRequestException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
@@ -166,8 +168,8 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         List<Template> templates = Lists.newArrayList();
         templateRepositories.stream().forEach(templateRepository -> {
             templates.addAll(Lists.newArrayList(templateRepository)
-                    .stream()
-                    .filter(resource -> "html".equals(Files.getFileExtension(resource.path()))).collect(Collectors.toList()));
+                .stream()
+                .filter(resource -> "html".equals(Files.getFileExtension(resource.path()))).collect(Collectors.toList()));
         });
         return templates;
     }

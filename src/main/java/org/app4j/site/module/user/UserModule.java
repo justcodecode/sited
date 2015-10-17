@@ -28,9 +28,9 @@ public class UserModule extends Module {
     @Override
     protected void configure() throws Exception {
         site().database().codecs()
-                .add(new UserCodec())
-                .add(new RoleCodec())
-                .add(new PermissionCodec());
+            .add(new UserCodec())
+            .add(new RoleCodec())
+            .add(new PermissionCodec());
 
         UserService userService = new UserService(site().database().get());
         bind(UserService.class).to(userService);
@@ -53,13 +53,13 @@ public class UserModule extends Module {
 
         UserController userController = new UserController(userService);
         route().post("/login", userController::login)
-                .get("/logout", userController::logout);
+            .get("/logout", userController::logout);
 
         //Admin
         AdminUserRESTController adminUserRESTController = new AdminUserRESTController(userService);
         admin().route()
-                .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
-                .get("/admin/api/user/", adminUserRESTController::findUsers);
+            .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
+            .get("/admin/api/user/", adminUserRESTController::findUsers);
 
         event().on(AdminUser.class, new EventHandler<AdminUser>() {
             @Override

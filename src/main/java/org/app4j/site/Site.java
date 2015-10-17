@@ -73,15 +73,6 @@ public class Site extends DefaultScope {
     private final String host;
     private final Integer port;
 
-    private final DatabaseModule databaseModule;
-    private final RouteModule routeModule;
-    private final TemplateModule templateModule;
-    private final EventModule eventModule;
-    private final ErrorModule errorModule;
-    private final AdminModule adminModule;
-    private final CacheModule cacheModule;
-    private final IndexModule indexModule;
-
     public Site(File dir) {
         super(null);
         this.dir = dir;
@@ -103,22 +94,14 @@ public class Site extends DefaultScope {
             baseCdnURLs = Lists.newArrayList(baseURL());
         }
 
-        databaseModule = new DatabaseModule();
-        install(databaseModule);
-        routeModule = new RouteModule();
-        install(routeModule);
-        templateModule = new TemplateModule(dir("web"));
-        install(templateModule);
-        eventModule = new EventModule();
-        install(eventModule);
-        cacheModule = new CacheModule(dir("cache"));
-        install(cacheModule);
-        errorModule = new ErrorModule();
-        install(errorModule);
-        adminModule = new AdminModule();
-        install(adminModule);
-        indexModule = new IndexModule();
-        install(indexModule);
+        install(new DatabaseModule());
+        install(new RouteModule());
+        install(new TemplateModule(dir("web")));
+        install(new EventModule());
+        install(new CacheModule(dir("cache")));
+        install(new ErrorModule());
+        install(new AdminModule());
+        install(new IndexModule());
 
         bind(Site.class).to(this);
     }
@@ -158,7 +141,6 @@ public class Site extends DefaultScope {
     public final int port() {
         return port;
     }
-
 
     public Site onShutdown(Hook shutdownHook) {
         shutdownHooks.add(shutdownHook);
@@ -252,34 +234,6 @@ public class Site extends DefaultScope {
     }
 
 
-    public TemplateConfig template() {
-        return templateModule;
-    }
-
-    public ErrorConfig error() {
-        return errorModule;
-    }
-
-    public CacheConfig cache() {
-        return cacheModule;
-    }
-
-    public EventConfig event() {
-        return eventModule;
-    }
-
-    public DatabaseConfig database() {
-        return databaseModule;
-    }
-
-    public RouteConfig route() {
-        return routeModule;
-    }
-
-    public AdminConfig admin() {
-        return adminModule.require(AdminConfig.class);
-    }
-
     public <T> Property<T> property(String key, Class<T> type) {
         String value = properties.getProperty(key);
         if (value == null) {
@@ -333,7 +287,36 @@ public class Site extends DefaultScope {
     }
 
     public IndexConfig index() {
-        return indexModule;
+        return require(IndexConfig.class);
+    }
+
+
+    public TemplateConfig template() {
+        return require(TemplateConfig.class);
+    }
+
+    public ErrorConfig error() {
+        return require(ErrorConfig.class);
+    }
+
+    public CacheConfig cache() {
+        return require(CacheConfig.class);
+    }
+
+    public EventConfig event() {
+        return require(EventConfig.class);
+    }
+
+    public DatabaseConfig database() {
+        return require(DatabaseConfig.class);
+    }
+
+    public RouteConfig route() {
+        return require(RouteConfig.class);
+    }
+
+    public AdminConfig admin() {
+        return require(AdminConfig.class);
     }
 
     @Override
