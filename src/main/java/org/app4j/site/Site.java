@@ -57,7 +57,8 @@ import java.util.stream.Collectors;
  * @author chi
  */
 public class Site extends DefaultScope {
-    private final List<Runnable> shutdownHooks = Lists.newArrayList();
+    private final List<Hook> shutdownHooks = Lists.newArrayList();
+
     private final Logger logger = LoggerFactory.getLogger(Site.class);
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
     private final Properties properties;
@@ -159,7 +160,7 @@ public class Site extends DefaultScope {
     }
 
 
-    public Site onShutdown(Runnable shutdownHook) {
+    public Site onShutdown(Hook shutdownHook) {
         shutdownHooks.add(shutdownHook);
         return this;
     }
@@ -204,7 +205,10 @@ public class Site extends DefaultScope {
     }
 
     public final void stop() {
-        Lists.reverse(shutdownHooks).forEach(java.lang.Runnable::run);
+        Lists.reverse(shutdownHooks).forEach(hook -> {
+            logger.info("run shutdown hook, %s -> %s", hook.module.getClass(), hook.runnable);
+            hook.runnable.run();
+        });
     }
 
     private Graph<Class<? extends Module>> dependencyGraph() {
@@ -345,5 +349,15 @@ public class Site extends DefaultScope {
             .add("host", host)
             .add("port", port)
             .toString();
+    }
+
+    static class Hook {
+        public final Module module;
+        public final Runnable runnable;
+
+        Hook(Module module, Runnable runnable) {
+            this.module = module;
+            this.runnable = runnable;
+        }
     }
 }

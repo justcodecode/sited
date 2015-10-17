@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.app4j.site.Module;
+import org.app4j.site.runtime.database.Dumper;
 import org.app4j.site.runtime.database.SimpleCodecRegistry;
 import org.app4j.site.runtime.event.Task;
 import org.app4j.site.runtime.index.service.Index;
-import org.app4j.site.runtime.database.Dumper;
 
 import java.io.File;
 import java.util.Map;
@@ -47,5 +47,6 @@ public class IndexModule extends Module implements IndexConfig {
     protected void configure() throws Exception {
         indexDir = site().dir("index");
         codecRegistry = database().codecs();
+        onShutdown(() -> indices.values().stream().forEach(Index::stop));
     }
 }

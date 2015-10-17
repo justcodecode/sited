@@ -38,14 +38,14 @@ public abstract class Module extends DefaultScope {
 
     public List<Class<? extends Module>> dependencies() {
         return Arrays.asList(AdminModule.class,
-                CacheModule.class, DatabaseModule.class,
-                ErrorModule.class, EventModule.class,
-                EventModule.class, RouteModule.class,
-                TemplateModule.class, VariableModule.class);
+            CacheModule.class, DatabaseModule.class,
+            ErrorModule.class, EventModule.class,
+            EventModule.class, RouteModule.class,
+            TemplateModule.class, VariableModule.class);
     }
 
     protected Module onShutdown(Runnable shutdownHook) {
-        site().onShutdown(shutdownHook);
+        site().onShutdown(new Site.Hook(this, shutdownHook));
         return this;
     }
 
