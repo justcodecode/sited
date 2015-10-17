@@ -46,11 +46,11 @@ public class Sited {
         logger.info("%s", site);
         logger.info("site started in %sms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
         server.start();
-
     }
 
     public void stop() {
         server.stop();
         site.stop();
+        logger.info("site stopped");
     }
 }

@@ -106,7 +106,7 @@ public class Site extends DefaultScope {
         install(databaseModule);
         routeModule = new RouteModule();
         install(routeModule);
-        templateModule = new TemplateModule(dir("template"));
+        templateModule = new TemplateModule(dir("web"));
         install(templateModule);
         eventModule = new EventModule();
         install(eventModule);
