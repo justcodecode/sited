@@ -48,6 +48,7 @@ public abstract class Module extends DefaultScope {
     }
 
     protected Module onStartup(Runnable startupHook) {
+        site().onStartup(new Site.Hook(this, startupHook));
         return this;
     }
 

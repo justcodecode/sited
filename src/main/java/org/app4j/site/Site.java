@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
  */
 public class Site extends DefaultScope {
     private final List<Hook> shutdownHooks = Lists.newArrayList();
+    private final List<Hook> startupHooks = Lists.newArrayList();
 
     private final Logger logger = LoggerFactory.getLogger(Site.class);
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
@@ -147,6 +148,11 @@ public class Site extends DefaultScope {
         return this;
     }
 
+    public Site onStartup(Hook startupHook) {
+        startupHooks.add(startupHook);
+        return this;
+    }
+
     public Site install(Class<? extends Module> moduleClass) {
         if (modules.containsKey(moduleClass)) {
             return this;
@@ -173,15 +179,19 @@ public class Site extends DefaultScope {
     }
 
     public final void start() {
-        for (final Class<? extends Module> type : moduleGraph()) {
+        for (final Class<? extends Module> module : moduleGraph()) {
             try {
-                Module module = modules.get(type);
-                module.configure();
+                modules.get(module).configure();
             } catch (Exception e) {
-                logger.error("failed to start module {}", type.getName(), e);
+                logger.error("failed to start module %s", module.getName(), e);
                 throw new Error(e);
             }
         }
+
+        startupHooks.forEach(hook -> {
+            logger.info("run startup hook, %s -> %s", hook.module.getClass(), hook.runnable);
+            hook.runnable.run();
+        });
     }
 
     public final void stop() {

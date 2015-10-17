@@ -6,6 +6,7 @@ import com.google.common.io.Files;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.cache.CacheModule;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
@@ -75,7 +76,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteModule.class);
+        return Arrays.asList(RouteModule.class, CacheModule.class);
     }
 
     public TemplateModule add(ResourceRepository resourceRepository) {
