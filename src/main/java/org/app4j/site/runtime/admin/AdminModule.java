@@ -4,10 +4,9 @@ import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
-import org.app4j.site.runtime.admin.codec.ProfileCodec;
 import org.app4j.site.runtime.admin.service.AdminTemplateRepository;
 import org.app4j.site.runtime.admin.service.Console;
-import org.app4j.site.runtime.admin.service.ProfileService;
+import org.app4j.site.runtime.admin.service.InstallService;
 import org.app4j.site.runtime.admin.web.AdminController;
 import org.app4j.site.runtime.admin.web.AdminHandler;
 import org.app4j.site.runtime.route.RouteConfig;
@@ -45,10 +44,8 @@ public class AdminModule extends InternalModule {
         AdminConfig adminConfig = new AdminConfigImpl();
         bind(AdminConfig.class).to(adminConfig).export();
 
-        database().codecs().add(new ProfileCodec());
-
-        ProfileService profileService = new ProfileService(database().get());
-        bind(ProfileService.class).to(profileService);
+        InstallService installService = new InstallService(database().get());
+        bind(InstallService.class).to(installService);
 
         AdminTemplateRepository resourceRepository;
         if (property("site.admin.dir").isPresent()) {
@@ -62,7 +59,7 @@ public class AdminModule extends InternalModule {
         route().get("/admin/assets/lib/*", assetsHandler)
             .get("/admin/login.html", assetsHandler);
 
-        AdminController adminController = new AdminController(site(), profileService, template().assets());
+        AdminController adminController = new AdminController(site(), installService, template().assets());
         route().get("/admin/install.html", adminController::install)
             .post("/admin/profile", adminController::profile)
             .get("/admin/index.html", adminController::index);
