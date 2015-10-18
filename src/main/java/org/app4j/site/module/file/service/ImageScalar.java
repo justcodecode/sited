@@ -1,8 +1,6 @@
 package org.app4j.site.module.file.service;
 
 
-import org.app4j.site.util.Scalr;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -39,13 +37,10 @@ public class ImageScalar {
             BufferedImage src = ImageIO.read(new ByteArrayInputStream(content));
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-            BufferedImage result = Scalr.resize(chop(src, height, width), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT,
-                width, height, Scalr.OP_ANTIALIAS);
-
             if ("jpg".equals(imageType) || "jpeg".equals(imageType)) {
-                writeJPG(result, out, 0.5);
+                writeJPG(src, out, 0.5);
             } else {
-                ImageIO.write(result, imageType, out);
+                ImageIO.write(src, imageType, out);
             }
             return out.toByteArray();
         } catch (IOException e) {
