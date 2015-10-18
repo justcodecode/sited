@@ -1,5 +1,6 @@
 package org.app4j.site.runtime.template.service;
 
+import org.app4j.site.runtime.template.Template;
 import org.app4j.site.util.ClasspathResourceRepository;
 import org.app4j.site.util.Resource;
 import org.app4j.site.util.ResourceRepository;

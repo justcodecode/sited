@@ -6,7 +6,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.runtime.database.FindView;
 import org.app4j.site.runtime.index.service.Index;
 
@@ -24,7 +24,7 @@ public class PageIndexService {
     public FindView<Page> relatedPages(Page page, int fetchSize) {
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         try {
-            Query query = new QueryParser("body", analyzer).parse(page.getTitle());
+            Query query = new QueryParser("body", analyzer).parse(page.title());
             builder.add(query, BooleanClause.Occur.MUST);
             return index.search(builder.build(), 0, fetchSize);
         } catch (Exception e) {

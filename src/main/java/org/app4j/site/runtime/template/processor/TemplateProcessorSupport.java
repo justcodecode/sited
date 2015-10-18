@@ -1,7 +1,7 @@
 package org.app4j.site.runtime.template.processor;
 
 import com.google.common.base.Strings;
-import org.app4j.site.runtime.template.service.Template;
+import org.app4j.site.runtime.template.Template;
 import org.app4j.site.util.JSON;
 import org.app4j.site.util.Value;
 import org.app4j.site.web.Request;

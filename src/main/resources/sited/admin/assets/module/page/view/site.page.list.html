@@ -52,7 +52,7 @@
         <tbody ng-show="!isLoading">
         <tr ng-repeat="row in rowCollection" st-select-row="row" st-select-mode="multiple">
             <td table-checkbox="row"></td>
-            <td><a href="{{row.path}}" target="_blank">{{row.path}}</a></td>
+            <td><a href="{{row.pagePath}}" target="_blank">{{row.path}}</a></td>
             <td>{{row.title}}</td>
             <td>{{row.type}}</td>
             <td title="{{row.description}}">{{row.description | limitTo: 30 }}{{row.description.length > 30 ? '...' :

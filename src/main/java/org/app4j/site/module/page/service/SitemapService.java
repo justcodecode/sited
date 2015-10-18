@@ -1,7 +1,7 @@
 package org.app4j.site.module.page.service;
 
 import com.google.common.base.Charsets;
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.module.page.service.sitemap.SitemapBuilder;
 import org.app4j.site.module.page.service.sitemap.SitemapURL;
 import org.app4j.site.module.page.service.sitemap.SitemapURLLoader;
@@ -41,7 +41,7 @@ public class SitemapService {
                     @Override
                     public SitemapURL next() {
                         Page page = dumper.next();
-                        return new SitemapURL(page.getPath(), page.getUpdateFrequency(), page.getLastUpdateTime(), page.getPriority());
+                        return new SitemapURL(page.path(), page.updateFrequency(), page.lastUpdateTime(), page.priority());
                     }
                 };
             }

@@ -1,6 +1,5 @@
 package org.app4j.site.runtime.template;
 
-import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.thymeleaf.TemplateEngine;

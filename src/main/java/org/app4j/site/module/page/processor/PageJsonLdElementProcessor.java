@@ -1,9 +1,8 @@
 package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.module.page.template.PageObject;
+import org.app4j.site.module.page.variable.PageVariable;
 import org.app4j.site.runtime.template.service.TemplateDialect;
-import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
 import org.app4j.site.util.JSON;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -17,7 +16,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class PageJsonLdElementProcessor extends AbstractElementTagProcessor implements TemplateProcessorSupport {
+public class PageJsonLdElementProcessor extends AbstractElementTagProcessor implements PageProcessorSupport {
     public static final int PRECEDENCE = 1000;
     public static final String ELEMENT_NAME = "json-ld";
 
@@ -30,12 +29,12 @@ public class PageJsonLdElementProcessor extends AbstractElementTagProcessor impl
 
 
     @Override
-    protected void doProcess(ITemplateProcessingContext processingContext, IProcessableElementTag tag, String tagTemplateName, int tagLine, int tagCol, IElementTagStructureHandler structureHandler) {
-        PageObject pageObject = (PageObject) eval(tag.getAttributes().getValue("page"), processingContext);
-        structureHandler.replaceWith("<script type=\"application/ld+json\">" + jsonLd(pageObject) + "</script>", false);
+    protected void doProcess(ITemplateProcessingContext templateContext, IProcessableElementTag tag, String tagTemplateName, int tagLine, int tagCol, IElementTagStructureHandler structureHandler) {
+        PageVariable.Page page = pageContext(templateContext).page();
+        structureHandler.replaceWith("<script type=\"application/ld+json\">" + jsonLd(page) + "</script>", false);
     }
 
-    String jsonLd(PageObject page) {
+    String jsonLd(PageVariable.Page page) {
         Map<String, Object> json = Maps.newHashMap();
 
         json.put("@context", "http://schema.org");

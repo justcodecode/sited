@@ -5,6 +5,6 @@ import java.io.InputStream;
 /**
  * @author chi
  */
-public interface BodyHandler {
-    InputStream handle(ResponseImpl response);
+public interface BodyHandler<T extends Body> {
+    InputStream handle(T body);
 }

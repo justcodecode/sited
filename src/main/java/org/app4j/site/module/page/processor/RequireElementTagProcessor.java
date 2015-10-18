@@ -1,10 +1,10 @@
-package org.app4j.site.runtime.variable.processor;
+package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
 import org.app4j.site.DefaultScope;
+import org.app4j.site.module.page.variable.VariableConfig;
+import org.app4j.site.module.page.variable.VariableRef;
 import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
-import org.app4j.site.runtime.variable.VariableConfig;
-import org.app4j.site.runtime.variable.VariableRef;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.context.TemplateProcessingContext;
 import org.thymeleaf.context.VariablesMap;
@@ -39,7 +39,8 @@ public class RequireElementTagProcessor extends AbstractElementTagProcessor impl
         }
 
         String name = tag.getAttributes().getValue("name");
-        VariableRef ref = new VariableRef(name, parameters);
+        String as = tag.getAttributes().getValue("as");
+        VariableRef variableRef = new VariableRef(name, as, parameters);
         TemplateScope templateScope = new TemplateScope((DefaultScope) request(processingContext));
 
         for (String variableName : processingContext.getVariables().getVariableNames()) {
@@ -47,10 +48,10 @@ public class RequireElementTagProcessor extends AbstractElementTagProcessor impl
             bind(templateScope, variableName, value);
         }
 
-        Object value = variableConfig.eval(ref, templateScope);
+        Object value = variableConfig.eval(variableRef, templateScope);
 
         variables.decreaseLevel();
-        variables.put(ref.param("as").orElse(name).get(), value);
+        variables.put(variableRef.param("as").orElse(name).get(), value);
         variables.increaseLevel();
 
         structureHandler.removeElement();

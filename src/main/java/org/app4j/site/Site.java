@@ -15,15 +15,14 @@ import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.error.ErrorConfig;
 import org.app4j.site.runtime.error.ErrorHandler;
 import org.app4j.site.runtime.error.ErrorModule;
-import org.app4j.site.runtime.scheduler.SchedulerConfig;
-import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.app4j.site.runtime.index.IndexConfig;
 import org.app4j.site.runtime.index.IndexModule;
 import org.app4j.site.runtime.route.RouteConfig;
 import org.app4j.site.runtime.route.RouteModule;
+import org.app4j.site.runtime.scheduler.SchedulerConfig;
+import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
-import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.runtime.track.TrackConfig;
 import org.app4j.site.util.Graph;
 import org.app4j.site.util.JSON;
@@ -33,7 +32,6 @@ import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +47,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -66,6 +63,9 @@ public class Site extends DefaultScope {
     private final Properties properties;
 
     private final File dir;
+    private final String name;
+    private final String description;
+    private final String logoURL;
     private final Locale locale;
     private final Charset charset;
     private final Boolean adminEnabled;
@@ -82,10 +82,17 @@ public class Site extends DefaultScope {
 
         host = property("site.host").orElse("0.0.0.0").get();
         port = property("site.port", Integer.class).orElse(8080).get();
+
+        name = property("site.name").orElse(host()).get();
+        description = property("site.description").orElse("").get();
+        logoURL = property("site.logoURL").orElse("").get();
+
         charset = Charset.forName(property("site.charset").orElse(Charsets.UTF_8.name()).get());
         locale = Locale.forLanguageTag(property("site.locale").orElse(Locale.getDefault().toLanguageTag()).get());
+
         debugEnabled = property("site.debug", Boolean.class).orElse(false).get();
         adminEnabled = property("site.admin", Boolean.class).orElse(true).get();
+
         baseURL = property("site.baseURL").orElse(defaultBaseURL()).get();
         if (property("site.baseCdnURLs").isPresent()) {
             baseCdnURLs = Arrays.stream(property("site.baseCdnURLs").get().split(","))
@@ -118,6 +125,18 @@ public class Site extends DefaultScope {
             throw new Error(e);
         }
         return properties;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String description() {
+        return description;
+    }
+
+    public String logoURL() {
+        return logoURL;
     }
 
     private Path defaultDir() {
@@ -219,28 +238,14 @@ public class Site extends DefaultScope {
         try {
             return handler.handle(request);
         } catch (Throwable e) {
-            logger.error("failed to handle ", e);
-            ErrorHandler errorHandler = error().handler(e.getClass());
-            return errorHandler.handle(request, e);
+            return handleError(request, e);
         }
     }
 
-    public Response render(String templatePath, Map<String, Object> model) {
-        try {
-            Optional<Template> template = template().get(templatePath);
-            if (!template.isPresent()) {
-                throw new NotFoundException(templatePath);
-            }
-            Context context = new Context();
-            context.setVariable("template", template.get());
-            context.setVariables(model);
-            return Response.text(template().engine().process(templatePath, context), "text/html");
-        } catch (Throwable e) {
-            ErrorHandler errorHandler = error().handler(e.getClass());
-            return errorHandler.handle((Request) model.get("request"), e);
-        }
+    public Response handleError(Request request, Throwable e) {
+        ErrorHandler errorHandler = error().handler(e.getClass());
+        return errorHandler.handle(request, e);
     }
-
 
     public <T> Property<T> property(String key, Class<T> type) {
         String value = properties.getProperty(key);

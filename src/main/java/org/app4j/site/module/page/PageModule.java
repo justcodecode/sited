@@ -4,15 +4,17 @@ import com.google.common.collect.Maps;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.module.file.FileModule;
-import org.app4j.site.module.page.domain.Page;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
 import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.module.page.service.codec.PageCodec;
+import org.app4j.site.module.page.variable.PageVariable;
+import org.app4j.site.module.page.variable.RequestVariable;
+import org.app4j.site.module.page.variable.SiteVariable;
+import org.app4j.site.module.page.variable.VariableConfig;
 import org.app4j.site.module.page.web.PageHandler;
 import org.app4j.site.module.page.web.SitemapController;
-import org.app4j.site.module.page.web.admin.AdminPagePreviewHandler;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
 import org.app4j.site.module.page.web.admin.AdminSitemapRESTController;
 import org.app4j.site.module.user.UserModule;
@@ -31,13 +33,15 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author chi
  */
-public class PageModule extends Module {
+public class PageModule extends Module implements PageConfig {
     private final Logger logger = LoggerFactory.getLogger(PageModule.class);
+    private final VariableConfig variableConfig = new VariableConfig();
 
     public PageModule(Site site) {
         super(site);
@@ -64,7 +68,7 @@ public class PageModule extends Module {
         PageIndexService pageIndexService = new PageIndexService(index);
         bind(PageIndexService.class).to(pageIndexService);
 
-        File templateDir = new File(property("site.template.dir").orElse(site().dir("template").getAbsolutePath()).get());
+        File templateDir = new File(property("site.web.dir").orElse(site().dir("web").getAbsolutePath()).get());
         Files.createDirIfNoneExists(templateDir);
 
         template()
@@ -74,7 +78,7 @@ public class PageModule extends Module {
             .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
 
 
-        PageHandler pageHandler = new PageHandler(site(), pageService, pageIndexService);
+        PageHandler pageHandler = new PageHandler(variableConfig);
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
 
@@ -83,8 +87,19 @@ public class PageModule extends Module {
         route().get("/sitemap/*", sitemapController::sitemap);
 
 
+        variables()
+            .addGlobalVariable("page", new PageVariable(pageService))
+            .addGlobalVariable("request", new RequestVariable())
+            .addGlobalVariable("site", new SiteVariable(site()));
+
+
+        if (site().isAdminEnabled()) {
+            configureAdmin(pageService, pageIndexService, sitemapService);
+        }
+    }
+
+    void configureAdmin(PageService pageService, PageIndexService pageIndexService, SitemapService sitemapService) {
         AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, scheduler());
-        AdminPagePreviewHandler adminPagePreviewHandler = new AdminPagePreviewHandler(site(), pageService, pageIndexService);
         admin().route()
             .get("/admin/api/site", request -> {
                 Map<String, Object> site = Maps.newHashMap();
@@ -96,10 +111,19 @@ public class PageModule extends Module {
             .get("/admin/api/page/:id", adminPageRESTController::getPage)
             .put("/admin/api/page/:id", adminPageRESTController::updatePage)
             .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
-            .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex)
-            .post("/admin/draft/*", adminPagePreviewHandler);
+            .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex);
 
         AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, scheduler());
         admin().route().get("/admin/api/page/rebuild-sitemap", adminSitemapRESTController::rebuildSitemap);
+    }
+
+    @Override
+    public Optional<Page> get(String path) {
+        throw new Error("not implement");
+    }
+
+    @Override
+    public VariableConfig variables() {
+        return variableConfig;
     }
 }

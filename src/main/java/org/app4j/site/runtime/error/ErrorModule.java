@@ -3,7 +3,10 @@ package org.app4j.site.runtime.error;
 import com.google.common.collect.Maps;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.web.Response;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 /**
@@ -19,6 +22,12 @@ public class ErrorModule extends InternalModule implements ErrorConfig {
     @Override
     protected void configure() throws Exception {
         bind(ErrorConfig.class).to(this).export();
+
+        on(Throwable.class, (request, e) -> {
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter));
+            return Response.text(stringWriter.toString()).setContentType("text/plain").setStatusCode(500);
+        });
     }
 
     @Override
@@ -31,7 +40,7 @@ public class ErrorModule extends InternalModule implements ErrorConfig {
     public ErrorHandler handler(Class<? extends Throwable> error) {
         ErrorHandler handler = handlers.get(error);
         if (handler == null) {
-            handlers.get(Throwable.class);
+            return handlers.get(Throwable.class);
         }
         return handler;
     }

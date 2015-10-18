@@ -1,6 +1,6 @@
 package org.app4j.site.module.page.service.codec;
 
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.runtime.database.DomainCodec;
 import org.bson.Document;
 

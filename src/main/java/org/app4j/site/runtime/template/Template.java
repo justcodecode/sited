@@ -1,19 +1,22 @@
-package org.app4j.site.runtime.template.service;
+package org.app4j.site.runtime.template;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.google.common.collect.Maps;
 import org.app4j.site.util.Resource;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * @author chi
  */
 public class Template implements JsonSerializable {
+    public final Map<String, Object> context = Maps.newHashMap();
     private final Resource resource;
 
     public Template(Resource resource) {

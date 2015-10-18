@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.variable;
+package org.app4j.site.module.page.variable;
 
 import org.app4j.site.util.JSON;
 import org.app4j.site.util.Value;
@@ -9,16 +9,14 @@ import java.util.Map;
  * @author chi
  */
 public class VariableRef {
-    private final String name;
+    public final String name;
+    public final String as;
     private final Map<String, Object> arguments;
 
-    public VariableRef(String name, Map<String, Object> parameters) {
+    public VariableRef(String name, String as, Map<String, Object> arguments) {
         this.name = name;
-        this.arguments = parameters;
-    }
-
-    public String name() {
-        return name;
+        this.as = as;
+        this.arguments = arguments;
     }
 
     public <K> Value<K> param(String key, Class<K> type) {

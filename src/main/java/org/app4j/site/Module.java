@@ -16,7 +16,6 @@ import org.app4j.site.runtime.scheduler.SchedulerModule;
 import org.app4j.site.runtime.template.TemplateConfig;
 import org.app4j.site.runtime.template.TemplateModule;
 import org.app4j.site.runtime.track.TrackConfig;
-import org.app4j.site.runtime.variable.VariableModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,7 @@ public abstract class Module extends DefaultScope {
             CacheModule.class, DatabaseModule.class,
             ErrorModule.class, SchedulerModule.class,
             SchedulerModule.class, RouteModule.class,
-            TemplateModule.class, VariableModule.class);
+            TemplateModule.class);
     }
 
     protected Module onShutdown(Runnable shutdownHook) {

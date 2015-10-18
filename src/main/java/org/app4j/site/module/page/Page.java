@@ -1,4 +1,4 @@
-package org.app4j.site.module.page.domain;
+package org.app4j.site.module.page;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author chi
  */
 public class Page extends Document {
-    public String getId() {
+    public String id() {
         return getObjectId("_id").toHexString();
     }
 
@@ -18,7 +18,7 @@ public class Page extends Document {
         put("_id", new ObjectId(id));
     }
 
-    public String getTitle() {
+    public String title() {
         return getString("title");
     }
 
@@ -26,7 +26,7 @@ public class Page extends Document {
         put("title", title);
     }
 
-    public String getPath() {
+    public String path() {
         return getString("path");
     }
 
@@ -34,15 +34,15 @@ public class Page extends Document {
         put("path", path);
     }
 
-    public String getTemplate() {
-        return getString("template");
+    public String templatePath() {
+        return getString("templatePath");
     }
 
-    public void setTemplate(String template) {
-        put("template", template);
+    public void setTemplatePath(String templatePath) {
+        put("templatePath", templatePath);
     }
 
-    public String getDescription() {
+    public String description() {
         return getString("description");
     }
 
@@ -50,16 +50,12 @@ public class Page extends Document {
         put("description", description);
     }
 
-    public Type getType() {
-        return Type.valueOf(getString("type"));
-    }
-
-    public void setType(String type) {
-        put("type", type);
+    public Type type() {
+        return path().endsWith("/") ? Type.DIRECTORY : Type.PAGE;
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getCategories() {
+    public List<String> categories() {
         return get("categories", List.class);
     }
 
@@ -67,15 +63,15 @@ public class Page extends Document {
         put("categories", categories);
     }
 
-    public String getKeyword() {
-        return getString("keyword");
+    public String name() {
+        return getString("name");
     }
 
-    public void setKeyword(String keyword) {
-        put("keyword", keyword);
+    public void setName(String name) {
+        put("name", name);
     }
 
-    public String getContent() {
+    public String content() {
         return getString("content");
     }
 
@@ -84,7 +80,7 @@ public class Page extends Document {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getTags() {
+    public List<String> tags() {
         return get("tags", List.class);
     }
 
@@ -92,15 +88,15 @@ public class Page extends Document {
         put("tags", tags);
     }
 
-    public String getLanguage() {
-        return getString("langugage");
+    public String language() {
+        return getString("language");
     }
 
     public void setLanguage(String language) {
         put("language", language);
     }
 
-    public String getUpdateFrequency() {
+    public String updateFrequency() {
         return getString("updateFrequency");
     }
 
@@ -108,7 +104,7 @@ public class Page extends Document {
         put("updateFrequency", updateFrequency);
     }
 
-    public String getPriority() {
+    public String priority() {
         return getString("priority");
     }
 
@@ -116,7 +112,7 @@ public class Page extends Document {
         put("priority", priority);
     }
 
-    public Date getCreateTime() {
+    public Date createTime() {
         return getDate("createTime");
     }
 
@@ -124,7 +120,7 @@ public class Page extends Document {
         put("createTime", createTime);
     }
 
-    public Date getLastUpdateTime() {
+    public Date lastUpdateTime() {
         return getDate("lastUpdateTime");
     }
 
@@ -132,7 +128,7 @@ public class Page extends Document {
         put("lastUpdateTime", lastUpdateTime);
     }
 
-    public int getStatus() {
+    public int status() {
         return getInteger("status");
     }
 
@@ -140,7 +136,7 @@ public class Page extends Document {
         put("status", status);
     }
 
-    public String getAuthor() {
+    public String author() {
         return getString("author");
     }
 
@@ -148,7 +144,7 @@ public class Page extends Document {
         put("author", author);
     }
 
-    public Date getPublishTime() {
+    public Date publishTime() {
         return getDate("publishTime");
     }
 
@@ -156,7 +152,7 @@ public class Page extends Document {
         put("publishTime", publishTime);
     }
 
-    public String getPublisher() {
+    public String publisher() {
         return getString("publisher");
     }
 
@@ -164,7 +160,7 @@ public class Page extends Document {
         put("publisher", publisher);
     }
 
-    public String getSubTitle() {
+    public String subTitle() {
         return getString("subTitle");
     }
 
@@ -172,17 +168,18 @@ public class Page extends Document {
         put("subTitle", subTitle);
     }
 
-    public String getImageURL() {
+    public String imageURL() {
         return getString("imageURL");
     }
 
-    public void setImageURL(String imageUrl) {
-        put("imageURL", imageUrl);
+    public void setImageURL(String imageURL) {
+        put("imageURL", imageURL);
     }
 
     public boolean isDirectory() {
-        return Type.DIRECTORY.equals(getType());
+        return Type.DIRECTORY.equals(type());
     }
+
 
     public enum Type {
         PAGE, DIRECTORY

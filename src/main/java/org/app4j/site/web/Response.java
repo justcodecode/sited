@@ -19,14 +19,8 @@ import java.util.Map;
  * @author chi
  */
 public interface Response {
-    static Response text(String text, int statusCode, String contentType) {
-        return new ResponseImpl(new TextBody(text))
-                .setContentType(contentType)
-                .setStatusCode(statusCode);
-    }
-
-    static Response text(String text, String contentType) {
-        return text(text, 200, contentType);
+    static Response text(String text) {
+        return new ResponseImpl(new TextBody(text));
     }
 
     static Response bean(Object bean) {
@@ -35,19 +29,19 @@ public interface Response {
 
     static Response bean(Object bean, int statusCode) {
         return new ResponseImpl(new BeanBody(bean))
-                .setContentType(MediaType.JSON_UTF_8.toString())
-                .setStatusCode(statusCode);
+            .setContentType(MediaType.JSON_UTF_8.toString())
+            .setStatusCode(statusCode);
     }
 
     static Response template(String templatePath, Map<String, Object> model) {
         return new ResponseImpl(new TemplateBody(templatePath, model))
-                .setContentType("text/html")
-                .setStatusCode(200);
+            .setContentType("text/html")
+            .setStatusCode(200);
     }
 
     static Response empty() {
         return new ResponseImpl(new TextBody(""))
-                .setStatusCode(200);
+            .setStatusCode(200);
     }
 
     static Response bytes(byte[] bytes) {
@@ -56,31 +50,31 @@ public interface Response {
 
     static Response bytes(byte[] bytes, String contentType) {
         return new ResponseImpl(new ByteArrayBody(bytes))
-                .setContentType(contentType)
-                .setStatusCode(200);
+            .setContentType(contentType)
+            .setStatusCode(200);
     }
 
     static Response file(File file) {
         return new ResponseImpl(new FileBody(file))
-                .setStatusCode(200);
+            .setStatusCode(200);
     }
 
     static Response redirect(String url) {
         return new ResponseImpl(new TextBody(""))
-                .setHeader("location", url)
-                .setStatusCode(302);
+            .setHeader("location", url)
+            .setStatusCode(302);
     }
 
     static Response redirect(String url, int statusCode) {
         Preconditions.checkState(statusCode == 301 || statusCode == 302, "invalid redirect status code %s", statusCode);
         return new ResponseImpl(new TextBody(""))
-                .setHeader("location", url)
-                .setStatusCode(statusCode);
+            .setHeader("location", url)
+            .setStatusCode(statusCode);
     }
 
     static Response pipe(InputStream inputStream) {
         return new ResponseImpl(new InputStreamBody(inputStream))
-                .setStatusCode(200);
+            .setStatusCode(200);
     }
 
     Response setHeader(String name, String value);

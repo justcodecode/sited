@@ -1,8 +1,8 @@
-package org.app4j.site.runtime.variable.processor;
+package org.app4j.site.module.page.variable.processor;
 
+import org.app4j.site.module.page.processor.RequireElementTagProcessor;
+import org.app4j.site.module.page.variable.VariableConfig;
 import org.app4j.site.runtime.template.service.TemplateDialect;
-import org.app4j.site.runtime.variable.VariableConfig;
-import org.app4j.site.runtime.variable.VariableModule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +19,8 @@ public class RequireElementTagProcessorTest {
 
     @Before
     public void setup() {
-        VariableConfig variableConfig = new VariableModule(null);
-        variableConfig.add("page", (ref, scope) -> new TestObject("some"));
+        VariableConfig variableConfig = new VariableConfig();
+        variableConfig.addVariable("page", (ref, scope) -> new TestObject("some"));
 
         TemplateDialect templateDialect = new TemplateDialect();
         templateDialect.add(new RequireElementTagProcessor(templateDialect, variableConfig));

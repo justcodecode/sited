@@ -1,6 +1,6 @@
 package org.app4j.site.module.page;
 
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.variable.VariableConfig;
 
 import java.util.Optional;
 
@@ -8,9 +8,7 @@ import java.util.Optional;
  * @author chi
  */
 public interface PageConfig {
-    Iterable<Page> pages();
-
     Optional<Page> get(String path);
 
-
+    VariableConfig variables();
 }

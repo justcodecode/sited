@@ -7,11 +7,11 @@ import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.runtime.InternalModule;
 import org.app4j.site.runtime.cache.CacheModule;
+import org.app4j.site.runtime.error.ErrorModule;
 import org.app4j.site.runtime.route.RouteModule;
 import org.app4j.site.runtime.template.processor.LangAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateHrefAttrProcessor;
 import org.app4j.site.runtime.template.processor.TemplateSrcAttrProcessor;
-import org.app4j.site.runtime.template.service.Template;
 import org.app4j.site.runtime.template.service.TemplateDialect;
 import org.app4j.site.runtime.template.service.TemplateRepository;
 import org.app4j.site.runtime.template.web.AssetsHandler;
@@ -74,7 +74,7 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
 
     @Override
     public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteModule.class, CacheModule.class);
+        return Arrays.asList(RouteModule.class, CacheModule.class, ErrorModule.class);
     }
 
     public TemplateModule add(ResourceRepository resourceRepository) {
@@ -147,19 +147,19 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
         error().on(BadRequestException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
             e.printStackTrace(new PrintWriter(stackTrace));
-            return Response.text(stackTrace.toString(), "text/html").setStatusCode(401);
+            return Response.text(stackTrace.toString()).setStatusCode(401);
         });
 
         error().on(NotFoundException.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
             e.printStackTrace(new PrintWriter(stackTrace));
-            return Response.text(stackTrace.toString(), "text/html").setStatusCode(404);
+            return Response.text(stackTrace.toString()).setStatusCode(404);
         });
 
         error().on(Throwable.class, (request, e) -> {
             StringWriter stackTrace = new StringWriter();
             e.printStackTrace(new PrintWriter(stackTrace));
-            return Response.text(stackTrace.toString(), "text/html").setStatusCode(500);
+            return Response.text(stackTrace.toString()).setStatusCode(500);
         });
     }
 

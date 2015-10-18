@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.runtime.database.Dumper;
 import org.app4j.site.runtime.database.FindView;
 import org.app4j.site.runtime.database.MongoCollectionDumper;
@@ -69,28 +69,27 @@ public class PageService {
     }
 
     public void saveOrUpdate(Page page) {
-        Optional<Page> oldPageOptional = findByPath(page.getPath());
+        Optional<Page> oldPageOptional = findByPath(page.path());
 
         if (oldPageOptional.isPresent()) {
-            page.setId(oldPageOptional.get().getId());
-            page.setCreateTime(oldPageOptional.get().getCreateTime());
+            page.setId(oldPageOptional.get().id());
+            page.setCreateTime(oldPageOptional.get().createTime());
         } else {
             page.setCreateTime(new Date());
         }
 
-        String path = page.getPath();
+        String path = page.path();
         Preconditions.checkState(path.startsWith("/"), "path %s must start with /", path);
 
         page.setCategories(parseCategories(path));
-        page.setType(path.endsWith("/") ? "directory" : "page");
 
-        String content = page.getContent();
+        String content = page.content();
 
         page.setStatus(1);
         page.setLastUpdateTime(new Date());
 
         if (oldPageOptional.isPresent()) {
-            documents.replaceOne(new Document("_id", new ObjectId(page.getId())), page);
+            documents.replaceOne(new Document("_id", new ObjectId(page.id())), page);
         } else {
             documents.insertOne(page);
         }

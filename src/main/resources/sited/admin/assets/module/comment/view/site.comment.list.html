@@ -37,7 +37,7 @@
         <tbody ng-show="!isLoading">
         <tr ng-repeat="row in rowCollection" st-select-row="row">
             <td table-checkbox="row"></td>
-            <td><a href="{{row.path}}" target="_blank" title="{{row.path}}">{{row.path | limitTo: 30}}{{row.path.length>
+            <td><a href="{{row.pagePath}}" target="_blank" title="{{row.path}}">{{row.path | limitTo: 30}}{{row.path.length>
                 30 ?'...' :''}}</a></td>
             <td>{{row.title}}</td>
             <td title="{{row.description}}">{{row.description | limitTo: 30 }}{{row.description.length > 30 ? '...' :

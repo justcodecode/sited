@@ -1,4 +1,4 @@
-package org.app4j.site.runtime.variable.processor;
+package org.app4j.site.module.page.processor;
 
 import org.app4j.site.Binding;
 import org.app4j.site.DefaultScope;

@@ -1,6 +1,6 @@
 package org.app4j.site.module.page.web.admin;
 
-import org.app4j.site.module.page.domain.Page;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.runtime.scheduler.SchedulerConfig;

@@ -1,12 +1,18 @@
 <!doctype html>
-<html lang="en-US">
+<html xmlns:j="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+
+    <j:require var="request"/>
+    <j:require var="site"/>
+    <j:require var="page" pagePath="${request.path()}" as="page"/>
+
     <title j:text="${page.title}">Page title</title>
 </head>
 <body>
 
-<h1 j:text="${page.title}">Page title</h1>
+<h1 j:text="${site.name()}">Page title</h1>
 
 <div j:each="page : ${page.relatedPages(10)}">
     <span j:text="${page.title}"></span>
