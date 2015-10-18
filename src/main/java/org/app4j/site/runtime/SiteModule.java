@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * @author chi
  */
-public abstract class InternalModule extends Module {
-    public InternalModule(Site site) {
+public abstract class SiteModule extends Module {
+    public SiteModule(Site site) {
         super(site);
     }
 

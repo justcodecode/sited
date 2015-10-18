@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 import org.app4j.site.runtime.cache.CacheModule;
 import org.app4j.site.runtime.error.ErrorModule;
 import org.app4j.site.runtime.route.RouteModule;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 /**
  * @author chi
  */
-public class TemplateModule extends InternalModule implements TemplateConfig {
+public class TemplateModule extends SiteModule implements TemplateConfig {
     private final TemplateDialect templateDialect = new TemplateDialect();
     private final TemplateResolver templateResolver = new TemplateResolver();
     private final TemplateEngine templateEngine = new TemplateEngine();

@@ -2,7 +2,7 @@ package org.app4j.site.runtime.track;
 
 import org.app4j.site.Module;
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 import org.app4j.site.runtime.database.DatabaseModule;
 import org.app4j.site.runtime.track.service.TrackingCodec;
 import org.app4j.site.runtime.track.service.TrackingService;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class TrackModule extends InternalModule implements TrackConfig {
+public class TrackModule extends SiteModule implements TrackConfig {
     public TrackModule(Site site) {
         super(site);
     }

@@ -8,8 +8,6 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
 import org.app4j.site.Site;
 import org.app4j.site.util.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayInputStream;
@@ -18,39 +16,40 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author chi
  */
 public class SiteHandler implements HttpHandler {
-    private final Logger logger = LoggerFactory.getLogger(SiteHandler.class);
-    private final Map<Class, BodyHandler> handlers = Maps.newHashMap();
+    private final Map<Class, Function<? extends Body, InputStream>> handlers = Maps.newHashMap();
     private final Site site;
 
     public SiteHandler(Site site) {
         this.site = site;
-        handlers.put(BeanBody.class, new BodyHandler<BeanBody>() {
+
+        handlers.put(BeanBody.class, new Function<BeanBody, InputStream>() {
             @Override
-            public InputStream handle(BeanBody body) {
+            public InputStream apply(BeanBody body) {
                 Object bean = body.bean;
                 return new ByteArrayInputStream(JSON.stringify(bean).getBytes(Charsets.UTF_8));
             }
         });
-        handlers.put(TextBody.class, new BodyHandler<TextBody>() {
+        handlers.put(TextBody.class, new Function<TextBody, InputStream>() {
             @Override
-            public InputStream handle(TextBody body) {
+            public InputStream apply(TextBody body) {
                 return new ByteArrayInputStream(body.text.getBytes(Charsets.UTF_8));
             }
         });
-        handlers.put(ByteArrayBody.class, new BodyHandler<ByteArrayBody>() {
+        handlers.put(ByteArrayBody.class, new Function<ByteArrayBody, InputStream>() {
             @Override
-            public InputStream handle(ByteArrayBody body) {
+            public InputStream apply(ByteArrayBody body) {
                 return new ByteArrayInputStream(body.bytes);
             }
         });
-        handlers.put(FileBody.class, new BodyHandler<FileBody>() {
+        handlers.put(FileBody.class, new Function<FileBody, InputStream>() {
             @Override
-            public InputStream handle(FileBody body) {
+            public InputStream apply(FileBody body) {
                 try {
                     return new FileInputStream(body.file);
                 } catch (IOException e) {
@@ -58,18 +57,18 @@ public class SiteHandler implements HttpHandler {
                 }
             }
         });
-        handlers.put(TemplateBody.class, new BodyHandler<TemplateBody>() {
+        handlers.put(TemplateBody.class, new Function<TemplateBody, InputStream>() {
             @Override
-            public InputStream handle(TemplateBody body) {
+            public InputStream apply(TemplateBody body) {
                 Context context = new Context();
                 context.setVariables(body.model);
                 String html = site.template().engine().process(body.templatePath, context);
                 return new ByteArrayInputStream(html.getBytes(Charsets.UTF_8));
             }
         });
-        handlers.put(InputStreamBody.class, new BodyHandler<InputStreamBody>() {
+        handlers.put(InputStreamBody.class, new Function<InputStreamBody, InputStream>() {
             @Override
-            public InputStream handle(InputStreamBody body) {
+            public InputStream apply(InputStreamBody body) {
                 return body.inputStream;
             }
         });
@@ -95,12 +94,12 @@ public class SiteHandler implements HttpHandler {
     }
 
     @SuppressWarnings("unchecked")
-    void write(HttpServerExchange exchange, ResponseImpl response) throws IOException {
-        BodyHandler handler = handlers.get(response.body.getClass());
+    <T extends Body> void write(HttpServerExchange exchange, ResponseImpl response) throws IOException {
+        Function<T, InputStream> handler = (Function<T, InputStream>) handlers.get(response.body.getClass());
         if (handler == null)
             throw new Error(String.format("unexpected body class, body=%s", response.body.getClass().getCanonicalName()));
 
-        try (InputStream inputStream = handler.handle(response.body)) {
+        try (InputStream inputStream = handler.apply((T) response.body)) {
             exchange.setStatusCode(response.statusCode);
             response.cookies.forEach(cookie -> exchange.getResponseCookies().put(cookie.getName(), cookie));
             response.headers.forEach((name, value) -> exchange.getResponseHeaders().put(new HttpString(name), value));

@@ -1,7 +1,7 @@
 package org.app4j.site.runtime.route;
 
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.exception.NotFoundException;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class RouteModule extends InternalModule implements RouteConfig {
+public class RouteModule extends SiteModule implements RouteConfig {
     private final Map<Request.Method, Route<Handler>> routes = new HashMap<>();
 
     public RouteModule(Site site) {

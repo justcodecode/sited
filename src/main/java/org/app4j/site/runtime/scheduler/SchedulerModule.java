@@ -5,7 +5,7 @@ import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author chi
  */
-public class SchedulerModule extends InternalModule implements SchedulerConfig {
+public class SchedulerModule extends SiteModule implements SchedulerConfig {
     private final Map<Class<?>, List<EventHandler<?>>> listeners = Maps.newHashMap();
     private final Logger logger = LoggerFactory.getLogger(SchedulerModule.class);
     private final ThreadPoolExecutor pool = new ThreadPoolExecutor(20, 20, 0L, TimeUnit.MILLISECONDS,

@@ -3,7 +3,7 @@ package org.app4j.site.runtime.admin;
 import com.google.common.base.Preconditions;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 import org.app4j.site.runtime.admin.service.AdminTemplateRepository;
 import org.app4j.site.runtime.admin.service.Console;
 import org.app4j.site.runtime.admin.service.InstallService;
@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class AdminModule extends InternalModule {
+public class AdminModule extends SiteModule {
     private final Console console = new Console();
 
     public AdminModule(Site site) {

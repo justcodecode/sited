@@ -6,7 +6,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.Site;
-import org.app4j.site.runtime.InternalModule;
+import org.app4j.site.runtime.SiteModule;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * @author chi
  */
-public class DatabaseModule extends InternalModule implements DatabaseConfig {
+public class DatabaseModule extends SiteModule implements DatabaseConfig {
     private final SimpleCodecRegistry simpleCodecRegistry = new SimpleCodecRegistry();
     private MongoDatabase database;
 
