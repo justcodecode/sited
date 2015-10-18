@@ -22,6 +22,7 @@ public class PageHandler implements Handler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Response handle(Request request) throws IOException {
         PageContext pageContext = new PageContext();
 

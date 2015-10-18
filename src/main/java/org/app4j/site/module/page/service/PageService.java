@@ -82,9 +82,6 @@ public class PageService {
         Preconditions.checkState(path.startsWith("/"), "path %s must start with /", path);
 
         page.setCategories(parseCategories(path));
-
-        String content = page.content();
-
         page.setStatus(1);
         page.setLastUpdateTime(new Date());
 

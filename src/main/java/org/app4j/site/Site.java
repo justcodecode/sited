@@ -36,10 +36,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,12 +118,13 @@ public class Site extends DefaultScope {
         Properties properties = new Properties();
         File file = new File(dir, "site.properties");
         Preconditions.checkState(file.exists(), "missing config file, %s", file.getAbsolutePath());
-        try (InputStream inputStream = new FileInputStream(file)) {
-            properties.load(new InputStreamReader(inputStream, Charsets.UTF_8));
+
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
+            properties.load(reader);
+            return properties;
         } catch (IOException e) {
             throw new Error(e);
         }
-        return properties;
     }
 
     public String name() {
@@ -137,10 +137,6 @@ public class Site extends DefaultScope {
 
     public String logoURL() {
         return logoURL;
-    }
-
-    private Path defaultDir() {
-        return new File(property("user.home").get(), host()).toPath();
     }
 
     private String defaultBaseURL() {
@@ -192,7 +188,7 @@ public class Site extends DefaultScope {
                 }
             }
             return this;
-        } catch (Exception e) {
+        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
             throw new Error(e);
         }
     }

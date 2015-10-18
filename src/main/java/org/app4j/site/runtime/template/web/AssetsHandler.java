@@ -23,8 +23,6 @@ public class AssetsHandler implements Handler {
     private boolean cacheEnabled = false;
     private int expireSeconds = 3600;
     private boolean hashPathEnabled = false;
-    private boolean minifyJSEnabled = false;
-    private boolean minifyCSSEnabled = false;
 
     public AssetsHandler(AssetsConfig assetsConfig) {
         this.assetsConfig = assetsConfig;
@@ -44,24 +42,6 @@ public class AssetsHandler implements Handler {
     public AssetsHandler cacheExpireAfter(int seconds) {
         expireSeconds = seconds;
         return this;
-    }
-
-    public AssetsHandler enableMinifyCSS() {
-        minifyCSSEnabled = true;
-        return this;
-    }
-
-    public AssetsHandler enableMinifyJS() {
-        minifyJSEnabled = true;
-        return this;
-    }
-
-    public boolean isCacheEnabled() {
-        return cacheEnabled;
-    }
-
-    public boolean isHashPathEnabled() {
-        return hashPathEnabled;
     }
 
     @Override

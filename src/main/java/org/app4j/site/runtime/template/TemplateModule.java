@@ -36,7 +36,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -117,7 +116,7 @@ public class TemplateModule extends SiteModule implements TemplateConfig {
     protected void configure() throws Exception {
         bind(TemplateConfig.class).to(this).export();
 
-        assetsConfig = new AssetsConfig(cache().createDiskCache("assets", Integer.MAX_VALUE, TimeUnit.DAYS));
+        assetsConfig = new AssetsConfig();
         add(new TemplateRepository(new FolderResourceRepository(dir)));
 
         templateDialect
@@ -135,10 +134,6 @@ public class TemplateModule extends SiteModule implements TemplateConfig {
 
         AssetsHandler assetsHandler = new AssetsHandler(assetsConfig)
             .enableMd5Path();
-
-        if (!site().isDebugEnabled()) {
-            assetsHandler.enableMinifyJS().enableMinifyCSS();
-        }
 
         route().get("/assets/*", assetsHandler)
             .get("/robots.txt", assetsHandler)
