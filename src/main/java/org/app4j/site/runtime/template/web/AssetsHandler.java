@@ -75,13 +75,13 @@ public class AssetsHandler implements Handler {
             Value<String> etag = request.header("If-None-Match");
             if (etag.isPresent() && resource.get().md5().equals(etag.get())) {
                 return Response.empty()
-                        .setStatusCode(304);
+                    .setStatusCode(304);
             }
         }
 
         Response response = Response.pipe(body(resource.get()))
-                .setContentType(contentType(request.path()))
-                .setStatusCode(200);
+            .setContentType(contentType(request.path()))
+            .setStatusCode(200);
 
         if (cacheEnabled) {
             response.setHeader("Cache-Control", "max-age=" + expireSeconds);
@@ -92,21 +92,7 @@ public class AssetsHandler implements Handler {
     }
 
     InputStream body(Resource resource) {
-        if (isJSResource(resource) && minifyJSEnabled && !resource.path().endsWith(".min.js")) {
-            return assetsConfig.minifyJs(resource);
-        } else if (isCSSResource(resource) && minifyCSSEnabled && !resource.path().endsWith(".min.css")) {
-            return assetsConfig.minifyCss(resource);
-        } else {
-            return resource.openStream();
-        }
-    }
-
-    boolean isJSResource(Resource resource) {
-        return "js".equalsIgnoreCase(Files.getFileExtension(resource.path()));
-    }
-
-    boolean isCSSResource(Resource resource) {
-        return "css".equalsIgnoreCase(Files.getFileExtension(resource.path()));
+        return resource.openStream();
     }
 
     String contentType(String path) {

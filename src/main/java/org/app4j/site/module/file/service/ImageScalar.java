@@ -1,6 +1,7 @@
 package org.app4j.site.module.file.service;
 
-import org.imgscalr.Scalr;
+
+import org.app4j.site.util.Scalr;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -21,7 +22,7 @@ import java.util.Iterator;
 public class ImageScalar {
     public static void writeJPG(BufferedImage bufferedImage, OutputStream outputStream, double quality) throws IOException {
         Iterator<ImageWriter> iterator =
-                ImageIO.getImageWritersByFormatName("jpg");
+            ImageIO.getImageWritersByFormatName("jpg");
         ImageWriter imageWriter = iterator.next();
         ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
         imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
@@ -39,7 +40,7 @@ public class ImageScalar {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 
             BufferedImage result = Scalr.resize(chop(src, height, width), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT,
-                    width, height, Scalr.OP_ANTIALIAS);
+                width, height, Scalr.OP_ANTIALIAS);
 
             if ("jpg".equals(imageType) || "jpeg".equals(imageType)) {
                 writeJPG(result, out, 0.5);

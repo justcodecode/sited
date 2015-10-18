@@ -19,9 +19,7 @@ dependencies {
             'com.fasterxml.jackson.core:jackson-databind:2.6.2',
             'org.apache.lucene:lucene-core:5.3.1',
             'org.apache.lucene:lucene-analyzers-common:5.3.1',
-            'org.apache.lucene:lucene-queryparser:5.3.1',
-            'com.yahoo.platform.yui:yuicompressor:2.4.8',
-            'org.imgscalr:imgscalr-lib:4.2'
+            'org.apache.lucene:lucene-queryparser:5.3.1'
     )
     testCompile(
             'junit:junit:4.12',
