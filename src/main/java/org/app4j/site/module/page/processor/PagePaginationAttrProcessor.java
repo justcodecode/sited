@@ -1,8 +1,8 @@
 package org.app4j.site.module.page.processor;
 
-import org.app4j.site.runtime.database.Pageable;
-import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
-import org.app4j.site.runtime.template.service.TemplateDialect;
+import org.app4j.site.internal.database.Pageable;
+import org.app4j.site.internal.template.processor.TemplateProcessorSupport;
+import org.app4j.site.internal.template.service.TemplateDialect;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.AbstractElementTagProcessor;

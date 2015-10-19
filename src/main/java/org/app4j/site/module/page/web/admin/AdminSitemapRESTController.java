@@ -1,8 +1,8 @@
 package org.app4j.site.module.page.web.admin;
 
 import org.app4j.site.module.page.service.SitemapService;
-import org.app4j.site.runtime.scheduler.SchedulerConfig;
-import org.app4j.site.runtime.scheduler.Task;
+import org.app4j.site.internal.scheduler.SchedulerConfig;
+import org.app4j.site.internal.scheduler.Task;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 

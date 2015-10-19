@@ -1,7 +1,7 @@
 package org.app4j.site.event.service;
 
-import org.app4j.site.runtime.scheduler.Event;
-import org.app4j.site.runtime.scheduler.SchedulerModule;
+import org.app4j.site.internal.scheduler.Event;
+import org.app4j.site.internal.scheduler.SchedulerModule;
 import org.junit.Assert;
 import org.junit.Test;
 

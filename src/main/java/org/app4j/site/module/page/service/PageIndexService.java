@@ -7,8 +7,8 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.app4j.site.module.page.Page;
-import org.app4j.site.runtime.database.FindView;
-import org.app4j.site.runtime.index.service.Index;
+import org.app4j.site.internal.database.FindView;
+import org.app4j.site.internal.index.service.Index;
 
 /**
  * @author chi

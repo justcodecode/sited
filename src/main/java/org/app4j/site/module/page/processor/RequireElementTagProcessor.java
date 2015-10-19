@@ -1,10 +1,10 @@
 package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.DefaultScope;
+import org.app4j.site.ScopeImpl;
 import org.app4j.site.module.page.variable.VariableConfig;
 import org.app4j.site.module.page.variable.VariableRef;
-import org.app4j.site.runtime.template.processor.TemplateProcessorSupport;
+import org.app4j.site.internal.template.processor.TemplateProcessorSupport;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.context.TemplateProcessingContext;
 import org.thymeleaf.context.VariablesMap;
@@ -41,7 +41,7 @@ public class RequireElementTagProcessor extends AbstractElementTagProcessor impl
         String name = tag.getAttributes().getValue("name");
         String as = tag.getAttributes().getValue("as");
         VariableRef variableRef = new VariableRef(name, as, parameters);
-        TemplateScope templateScope = new TemplateScope((DefaultScope) request(processingContext));
+        TemplateScopeImpl templateScope = new TemplateScopeImpl((ScopeImpl) request(processingContext));
 
         for (String variableName : processingContext.getVariables().getVariableNames()) {
             Object value = processingContext.getVariables().getVariable(variableName);
@@ -58,7 +58,7 @@ public class RequireElementTagProcessor extends AbstractElementTagProcessor impl
     }
 
     @SuppressWarnings("unchecked")
-    <T> void bind(TemplateScope templateScope, String name, T value) {
+    <T> void bind(TemplateScopeImpl templateScope, String name, T value) {
         templateScope.bind((Class<T>) value.getClass()).named(name).to(value);
     }
 }

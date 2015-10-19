@@ -1,21 +1,21 @@
 package org.app4j.site;
 
-import org.app4j.site.runtime.admin.AdminConfig;
-import org.app4j.site.runtime.admin.AdminModule;
-import org.app4j.site.runtime.cache.CacheConfig;
-import org.app4j.site.runtime.cache.CacheModule;
-import org.app4j.site.runtime.database.DatabaseConfig;
-import org.app4j.site.runtime.database.DatabaseModule;
-import org.app4j.site.runtime.error.ErrorConfig;
-import org.app4j.site.runtime.error.ErrorModule;
-import org.app4j.site.runtime.index.IndexConfig;
-import org.app4j.site.runtime.route.RouteConfig;
-import org.app4j.site.runtime.route.RouteModule;
-import org.app4j.site.runtime.scheduler.SchedulerConfig;
-import org.app4j.site.runtime.scheduler.SchedulerModule;
-import org.app4j.site.runtime.template.TemplateConfig;
-import org.app4j.site.runtime.template.TemplateModule;
-import org.app4j.site.runtime.track.TrackConfig;
+import org.app4j.site.internal.admin.AdminConfig;
+import org.app4j.site.internal.admin.AdminModule;
+import org.app4j.site.internal.cache.CacheConfig;
+import org.app4j.site.internal.cache.CacheModule;
+import org.app4j.site.internal.database.DatabaseConfig;
+import org.app4j.site.internal.database.DatabaseModule;
+import org.app4j.site.internal.error.ErrorConfig;
+import org.app4j.site.internal.error.ErrorModule;
+import org.app4j.site.internal.index.IndexConfig;
+import org.app4j.site.internal.route.RouteConfig;
+import org.app4j.site.internal.route.RouteModule;
+import org.app4j.site.internal.scheduler.SchedulerConfig;
+import org.app4j.site.internal.scheduler.SchedulerModule;
+import org.app4j.site.internal.template.TemplateConfig;
+import org.app4j.site.internal.template.TemplateModule;
+import org.app4j.site.internal.track.TrackConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author chi
  */
-public abstract class Module extends DefaultScope {
+public abstract class Module extends ScopeImpl {
     private final Site site;
 
     public Module(Site site) {

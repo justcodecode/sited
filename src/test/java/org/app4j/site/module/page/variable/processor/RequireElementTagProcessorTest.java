@@ -2,7 +2,7 @@ package org.app4j.site.module.page.variable.processor;
 
 import org.app4j.site.module.page.processor.RequireElementTagProcessor;
 import org.app4j.site.module.page.variable.VariableConfig;
-import org.app4j.site.runtime.template.service.TemplateDialect;
+import org.app4j.site.internal.template.service.TemplateDialect;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

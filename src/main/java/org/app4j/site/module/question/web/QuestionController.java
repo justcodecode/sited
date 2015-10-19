@@ -4,7 +4,7 @@ import org.app4j.site.module.question.domain.Answer;
 import org.app4j.site.module.question.domain.Question;
 import org.app4j.site.module.question.service.AnswerService;
 import org.app4j.site.module.question.service.QuestionService;
-import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.internal.database.FindView;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;

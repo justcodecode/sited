@@ -5,7 +5,7 @@ import org.app4j.site.module.page.Page;
 import org.app4j.site.module.page.service.sitemap.SitemapBuilder;
 import org.app4j.site.module.page.service.sitemap.SitemapURL;
 import org.app4j.site.module.page.service.sitemap.SitemapURLLoader;
-import org.app4j.site.runtime.cache.service.DiskCache;
+import org.app4j.site.internal.cache.service.DiskCache;
 
 import java.io.ByteArrayInputStream;
 import java.util.Iterator;

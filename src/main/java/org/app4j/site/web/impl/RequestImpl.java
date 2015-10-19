@@ -12,7 +12,7 @@ import io.undertow.server.handlers.form.FormDataParser;
 import io.undertow.server.handlers.form.FormParserFactory;
 import io.undertow.util.HeaderValues;
 import org.app4j.site.Binding;
-import org.app4j.site.DefaultScope;
+import org.app4j.site.ScopeImpl;
 import org.app4j.site.Site;
 import org.app4j.site.util.JSON;
 import org.app4j.site.util.Value;
@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class RequestImpl extends DefaultScope implements Request {
+public class RequestImpl extends ScopeImpl implements Request {
     private final HttpServerExchange exchange;
     private final Date timestamp;
     private final Map<String, String> parameters = Maps.newHashMap();
@@ -41,7 +41,7 @@ public class RequestImpl extends DefaultScope implements Request {
     private final Charset charset;
     private final Method method;
 
-    RequestImpl(HttpServerExchange exchange, DefaultScope parent) {
+    RequestImpl(HttpServerExchange exchange, ScopeImpl parent) {
         super(parent);
 
         bind(Request.class).to(this);

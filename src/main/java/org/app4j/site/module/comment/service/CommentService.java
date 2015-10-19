@@ -3,7 +3,7 @@ package org.app4j.site.module.comment.service;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.comment.domain.Comment;
-import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.internal.database.FindView;
 import org.bson.Document;
 
 /**

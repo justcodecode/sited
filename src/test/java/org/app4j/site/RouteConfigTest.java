@@ -1,7 +1,7 @@
 package org.app4j.site;
 
 import com.google.common.collect.Maps;
-import org.app4j.site.runtime.route.RouteModule;
+import org.app4j.site.internal.route.RouteModule;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.junit.Assert;

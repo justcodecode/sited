@@ -3,7 +3,7 @@ package org.app4j.site.module.page.variable;
 import com.google.common.collect.Lists;
 import org.app4j.site.Scope;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.internal.database.FindView;
 import org.app4j.site.web.Request;
 import org.bson.Document;
 

@@ -6,24 +6,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import org.app4j.site.runtime.admin.AdminConfig;
-import org.app4j.site.runtime.admin.AdminModule;
-import org.app4j.site.runtime.cache.CacheConfig;
-import org.app4j.site.runtime.cache.CacheModule;
-import org.app4j.site.runtime.database.DatabaseConfig;
-import org.app4j.site.runtime.database.DatabaseModule;
-import org.app4j.site.runtime.error.ErrorConfig;
-import org.app4j.site.runtime.error.ErrorHandler;
-import org.app4j.site.runtime.error.ErrorModule;
-import org.app4j.site.runtime.index.IndexConfig;
-import org.app4j.site.runtime.index.IndexModule;
-import org.app4j.site.runtime.route.RouteConfig;
-import org.app4j.site.runtime.route.RouteModule;
-import org.app4j.site.runtime.scheduler.SchedulerConfig;
-import org.app4j.site.runtime.scheduler.SchedulerModule;
-import org.app4j.site.runtime.template.TemplateConfig;
-import org.app4j.site.runtime.template.TemplateModule;
-import org.app4j.site.runtime.track.TrackConfig;
+import org.app4j.site.internal.admin.AdminConfig;
+import org.app4j.site.internal.admin.AdminModule;
+import org.app4j.site.internal.cache.CacheConfig;
+import org.app4j.site.internal.cache.CacheModule;
+import org.app4j.site.internal.database.DatabaseConfig;
+import org.app4j.site.internal.database.DatabaseModule;
+import org.app4j.site.internal.error.ErrorConfig;
+import org.app4j.site.internal.error.ErrorHandler;
+import org.app4j.site.internal.error.ErrorModule;
+import org.app4j.site.internal.index.IndexConfig;
+import org.app4j.site.internal.index.IndexModule;
+import org.app4j.site.internal.route.RouteConfig;
+import org.app4j.site.internal.route.RouteModule;
+import org.app4j.site.internal.scheduler.SchedulerConfig;
+import org.app4j.site.internal.scheduler.SchedulerModule;
+import org.app4j.site.internal.template.TemplateConfig;
+import org.app4j.site.internal.template.TemplateModule;
+import org.app4j.site.internal.track.TrackConfig;
 import org.app4j.site.util.Graph;
 import org.app4j.site.util.JSON;
 import org.app4j.site.web.Handler;
@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 /**
  * @author chi
  */
-public class Site extends DefaultScope {
+public class Site extends ScopeImpl {
     private final List<Hook> shutdownHooks = Lists.newArrayList();
     private final List<Hook> startupHooks = Lists.newArrayList();
 

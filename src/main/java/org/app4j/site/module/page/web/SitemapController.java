@@ -1,6 +1,6 @@
 package org.app4j.site.module.page.web;
 
-import org.app4j.site.runtime.cache.service.DiskCache;
+import org.app4j.site.internal.cache.service.DiskCache;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;

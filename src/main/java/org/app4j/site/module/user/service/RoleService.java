@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.app4j.site.module.user.domain.Role;
-import org.app4j.site.runtime.database.FindView;
+import org.app4j.site.internal.database.FindView;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
