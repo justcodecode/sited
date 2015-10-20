@@ -3,10 +3,9 @@ package org.app4j.site.module.user.service;
 import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.app4j.site.module.user.domain.Role;
 import org.app4j.site.internal.database.FindView;
+import org.app4j.site.module.user.domain.Role;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import java.util.Date;
 
@@ -29,19 +28,19 @@ public class RoleService {
     }
 
     public void insert(Role role) {
-        role.setLastUpdateTime(new Date());
-        role.setCreateTime(new Date());
-        role.setStatus(1);
+        role.lastUpdateTime = new Date();
+        role.createTime = new Date();
+        role.status = 1;
         documents.insertOne(role);
     }
 
     public void update(Role role) {
-        Preconditions.checkNotNull(role.getId(), "%s missing id", role.getName());
-        Role old = findByName(role.getName());
+        Preconditions.checkNotNull(role.id, "%s missing id", role.name);
+        Role old = findByName(role.name);
         Date now = new Date();
-        role.setCreateTime(old != null ? old.getCreateTime() : now);
-        role.setLastUpdateTime(now);
-        documents.replaceOne(new Document("_id", new ObjectId(role.getId())), role);
+        role.createTime = old != null ? old.createTime : now;
+        role.lastUpdateTime = now;
+        documents.replaceOne(new Document("_id", role.id), role);
     }
 
     public void delete(String id) {

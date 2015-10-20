@@ -1,4 +1,4 @@
-package org.app4j.site.module.user.domain;
+package org.app4j.site.module.topic.domain;
 
 import org.bson.types.ObjectId;
 
@@ -8,13 +8,15 @@ import java.util.List;
 /**
  * @author chi
  */
-public class User {
+public class Reply {
     public ObjectId id;
     public String username;
-    public String email;
-    public List<String> roles;
-    public String password;
+    public ObjectId topicId;
+    public Boolean replied;
+    public String content;
     public Date createTime;
     public Date lastUpdateTime;
     public Integer status;
+
+    public transient List<QuickReply> replies;
 }

@@ -11,6 +11,8 @@ import java.io.IOException;
  * @author chi
  */
 public class AdminUser implements JsonSerializable {
+    public static final String ROLE_NAME = "admin";
+
     private final String username;
     private final String email;
     private final String password;

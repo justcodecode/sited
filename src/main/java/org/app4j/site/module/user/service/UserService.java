@@ -3,8 +3,8 @@ package org.app4j.site.module.user.service;
 import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.app4j.site.module.user.domain.User;
 import org.app4j.site.internal.database.FindView;
+import org.app4j.site.module.user.domain.User;
 import org.app4j.site.util.Value;
 import org.app4j.site.web.Request;
 import org.bson.Document;
@@ -52,23 +52,23 @@ public class UserService {
     }
 
     public void insert(User user) {
-        user.setCreateTime(new Date());
-        user.setLastUpdateTime(new Date());
-        user.setStatus(1);
+        user.createTime = new Date();
+        user.lastUpdateTime = new Date();
+        user.status = 1;
         documents.insertOne(user);
     }
 
     public void update(User user) {
-        Preconditions.checkNotNull(user.getId(), "%s missing id", user.getUsername());
-        User old = findByUsername(user.getUsername()).get();
+        Preconditions.checkNotNull(user.id, "%s missing id", user.username);
+        User old = findByUsername(user.username).get();
         Date now = new Date();
-        user.setCreateTime(old != null ? old.getCreateTime() : now);
-        user.setLastUpdateTime(now);
-        documents.replaceOne(new Document("_id", new ObjectId(user.getId())), user);
+        user.createTime = old != null ? old.createTime : now;
+        user.lastUpdateTime = now;
+        documents.replaceOne(new Document("_id", user.id), user);
     }
 
     public String encode(User user) {
-        return user.getUsername();
+        return user.username;
     }
 
     public User decode(String key) {

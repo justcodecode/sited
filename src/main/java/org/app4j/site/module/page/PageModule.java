@@ -3,6 +3,11 @@ package org.app4j.site.module.page;
 import com.google.common.collect.Maps;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
+import org.app4j.site.internal.cache.service.DiskCache;
+import org.app4j.site.internal.index.IndexModule;
+import org.app4j.site.internal.index.service.Index;
+import org.app4j.site.internal.template.service.TemplateRepository;
+import org.app4j.site.internal.track.TrackModule;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
 import org.app4j.site.module.page.service.PageIndexService;
@@ -18,11 +23,6 @@ import org.app4j.site.module.page.web.SitemapController;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
 import org.app4j.site.module.page.web.admin.AdminSitemapRESTController;
 import org.app4j.site.module.user.UserModule;
-import org.app4j.site.internal.cache.service.DiskCache;
-import org.app4j.site.internal.index.IndexModule;
-import org.app4j.site.internal.index.service.Index;
-import org.app4j.site.internal.template.service.TemplateRepository;
-import org.app4j.site.internal.track.TrackModule;
 import org.app4j.site.util.Files;
 import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.web.Response;
@@ -99,7 +99,7 @@ public class PageModule extends Module implements PageConfig {
     }
 
     void configureAdmin(PageService pageService, PageIndexService pageIndexService, SitemapService sitemapService) {
-        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, scheduler());
+        AdminPageRESTController adminPageRESTController = new AdminPageRESTController(pageService, pageIndexService, event());
         admin().route()
             .get("/admin/api/site", request -> {
                 Map<String, Object> site = Maps.newHashMap();
@@ -113,7 +113,7 @@ public class PageModule extends Module implements PageConfig {
             .delete("/admin/api/page/:id", adminPageRESTController::deletePage)
             .get("/admin/api/page/rebuild-index", adminPageRESTController::rebuildIndex);
 
-        AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, scheduler());
+        AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, event());
         admin().route().get("/admin/api/page/rebuild-sitemap", adminSitemapRESTController::rebuildSitemap);
     }
 

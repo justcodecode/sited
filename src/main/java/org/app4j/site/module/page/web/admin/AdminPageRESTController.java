@@ -3,8 +3,8 @@ package org.app4j.site.module.page.web.admin;
 import org.app4j.site.module.page.Page;
 import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.internal.scheduler.SchedulerConfig;
-import org.app4j.site.internal.scheduler.Task;
+import org.app4j.site.internal.event.EventConfig;
+import org.app4j.site.internal.event.Task;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -19,9 +19,9 @@ public class AdminPageRESTController {
     //    private final Index<Page> index;
     private final PageIndexService pageIndexService;
     private final PageService pageService;
-    private final SchedulerConfig eventConfig;
+    private final EventConfig eventConfig;
 
-    public AdminPageRESTController(PageService pageService, PageIndexService pageIndexService, SchedulerConfig eventConfig) {
+    public AdminPageRESTController(PageService pageService, PageIndexService pageIndexService, EventConfig eventConfig) {
         this.pageIndexService = pageIndexService;
         this.pageService = pageService;
         this.eventConfig = eventConfig;

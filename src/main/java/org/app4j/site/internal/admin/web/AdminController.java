@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import org.app4j.site.Site;
 import org.app4j.site.internal.admin.service.AdminUser;
 import org.app4j.site.internal.admin.service.InstallService;
-import org.app4j.site.internal.scheduler.Event;
+import org.app4j.site.internal.event.Event;
 import org.app4j.site.internal.template.AssetsConfig;
 import org.app4j.site.util.Resource;
 import org.app4j.site.web.Request;
@@ -67,7 +67,7 @@ public class AdminController {
         ProfileRequest profileRequest = request.body(ProfileRequest.class);
         installService.installed(new Date());
 
-        site.scheduler().trigger(new Event<>(new AdminUser(profileRequest.getAdminUsername(), profileRequest.getAdminEmail(), profileRequest.getAdminPassword()), Maps.newHashMap()));
+        site.event().trigger(new Event<>(new AdminUser(profileRequest.getAdminUsername(), profileRequest.getAdminEmail(), profileRequest.getAdminPassword()), Maps.newHashMap()));
         return Response.redirect("/admin/index.html");
     }
 }

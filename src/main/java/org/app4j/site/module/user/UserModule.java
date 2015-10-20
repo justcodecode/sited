@@ -3,18 +3,18 @@ package org.app4j.site.module.user;
 import com.google.common.collect.Lists;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
-import org.app4j.site.module.user.admin.web.AdminUserRESTController;
-import org.app4j.site.module.user.codec.PermissionCodec;
-import org.app4j.site.module.user.codec.RoleCodec;
-import org.app4j.site.module.user.codec.UserCodec;
+import org.app4j.site.internal.admin.service.AdminUser;
+import org.app4j.site.internal.event.Event;
+import org.app4j.site.internal.event.EventHandler;
 import org.app4j.site.module.user.domain.User;
 import org.app4j.site.module.user.service.PermissionService;
 import org.app4j.site.module.user.service.RoleService;
 import org.app4j.site.module.user.service.UserService;
+import org.app4j.site.module.user.service.codec.PermissionCodec;
+import org.app4j.site.module.user.service.codec.RoleCodec;
+import org.app4j.site.module.user.service.codec.UserCodec;
 import org.app4j.site.module.user.web.UserController;
-import org.app4j.site.internal.admin.service.AdminUser;
-import org.app4j.site.internal.scheduler.Event;
-import org.app4j.site.internal.scheduler.EventHandler;
+import org.app4j.site.module.user.web.admin.AdminUserRESTController;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.UnauthorizedException;
@@ -49,9 +49,9 @@ public class UserModule extends Module {
         bind(AdminUser.class).to((key, scope) -> {
             Request request = scope.require(Request.class);
             Optional<User> userOptional = userService.user(request);
-            if (userOptional.isPresent() && userOptional.get().hasRole("admin")) {
+            if (userOptional.isPresent() && userOptional.get().roles.contains("admin")) {
                 User user = userOptional.get();
-                return new AdminUser(user.getUsername(), user.getEmail(), null);
+                return new AdminUser(user.username, user.email, null);
             }
             return null;
         }).export();
@@ -60,25 +60,18 @@ public class UserModule extends Module {
         route().post("/login", userController::login)
             .get("/logout", userController::logout);
 
-        //Admin
-        AdminUserRESTController adminUserRESTController = new AdminUserRESTController(userService);
-        admin().route()
-            .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
-            .get("/admin/api/user/", adminUserRESTController::findUsers);
-
-        scheduler().on(AdminUser.class, new EventHandler<AdminUser>() {
+        event().on(AdminUser.class, new EventHandler<AdminUser>() {
             @Override
             public void on(Event<AdminUser> event) {
                 AdminUser adminUser = event.target();
                 User user = new User();
-                user.setUsername(adminUser.username());
-                user.setEmail(adminUser.email());
-                user.setPassword(adminUser.password());
-                user.setCreateTime(new Date());
-                user.setLastUpdateTime(new Date());
-                user.setStatus(1);
-
-                user.setRoles(Lists.newArrayList("admin"));
+                user.username = adminUser.username();
+                user.email = adminUser.email();
+                user.password = adminUser.password();
+                user.createTime = new Date();
+                user.lastUpdateTime = new Date();
+                user.status = 1;
+                user.roles = Lists.newArrayList("admin");
                 userService.save(user);
             }
         });
@@ -90,6 +83,13 @@ public class UserModule extends Module {
             }
             return Response.redirect("/login.html?from=" + request.path());
         });
+
+        //Admin
+        AdminUserRESTController adminUserRESTController = new AdminUserRESTController(userService);
+        admin().route()
+            .get("/admin/api/user/:username", adminUserRESTController::findByUsername)
+            .get("/admin/api/user/", adminUserRESTController::findUsers);
     }
+
 
 }

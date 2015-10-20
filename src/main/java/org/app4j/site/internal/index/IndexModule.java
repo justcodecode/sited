@@ -7,8 +7,8 @@ import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.internal.database.Dumper;
 import org.app4j.site.internal.database.SimpleCodecRegistry;
+import org.app4j.site.internal.event.Task;
 import org.app4j.site.internal.index.service.Index;
-import org.app4j.site.internal.scheduler.Task;
 
 import java.io.File;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class IndexModule extends Module implements IndexConfig {
         indices.put(name, index);
 
         if (index.isEmpty()) {
-            scheduler().execute(new Task(name) {
+            event().scheduler().execute(new Task(name) {
                 @Override
                 public void run() {
                     index.rebuild();

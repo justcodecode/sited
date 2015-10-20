@@ -2,8 +2,8 @@ package org.app4j.site.module.user.service;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.app4j.site.module.user.domain.Permission;
 import org.app4j.site.internal.database.FindView;
+import org.app4j.site.module.user.domain.Permission;
 import org.bson.Document;
 
 /**
@@ -13,7 +13,7 @@ public class PermissionService {
     private final MongoCollection<Permission> documents;
 
     public PermissionService(MongoDatabase db) {
-        this.documents = db.getCollection("cms.Permission", Permission.class);
+        this.documents = db.getCollection("site.Permission", Permission.class);
     }
 
     public FindView<Permission> listPermissions(int offset, int fetchSize) {

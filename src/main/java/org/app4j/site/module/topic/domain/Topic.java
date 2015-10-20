@@ -1,19 +1,19 @@
-package org.app4j.site.module.user.domain;
+package org.app4j.site.module.topic.domain;
 
 import org.bson.types.ObjectId;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author chi
  */
-public class User {
+public class Topic {
     public ObjectId id;
+    public String category;
+    public String title;
+    public String content;
     public String username;
-    public String email;
-    public List<String> roles;
-    public String password;
+    public Date publishTime;
     public Date createTime;
     public Date lastUpdateTime;
     public Integer status;

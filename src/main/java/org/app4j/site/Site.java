@@ -19,8 +19,8 @@ import org.app4j.site.internal.index.IndexConfig;
 import org.app4j.site.internal.index.IndexModule;
 import org.app4j.site.internal.route.RouteConfig;
 import org.app4j.site.internal.route.RouteModule;
-import org.app4j.site.internal.scheduler.SchedulerConfig;
-import org.app4j.site.internal.scheduler.SchedulerModule;
+import org.app4j.site.internal.event.EventConfig;
+import org.app4j.site.internal.event.EventModule;
 import org.app4j.site.internal.template.TemplateConfig;
 import org.app4j.site.internal.template.TemplateModule;
 import org.app4j.site.internal.track.TrackConfig;
@@ -105,7 +105,7 @@ public class Site extends ScopeImpl {
         install(DatabaseModule.class);
         install(RouteModule.class);
         install(TemplateModule.class);
-        install(SchedulerModule.class);
+        install(EventModule.class);
         install(CacheModule.class);
         install(ErrorModule.class);
         install(AdminModule.class);
@@ -312,8 +312,8 @@ public class Site extends ScopeImpl {
         return require(CacheConfig.class);
     }
 
-    public SchedulerConfig scheduler() {
-        return require(SchedulerConfig.class);
+    public EventConfig event() {
+        return require(EventConfig.class);
     }
 
     public DatabaseConfig database() {

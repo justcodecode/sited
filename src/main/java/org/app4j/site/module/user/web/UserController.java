@@ -22,9 +22,9 @@ public class UserController {
     public Response login(Request request) throws IOException {
         LoginRequest loginRequest = request.body(LoginRequest.class);
         Optional<User> userOptional = userService.findByUsername(loginRequest.getUsername());
-        if (userOptional.isPresent() && userOptional.get().getPassword().equals(loginRequest.getPassword())) {
+        if (userOptional.isPresent() && userOptional.get().password.equals(loginRequest.getPassword())) {
             String toURL = loginRequest.getToURL() == null ? "/" : loginRequest.getToURL();
-            return Response.redirect(toURL).setCookie("uid", userOptional.get().getId());
+            return Response.redirect(toURL).setCookie("uid", userOptional.get().id.toHexString());
         }
         throw new UnauthorizedException("require user login");
     }
