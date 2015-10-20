@@ -1,7 +1,6 @@
 package org.app4j.site.internal.event;
 
 
-import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.app4j.site.Site;
@@ -11,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author chi
@@ -21,35 +17,11 @@ import java.util.concurrent.TimeUnit;
 public class EventModule extends InternalModule implements EventConfig {
     private final Map<Class<?>, List<EventHandler<?>>> listeners = Maps.newHashMap();
     private final Logger logger = LoggerFactory.getLogger(EventModule.class);
-    private final ThreadPoolExecutor pool = new ThreadPoolExecutor(20, 20, 0L, TimeUnit.MILLISECONDS,
-        new LinkedBlockingQueue<>(10000));
-    private final EvictingQueue<TaskHistory> histories = EvictingQueue.create(1000);
+    private final Scheduler scheduler = new SchedulerImpl();
+
 
     public EventModule(Site site) {
         super(site);
-    }
-
-    public void execute(Task task) {
-        TaskHistory history = new TaskHistory(task);
-        histories.add(history);
-        pool.execute(() -> {
-            try {
-                task.setProgress(0);
-                task.setState(Task.State.PROCESSING);
-                task.run();
-                task.setProgress(100);
-                task.setState(Task.State.FINISHED);
-            } catch (Exception e) {
-                logger.error("task {} failed", task.name(), e);
-                task.setState(Task.State.FAILED);
-                task.setProgress(100);
-            }
-        });
-    }
-
-
-    public List<TaskHistory> histories() {
-        return Lists.newArrayList(histories);
     }
 
     @Override
@@ -70,12 +42,12 @@ public class EventModule extends InternalModule implements EventConfig {
     @Override
     @SuppressWarnings("unchecked")
     public boolean trigger(Event<?> event) {
-        List<EventHandler<?>> handlers = listeners.get(event.target().getClass());
+        List<EventHandler<?>> handlers = listeners.get(event.target.getClass());
         if (handlers.isEmpty()) {
             return false;
         }
 
-        pool.execute(new Task("handle-" + event.target()) {
+        scheduler.execute(new Task("handle-" + event) {
             @Override
             public void run() {
                 handlers.forEach(handler -> handler.on((Event) event));
@@ -85,12 +57,7 @@ public class EventModule extends InternalModule implements EventConfig {
     }
 
     @Override
-    public void execute(Runnable task) {
-
-    }
-
-    @Override
     public Scheduler scheduler() {
-        return null;
+        return scheduler;
     }
 }

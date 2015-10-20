@@ -9,7 +9,5 @@ public interface EventConfig {
 
     boolean trigger(Event<?> event);
 
-    void execute(Runnable task);
-
     Scheduler scheduler();
 }

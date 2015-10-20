@@ -15,9 +15,7 @@ public class EventConfigTest {
     public void pop() {
         EventModule schedulerConfig = new EventModule(null);
         schedulerConfig.on(Object.class,
-            event -> {
-                Assert.assertNotNull(event.target());
-            });
+            event -> Assert.assertNotNull(event.target));
         Assert.assertTrue(schedulerConfig.trigger(new Event<>(new Object(), new HashMap<>())));
     }
 }

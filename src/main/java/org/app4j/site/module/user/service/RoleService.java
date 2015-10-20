@@ -46,4 +46,11 @@ public class RoleService {
     public void delete(String id) {
         documents.updateOne(new Document("_id", id), new Document("$set", new Document("$set", new Document("lastUpdateTime", new Date()).append("status", 0))));
     }
+
+    public void save(Role role) {
+        role.createTime = new Date();
+        role.lastUpdateTime = new Date();
+        role.status = 1;
+        documents.insertOne(role);
+    }
 }

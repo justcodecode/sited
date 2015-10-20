@@ -1,10 +1,10 @@
 package org.app4j.site.module.page.web.admin;
 
+import org.app4j.site.internal.event.EventConfig;
+import org.app4j.site.internal.event.Task;
 import org.app4j.site.module.page.Page;
 import org.app4j.site.module.page.service.PageIndexService;
 import org.app4j.site.module.page.service.PageService;
-import org.app4j.site.internal.event.EventConfig;
-import org.app4j.site.internal.event.Task;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -61,7 +61,7 @@ public class AdminPageRESTController {
     }
 
     public Response rebuildIndex(Request request) {
-        eventConfig.execute(new Task("page:full-index") {
+        eventConfig.scheduler().execute(new Task("rebuild index") {
             @Override
             public void run() {
                 pageIndexService.rebuild();

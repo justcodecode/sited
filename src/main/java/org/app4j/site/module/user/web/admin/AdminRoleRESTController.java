@@ -18,8 +18,8 @@ public class AdminRoleRESTController {
         this.roleService = roleService;
     }
 
-    public Response findByUsername(Request request) throws IOException {
-        String name = request.query("username").get();
+    public Response findById(Request request) throws IOException {
+        String name = request.path(":id").get();
 
         Role role = roleService.findByName(name);
         if (role == null) {
@@ -28,23 +28,35 @@ public class AdminRoleRESTController {
         return Response.bean(role);
     }
 
-    public Response list(Request request) throws IOException {
+    public Response findByUsername(Request request) throws IOException {
+        String name = request.path(":username").get();
+
+        Role role = roleService.findByName(name);
+        if (role == null) {
+            throw new NotFoundException(request.path());
+        }
+        return Response.bean(role);
+    }
+
+    public Response findRoles(Request request) throws IOException {
         int offset = request.query("offset", Integer.class).orElse(0).get();
         int fetchSize = request.query("fetchSize", Integer.class).orElse(0).get();
         return Response.bean(roleService.listRoles(offset, fetchSize));
     }
 
-    public Response update(Request request) throws IOException {
+    public Response createRole(Request request) throws IOException {
         Role role = request.body(Role.class);
-        if (role.id != null) {
-            roleService.update(role);
-        } else {
-            roleService.insert(role);
-        }
+        roleService.save(role);
+        return Response.bean(role);
+    }
+
+    public Response updateRole(Request request) throws IOException {
+        Role role = request.body(Role.class);
+        roleService.update(role);
         return Response.empty();
     }
 
-    public Response delete(Request request) throws IOException {
+    public Response deleteRole(Request request) throws IOException {
         roleService.delete(request.query("id").get());
         return Response.empty();
     }

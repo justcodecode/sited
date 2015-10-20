@@ -13,7 +13,7 @@ import org.app4j.site.module.user.service.UserService;
 import org.app4j.site.module.user.service.codec.PermissionCodec;
 import org.app4j.site.module.user.service.codec.RoleCodec;
 import org.app4j.site.module.user.service.codec.UserCodec;
-import org.app4j.site.module.user.web.UserController;
+import org.app4j.site.module.user.web.UserRESTController;
 import org.app4j.site.module.user.web.admin.AdminUserRESTController;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -56,14 +56,14 @@ public class UserModule extends Module {
             return null;
         }).export();
 
-        UserController userController = new UserController(userService);
-        route().post("/login", userController::login)
-            .get("/logout", userController::logout);
+        UserRESTController userRESTController = new UserRESTController(userService);
+        route().post("/login", userRESTController::login)
+            .get("/logout", userRESTController::logout);
 
         event().on(AdminUser.class, new EventHandler<AdminUser>() {
             @Override
             public void on(Event<AdminUser> event) {
-                AdminUser adminUser = event.target();
+                AdminUser adminUser = event.target;
                 User user = new User();
                 user.username = adminUser.username();
                 user.email = adminUser.email();

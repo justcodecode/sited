@@ -1,8 +1,8 @@
 package org.app4j.site.module.page.web.admin;
 
-import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.internal.event.EventConfig;
 import org.app4j.site.internal.event.Task;
+import org.app4j.site.module.page.service.SitemapService;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 
@@ -19,7 +19,7 @@ public class AdminSitemapRESTController {
     }
 
     public Response rebuildSitemap(Request request) {
-        eventConfig.execute(new Task("build-site-map") {
+        eventConfig.scheduler().execute(new Task("rebuild-sitemap") {
             @Override
             public void run() {
                 sitemapService.rebuild();

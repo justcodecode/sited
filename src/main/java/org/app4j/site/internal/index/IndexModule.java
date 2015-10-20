@@ -38,7 +38,7 @@ public class IndexModule extends Module implements IndexConfig {
         indices.put(name, index);
 
         if (index.isEmpty()) {
-            event().scheduler().execute(new Task(name) {
+            event().scheduler().execute(new Task("rebuild-index") {
                 @Override
                 public void run() {
                     index.rebuild();

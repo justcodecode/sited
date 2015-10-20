@@ -10,22 +10,18 @@ import java.util.Map;
  * @author chi
  */
 public class Event<T> {
-    private final T target;
-    private final Map<String, Object> parameters;
+    public final T target;
+    private final Map<String, Object> context;
 
-    public Event(T target, Map<String, Object> parameters) {
+    public Event(T target, Map<String, Object> context) {
         Preconditions.checkNotNull(target, "target can't be null");
         this.target = target;
-        this.parameters = parameters;
-    }
-
-    public T target() {
-        return target;
+        this.context = context;
     }
 
     public <K> Value<K> param(String key, Class<K> type) {
-        if (parameters.containsKey(key)) {
-            return new Value<>(key, JSON.mapper().convertValue(parameters.get(key), type));
+        if (context.containsKey(key)) {
+            return new Value<>(key, JSON.mapper().convertValue(context.get(key), type));
         }
         return new Value<>(key, null);
     }

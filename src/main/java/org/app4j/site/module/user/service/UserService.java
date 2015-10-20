@@ -24,8 +24,17 @@ public class UserService {
         this.documents = db.getCollection("site.User", User.class);
     }
 
+    public boolean isUsernameOrEmailExists(String username, String email) {
+        return findByUsername(username).isPresent() || findByEmail(email).isPresent();
+    }
+
     public Optional<User> findByUsername(String username) {
         User user = documents.find(new Document("username", username).append("status", 1)).first();
+        return user == null ? Optional.empty() : Optional.of(user);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        User user = documents.find(new Document("email", email).append("status", 1)).first();
         return user == null ? Optional.empty() : Optional.of(user);
     }
 
@@ -41,6 +50,14 @@ public class UserService {
 
     public long count() {
         return documents.count(new Document("status", 1));
+    }
+
+    public String encodeUser(User user) {
+        return user.username;
+    }
+
+    public User decodeUser(String token) {
+        return findByUsername(token).get();
     }
 
     public Optional<User> user(Request request) {
@@ -65,14 +82,6 @@ public class UserService {
         user.createTime = old != null ? old.createTime : now;
         user.lastUpdateTime = now;
         documents.replaceOne(new Document("_id", user.id), user);
-    }
-
-    public String encode(User user) {
-        return user.username;
-    }
-
-    public User decode(String key) {
-        return findByUsername(key).get();
     }
 
     public void delete(String id) {
