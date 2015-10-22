@@ -2,6 +2,7 @@ package org.app4j.site.internal.route;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.app4j.site.web.Handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,15 +20,15 @@ public class RouteTree {
     private final Map<Node, List<String>> variableNames = new HashMap<>();
     private final Node root = new Node("/");
 
-    public RouteTree add(String route, RouteDef target) {
-        Node.Path path = new Node.Path(route);
+    public RouteTree add(String route, Handler handler) {
+        Path path = new Path(route);
         List<String> variableNames = Lists.newArrayList();
         Node node = root.add(path, variableNames);
 
         if (targets.containsKey(node)) {
             throw new RuntimeException(String.format("route %s exists", route));
         }
-        targets.put(node, target);
+        targets.put(node, new RouteDef(route, handler));
         this.variableNames.put(node, variableNames);
         return this;
     }
@@ -35,9 +36,9 @@ public class RouteTree {
 
     public Optional<Route> find(String path) {
         List<String> parameterValues = new ArrayList<>();
-        Node node = root.find(new Node.Path(path), parameterValues);
+        Node node = root.find(new Path(path), parameterValues);
 
-        if (node == null && !targets.containsKey(node)) {
+        if (node == null || !targets.containsKey(node)) {
             return Optional.empty();
         }
 
@@ -51,6 +52,25 @@ public class RouteTree {
             }
         }
         return Optional.of(new Route(def, parameters));
+    }
+
+    static class Path {
+        final String path;
+        Path next;
+
+        public Path(String path) {
+            int p = path.indexOf('/');
+
+            if (p >= 0) {
+                this.path = path.substring(0, p + 1);
+
+                if (p < path.length() - 1) {
+                    this.next = new Path(path.substring(p + 1));
+                }
+            } else {
+                this.path = path;
+            }
+        }
     }
 
     static class Node {
@@ -125,24 +145,6 @@ public class RouteTree {
             return null;
         }
 
-        static class Path {
-            final String path;
-            Path next;
-
-            public Path(String path) {
-                int p = path.indexOf('/');
-
-                if (p >= 0) {
-                    this.path = path.substring(0, p + 1);
-
-                    if (p < path.length() - 1) {
-                        this.next = new Path(path.substring(p + 1));
-                    }
-                } else {
-                    this.path = path;
-                }
-            }
-        }
 
         static class Variable extends Node {
             static final Pattern VARIABLE_PATTERN = Pattern.compile(":(\\w*)(\\(.*\\))?(.*)?");

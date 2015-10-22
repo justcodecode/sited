@@ -1,11 +1,11 @@
 package org.app4j.site.internal.route.service;
 
-import com.google.common.collect.Maps;
+import org.app4j.site.internal.route.Route;
 import org.app4j.site.internal.route.RouteTree;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * @author chi
@@ -13,12 +13,11 @@ import java.util.HashMap;
 public class RouteTreeTest {
     @Test
     public void get() {
-        RouteTree<Object> routeTree = new RouteTree<>();
-        routeTree.add("/product/:id(\\d+).html", new Object());
+        RouteTree routeTree = new RouteTree();
+        routeTree.add("/product/:id(\\d+).html", request -> null);
 
-        HashMap<String, String> parameters = Maps.newHashMap();
-        Object o = routeTree.find("/product/1.html", parameters);
-        Assert.assertNotNull(o);
-        Assert.assertEquals("1", parameters.get(":id"));
+        Optional<Route> route = routeTree.find("/product/1.html");
+        Assert.assertTrue(route.isPresent());
+        Assert.assertEquals("1", route.get().parameters.get(":id"));
     }
 }

@@ -26,6 +26,6 @@ public class InstallService {
     }
 
     public void installed(Date installTime) {
-        documents.insertOne(new Document("intallTime", installTime));
+        documents.insertOne(new Document("installTime", installTime));
     }
 }

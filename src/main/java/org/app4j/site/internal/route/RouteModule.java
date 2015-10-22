@@ -21,25 +21,25 @@ public class RouteModule extends InternalModule implements RouteConfig {
 
     @Override
     public RouteModule get(String route, Handler handler) {
-        method(Request.Method.GET).add(route, new RouteDef(route, handler));
+        method(Request.Method.GET).add(route, handler);
         return this;
     }
 
     @Override
     public RouteModule post(String route, Handler handler) {
-        method(Request.Method.POST).add(route, new RouteDef(route, handler));
+        method(Request.Method.POST).add(route, handler);
         return this;
     }
 
     @Override
     public RouteModule put(String route, Handler handler) {
-        method(Request.Method.PUT).add(route, new RouteDef(route, handler));
+        method(Request.Method.PUT).add(route, handler);
         return this;
     }
 
     @Override
     public RouteModule delete(String route, Handler handler) {
-        method(Request.Method.DELETE).add(route, new RouteDef(route, handler));
+        method(Request.Method.DELETE).add(route, handler);
         return this;
     }
 
