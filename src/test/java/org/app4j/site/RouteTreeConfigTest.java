@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author chi
  */
-public class RouteConfigTest {
+public class RouteTreeConfigTest {
     RouteModule routeConfig = new RouteModule(null);
 
     @Test

@@ -3,7 +3,7 @@ package org.app4j.site.internal.route;
 import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author chi
@@ -17,5 +17,5 @@ public interface RouteConfig {
 
     RouteConfig delete(String route, Handler handler);
 
-    Handler find(Request.Method method, String path, Map<String, String> parameters);
+    Optional<Route> find(Request.Method method, String path);
 }

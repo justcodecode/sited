@@ -15,18 +15,18 @@ import org.app4j.site.internal.database.DatabaseModule;
 import org.app4j.site.internal.error.ErrorConfig;
 import org.app4j.site.internal.error.ErrorHandler;
 import org.app4j.site.internal.error.ErrorModule;
-import org.app4j.site.internal.index.IndexConfig;
-import org.app4j.site.internal.index.IndexModule;
-import org.app4j.site.internal.route.RouteConfig;
-import org.app4j.site.internal.route.RouteModule;
 import org.app4j.site.internal.event.EventConfig;
 import org.app4j.site.internal.event.EventModule;
+import org.app4j.site.internal.index.IndexConfig;
+import org.app4j.site.internal.index.IndexModule;
+import org.app4j.site.internal.route.Route;
+import org.app4j.site.internal.route.RouteConfig;
+import org.app4j.site.internal.route.RouteModule;
 import org.app4j.site.internal.template.TemplateConfig;
 import org.app4j.site.internal.template.TemplateModule;
 import org.app4j.site.internal.track.TrackConfig;
 import org.app4j.site.util.Graph;
 import org.app4j.site.util.JSON;
-import org.app4j.site.web.Handler;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.NotFoundException;
@@ -46,6 +46,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -227,12 +228,13 @@ public class Site extends ScopeImpl {
     }
 
     public Response handle(Request request) throws Exception {
-        Handler handler = route().find(request.method(), request.path(), request.parameters());
-        if (handler == null) {
+        Optional<Route> route = route().find(request.method(), request.path());
+        if (!route.isPresent()) {
             throw new NotFoundException(request.path());
         }
         try {
-            return handler.handle(request);
+            request.parameters().putAll(route.get().parameters);
+            return route.get().def.handler.handle(request);
         } catch (Throwable e) {
             return handleError(request, e);
         }

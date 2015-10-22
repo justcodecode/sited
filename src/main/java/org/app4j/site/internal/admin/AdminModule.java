@@ -9,6 +9,7 @@ import org.app4j.site.internal.admin.service.Console;
 import org.app4j.site.internal.admin.service.InstallService;
 import org.app4j.site.internal.admin.web.AdminController;
 import org.app4j.site.internal.admin.web.AdminHandler;
+import org.app4j.site.internal.route.Route;
 import org.app4j.site.internal.route.RouteConfig;
 import org.app4j.site.internal.route.RouteModule;
 import org.app4j.site.internal.template.TemplateModule;
@@ -22,7 +23,7 @@ import org.app4j.site.web.Response;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author chi
@@ -109,8 +110,8 @@ public class AdminModule extends InternalModule {
                 }
 
                 @Override
-                public Handler find(Request.Method method, String path, Map<String, String> parameters) {
-                    throw new Error("not implemented");
+                public Optional<Route> find(Request.Method method, String path) {
+                    throw new Error("not implement");
                 }
             };
         }
