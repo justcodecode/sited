@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class PageContext extends HashMap<String, Object> {
     public boolean hasPage() {
-        return containsKey("page");
+        return containsKey("page") && get("page") != null;
     }
 
     public PageVariable.Page page() {

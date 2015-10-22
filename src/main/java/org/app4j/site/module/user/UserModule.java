@@ -78,7 +78,7 @@ public class UserModule extends Module {
 
 
         error().on(UnauthorizedException.class, (request, e) -> {
-            if ("application/json".equalsIgnoreCase(request.accept())) {
+            if (request.accept().contains("application/json")) {
                 return Response.empty().setStatusCode(401);
             }
             return Response.redirect("/login.html?from=" + request.path());

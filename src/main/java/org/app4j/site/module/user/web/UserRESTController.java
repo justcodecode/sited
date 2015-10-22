@@ -24,8 +24,8 @@ public class UserRESTController {
     public Response login(Request request) throws IOException {
         UserLoginRequest userLoginRequest = request.body(UserLoginRequest.class);
         Optional<User> user = userService.findByUsername(userLoginRequest.getUsername());
-        if (!user.isPresent() && !user.get().password.equals(userLoginRequest.getPassword())) {
-            throw new UnauthorizedException("require user login");
+        if (!user.isPresent() || !user.get().password.equals(userLoginRequest.getPassword())) {
+            throw new UnauthorizedException("invalid username or password");
         }
         return Response.bean(user.get()).setCookie(User.COOKIE_NAME, userService.encodeUser(user.get()));
     }

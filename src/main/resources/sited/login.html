@@ -3,13 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"/>
+    <style type="text/css">
+        .alert-danger {
+            display: none;
+        }
+
+        .alert-danger.open {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<form action="/login" method="post">
-    <input type="hidden" name="toURL" j:value="${request.query('from').orElse('').get()}"/>
-    <input type="text" name="username"/>
-    <input type="text" name="password"/>
-    <button type="submit">Login</button>
-</form>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>
+                <span j:text="${site.name}">Site Name</span>
+            </h3>
+            <small j:text="${site.description}">Site description</small>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-danger">
+                Error message.
+            </div>
+            <form id="loginForm">
+                <input type="hidden" name="toURL" j:value="${request.params.from}"/>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="assets/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+    $('#loginForm').submit(function () {
+        var form = {};
+
+        $(this).serializeArray().forEach(function (value) {
+            form[value.name] = value.value;
+        });
+
+        $.post('/login', form, function () {
+            window.location.href = form.toURL ? form.toURL : '/';
+        }, 'json').fail(function () {
+            $('.alert-danger').addClass('open').html('Invalid username or password.');
+        });
+        return false;
+    });
+</script>
 </body>
 </html>

@@ -14,7 +14,7 @@ import java.util.Collections;
 /**
  * @author chi
  */
-public class PageHandler implements Handler {
+public class    PageHandler implements Handler {
     protected final VariableConfig variableConfig;
 
     public PageHandler(VariableConfig variableConfig) {
