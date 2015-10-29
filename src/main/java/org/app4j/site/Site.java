@@ -2,7 +2,6 @@ package org.app4j.site;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -19,9 +18,9 @@ import org.app4j.site.internal.event.EventConfig;
 import org.app4j.site.internal.event.EventModule;
 import org.app4j.site.internal.index.IndexConfig;
 import org.app4j.site.internal.index.IndexModule;
-import org.app4j.site.internal.route.Route;
 import org.app4j.site.internal.route.RouteConfig;
 import org.app4j.site.internal.route.RouteModule;
+import org.app4j.site.internal.route.Router;
 import org.app4j.site.internal.template.TemplateConfig;
 import org.app4j.site.internal.template.TemplateModule;
 import org.app4j.site.internal.track.TrackConfig;
@@ -34,9 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -75,10 +72,10 @@ public class Site extends ScopeImpl {
     private final String host;
     private final Integer port;
 
-    public Site(File dir) {
+    public Site(Properties properties) {
         super(null);
-        this.dir = dir;
-        this.properties = loadProperties();
+        this.dir = new File(properties.getProperty("site.dir"));
+        this.properties = properties;
 
         host = property("site.host").orElse("0.0.0.0").get();
         port = property("site.port", Integer.class).orElse(8080).get();
@@ -113,19 +110,6 @@ public class Site extends ScopeImpl {
         install(IndexModule.class);
 
         bind(Site.class).to(this);
-    }
-
-    private Properties loadProperties() {
-        Properties properties = new Properties();
-        File file = new File(dir, "site.properties");
-        Preconditions.checkState(file.exists(), "missing config file, %s", file.getAbsolutePath());
-
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)) {
-            properties.load(reader);
-            return properties;
-        } catch (IOException e) {
-            throw new Error(e);
-        }
     }
 
     public String name() {
@@ -180,7 +164,7 @@ public class Site extends ScopeImpl {
             modules.put(moduleClass, module);
 
             Queue<Class<? extends Module>> dependencies = new LinkedList<>();
-            dependencies.addAll(module.dependencies());
+            dependencies.addAll(module.dependencies);
 
             while (!dependencies.isEmpty()) {
                 Class<? extends Module> dependency = dependencies.poll();
@@ -221,20 +205,24 @@ public class Site extends ScopeImpl {
         Graph<Class<? extends Module>> graph = new Graph<>();
         for (Map.Entry<Class<? extends Module>, Module> entry : modules.entrySet()) {
             List<Class<? extends Module>> dependencies = new ArrayList<>();
-            dependencies.addAll(entry.getValue().dependencies());
+            dependencies.addAll(entry.getValue().dependencies);
             graph.add(entry.getKey(), dependencies);
         }
         return graph;
     }
 
     public Response handle(Request request) throws Exception {
-        Optional<Route> route = route().find(request.method(), request.path());
+        Optional<Router.Route> route = route().find(request.method(), request.path());
         if (!route.isPresent()) {
             throw new NotFoundException(request.path());
         }
         try {
-            request.parameters().putAll(route.get().parameters);
-            return route.get().def.handler.handle(request);
+            List<String> variableNames = route.get().path.variableNames;
+            for (int i = 0; i < variableNames.size(); i++) {
+                String variableName = variableNames.get(i);
+                request.parameters().put(":" + variableName, route.get().variableValues.get(i));
+            }
+            return route.get().handler.handle(request);
         } catch (Throwable e) {
             return handleError(request, e);
         }

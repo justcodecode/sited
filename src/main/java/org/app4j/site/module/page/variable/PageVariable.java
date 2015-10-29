@@ -2,8 +2,8 @@ package org.app4j.site.module.page.variable;
 
 import com.google.common.collect.Lists;
 import org.app4j.site.Scope;
-import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.internal.database.FindView;
+import org.app4j.site.module.page.service.PageService;
 import org.app4j.site.web.Request;
 import org.bson.Document;
 
@@ -29,9 +29,9 @@ public class PageVariable implements Variable<PageVariable.Page> {
         Optional<org.app4j.site.module.page.Page> page = pageService.findByPath(pagePath.pagePath());
         if (page.isPresent()) {
             if (pagePath.isDirectory()) {
-                return new Page(page.get(), pageService);
-            } else {
                 return new Directory(page.get(), pageService, 0, 0);
+            } else {
+                return new Page(page.get(), pageService);
             }
         } else {
             return null;
@@ -47,6 +47,10 @@ public class PageVariable implements Variable<PageVariable.Page> {
             this.pageService = pageService;
 
             putAll(page);
+        }
+
+        public String path() {
+            return page.path();
         }
 
         public String templatePath() {
@@ -83,18 +87,20 @@ public class PageVariable implements Variable<PageVariable.Page> {
 
         public Directory(org.app4j.site.module.page.Page page, PageService pageService, int offset, int fetchSize) {
             super(page, pageService);
-
             this.offset = offset;
             this.fetchSize = fetchSize;
             total = 0;
         }
 
         public FindView<Page> pages() {
-            return null;
+            FindView<Page> results = new FindView<>(offset, pageService.countCategory(path()));
+            pageService.findByCategory(path(), offset, fetchSize)
+                .forEach(page1 -> results.add(new Page(page1, pageService)));
+            return results;
         }
 
         public FindView<Directory> subDirectories() {
-            return null;
+            return new FindView<>(0, 0);
         }
     }
 }

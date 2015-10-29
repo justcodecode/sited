@@ -35,6 +35,7 @@ public class TemplateSrcAttrProcessor extends AbstractAttributeTagProcessor impl
         }
 
         if (!isRelativePath(path)) {
+            tag.getAttributes().setAttribute(ATTRIBUTE_NAME, path);
             return;
         }
 

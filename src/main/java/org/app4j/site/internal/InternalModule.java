@@ -1,10 +1,7 @@
 package org.app4j.site.internal;
 
-import com.google.common.collect.Lists;
 import org.app4j.site.Module;
 import org.app4j.site.Site;
-
-import java.util.List;
 
 /**
  * @author chi
@@ -12,10 +9,6 @@ import java.util.List;
 public abstract class InternalModule extends Module {
     public InternalModule(Site site) {
         super(site);
-    }
-
-    @Override
-    public List<Class<? extends Module>> dependencies() {
-        return Lists.newArrayList();
+        dependencies.clear();
     }
 }

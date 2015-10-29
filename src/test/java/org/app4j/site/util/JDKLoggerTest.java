@@ -1,4 +1,4 @@
-package org.app4j.util;
+package org.app4j.site.util;
 
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -51,8 +51,7 @@ public class IndexModule extends Module implements IndexConfig {
     @Override
     protected void configure() throws Exception {
         bind(IndexConfig.class).to(this).export();
-
-        indexDir = site().dir("index");
+        indexDir = site.dir("index");
         codecRegistry = database().codecs();
         onShutdown(() -> indices.values().stream().forEach(Index::stop));
     }

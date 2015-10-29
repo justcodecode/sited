@@ -50,10 +50,6 @@ public class Page extends Document {
         put("description", description);
     }
 
-    public Type type() {
-        return path().endsWith("/") ? Type.DIRECTORY : Type.PAGE;
-    }
-
     @SuppressWarnings("unchecked")
     public List<String> categories() {
         return get("categories", List.class);
@@ -177,11 +173,10 @@ public class Page extends Document {
     }
 
     public boolean isDirectory() {
-        return Type.DIRECTORY.equals(type());
+        return getBoolean("directory");
     }
 
-
-    public enum Type {
-        PAGE, DIRECTORY
+    public void setDirectory(Boolean directory) {
+        put("directory", directory);
     }
 }

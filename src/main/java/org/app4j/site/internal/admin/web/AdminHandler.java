@@ -22,9 +22,11 @@ public class AdminHandler implements Handler {
 
     @Override
     public Response handle(Request request) throws Exception {
+        //todo exclude client api upload image
+
         AdminUser adminUser = request.require(AdminUser.class);
 
-        if (adminUser == null) {
+        if (adminUser == null && !"/admin/api/file/upload".equals(request.path())) {
             throw new UnauthorizedException("require admin");
         }
 

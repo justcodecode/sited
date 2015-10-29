@@ -1,7 +1,5 @@
 package org.app4j.site.internal.route.service;
 
-import org.app4j.site.internal.route.Route;
-import org.app4j.site.internal.route.RouteTree;
 import org.junit.Assert;
 import org.junit.Test;
 

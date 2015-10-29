@@ -5,7 +5,6 @@ import org.app4j.site.module.topic.domain.QuickReply;
 import org.app4j.site.module.topic.domain.Reply;
 import org.app4j.site.module.topic.service.QuickReplyService;
 import org.app4j.site.module.topic.service.ReplyService;
-import org.app4j.site.module.topic.service.TopicService;
 import org.app4j.site.module.user.domain.User;
 import org.app4j.site.web.Request;
 import org.app4j.site.web.Response;
@@ -17,12 +16,10 @@ import java.io.IOException;
  * @author chi
  */
 public class TopicRESTController {
-    private final TopicService topicService;
     private final ReplyService replyService;
     private final QuickReplyService quickReplyService;
 
-    public TopicRESTController(TopicService topicService, ReplyService replyService, QuickReplyService quickReplyService) {
-        this.topicService = topicService;
+    public TopicRESTController(ReplyService replyService, QuickReplyService quickReplyService) {
         this.replyService = replyService;
         this.quickReplyService = quickReplyService;
     }
@@ -44,7 +41,6 @@ public class TopicRESTController {
     }
 
     public Response createQuickReply(Request request) throws IOException {
-        String topicId = request.path(":topicId").get();
         QuickReply quickReply = request.body(QuickReply.class);
         User user = request.require(User.class);
         quickReply.username = user.username;

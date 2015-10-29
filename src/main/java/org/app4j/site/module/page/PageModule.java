@@ -6,7 +6,7 @@ import org.app4j.site.Site;
 import org.app4j.site.internal.cache.service.DiskCache;
 import org.app4j.site.internal.index.IndexModule;
 import org.app4j.site.internal.index.service.Index;
-import org.app4j.site.internal.template.service.TemplateRepository;
+import org.app4j.site.internal.template.web.admin.TemplateRESTController;
 import org.app4j.site.internal.track.TrackModule;
 import org.app4j.site.module.file.FileModule;
 import org.app4j.site.module.page.processor.PagePaginationAttrProcessor;
@@ -23,15 +23,10 @@ import org.app4j.site.module.page.web.SitemapController;
 import org.app4j.site.module.page.web.admin.AdminPageRESTController;
 import org.app4j.site.module.page.web.admin.AdminSitemapRESTController;
 import org.app4j.site.module.user.UserModule;
-import org.app4j.site.util.Files;
-import org.app4j.site.util.FolderResourceRepository;
 import org.app4j.site.web.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -45,22 +40,24 @@ public class PageModule extends Module implements PageConfig {
 
     public PageModule(Site site) {
         super(site);
-    }
 
-    @Override
-    public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(IndexModule.class, TrackModule.class, UserModule.class, FileModule.class);
+        dependencies.add(IndexModule.class);
+        dependencies.add(TrackModule.class);
+        dependencies.add(UserModule.class);
+        dependencies.add(FileModule.class);
     }
 
     @Override
     public void configure() throws Exception {
+        bind(PageConfig.class).to(this).export();
+
         database().codecs().add(new PageCodec());
 
         PageService pageService = new PageService(database().get());
         bind(PageService.class).to(pageService);
 
         DiskCache sitemapDiskCache = cache().createDiskCache("sitemap", Integer.MAX_VALUE, TimeUnit.DAYS);
-        SitemapService sitemapService = new SitemapService(site().baseURL(), pageService,
+        SitemapService sitemapService = new SitemapService(site.baseURL(), pageService,
             sitemapDiskCache);
         bind(SitemapService.class).to(sitemapService);
 
@@ -68,17 +65,11 @@ public class PageModule extends Module implements PageConfig {
         PageIndexService pageIndexService = new PageIndexService(index);
         bind(PageIndexService.class).to(pageIndexService);
 
-        File templateDir = new File(property("site.web.dir").orElse(site().dir("web").getAbsolutePath()).get());
-        Files.createDirIfNoneExists(templateDir);
-
-        template()
-            .add(new TemplateRepository(new FolderResourceRepository(templateDir)));
-
         template().dialect()
-            .add(new PagePaginationAttrProcessor(template().dialect(), site().baseURL()));
+            .add(new PagePaginationAttrProcessor(template().dialect(), site.baseURL()));
 
 
-        PageHandler pageHandler = new PageHandler(variableConfig);
+        PageHandler pageHandler = new PageHandler(variableConfig, template());
         route().get("/*", pageHandler);
         route().get("/", pageHandler);
 
@@ -90,10 +81,10 @@ public class PageModule extends Module implements PageConfig {
         variables()
             .addGlobalVariable("page", new PageVariable(pageService))
             .addGlobalVariable("request", new RequestVariable())
-            .addGlobalVariable("site", new SiteVariable(site()));
+            .addGlobalVariable("site", new SiteVariable(site));
 
 
-        if (site().isAdminEnabled()) {
+        if (site.isAdminEnabled()) {
             configureAdmin(pageService, pageIndexService, sitemapService);
         }
     }
@@ -103,7 +94,7 @@ public class PageModule extends Module implements PageConfig {
         admin().route()
             .get("/admin/api/site", request -> {
                 Map<String, Object> site = Maps.newHashMap();
-                site.put("host", site().host());
+                site.put("host", "");
                 return Response.bean(site);
             })
             .get("/admin/api/page/", adminPageRESTController::findPages)
@@ -115,6 +106,9 @@ public class PageModule extends Module implements PageConfig {
 
         AdminSitemapRESTController adminSitemapRESTController = new AdminSitemapRESTController(sitemapService, event());
         admin().route().get("/admin/api/page/rebuild-sitemap", adminSitemapRESTController::rebuildSitemap);
+
+        TemplateRESTController templateRESTController = new TemplateRESTController(template());
+        admin().route().get("/admin/api/page/git/pull", templateRESTController::pull);
     }
 
     @Override

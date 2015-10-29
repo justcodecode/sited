@@ -77,11 +77,11 @@ public interface TemplateProcessorSupport {
     }
 
     default Request request(ITemplateProcessingContext iTemplateProcessingContext) {
-        return (Request) iTemplateProcessingContext.getVariables().getVariable("request");
+        return (Request) iTemplateProcessingContext.getVariables().getVariable("__request__");
     }
 
     default Template template(ITemplateProcessingContext iTemplateProcessingContext) {
-        return (Template) iTemplateProcessingContext.getVariables().getVariable("template");
+        return (Template) iTemplateProcessingContext.getVariables().getVariable("__template__");
     }
 
     default <T> Value<T> attribute(String attributeName, IProcessableElementTag tag, Class<T> type) {

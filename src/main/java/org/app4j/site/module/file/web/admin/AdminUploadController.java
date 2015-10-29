@@ -39,4 +39,13 @@ public class AdminUploadController {
             return Response.bean(uploadFile);
         }
     }
+
+    public Response clientUpload(Request request) throws IOException {
+        File file = request.body(File.class);
+        try (InputStream in = new FileInputStream(file)) {
+            ClientUploadResponse clientUploadResponse = new ClientUploadResponse();
+            clientUploadResponse.path = uploadFileService.repository().put(in, file.getName());
+            return Response.bean(clientUploadResponse);
+        }
+    }
 }

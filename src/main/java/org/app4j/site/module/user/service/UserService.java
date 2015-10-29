@@ -61,9 +61,9 @@ public class UserService {
     }
 
     public Optional<User> user(Request request) {
-        Value<String> userId = request.cookie(USER_COOKIE_NAME);
-        if (userId.isPresent()) {
-            return findByUserId(userId.get());
+        Value<String> username = request.cookie(USER_COOKIE_NAME);
+        if (username.isPresent()) {
+            return findByUsername(username.get());
         }
         return Optional.empty();
     }

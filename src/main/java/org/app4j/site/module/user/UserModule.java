@@ -32,18 +32,18 @@ public class UserModule extends Module {
 
     @Override
     protected void configure() throws Exception {
-        site().database().codecs()
+        database().codecs()
             .add(new UserCodec())
             .add(new RoleCodec())
             .add(new PermissionCodec());
 
-        UserService userService = new UserService(site().database().get());
+        UserService userService = new UserService(database().get());
         bind(UserService.class).to(userService);
 
-        RoleService roleService = new RoleService(site().database().get());
+        RoleService roleService = new RoleService(database().get());
         bind(RoleService.class).to(roleService);
 
-        PermissionService permissionService = new PermissionService(site().database().get());
+        PermissionService permissionService = new PermissionService(database().get());
         bind(PermissionService.class).to(permissionService);
 
         bind(AdminUser.class).to((key, scope) -> {

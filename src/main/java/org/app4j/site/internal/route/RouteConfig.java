@@ -17,5 +17,5 @@ public interface RouteConfig {
 
     RouteConfig delete(String route, Handler handler);
 
-    Optional<Route> find(Request.Method method, String path);
+    Optional<Router.Route> find(Request.Method method, String path);
 }

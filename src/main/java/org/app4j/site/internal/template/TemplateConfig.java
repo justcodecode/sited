@@ -1,9 +1,9 @@
 package org.app4j.site.internal.template;
 
 import org.app4j.site.internal.template.service.TemplateDialect;
-import org.app4j.site.internal.template.service.TemplateRepository;
 import org.thymeleaf.TemplateEngine;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +17,9 @@ public interface TemplateConfig {
 
     AssetsConfig assets();
 
-    TemplateConfig add(TemplateRepository resourceRepository);
-
     Optional<Template> get(String templatePath);
+
+    File dir();
 
     List<Template> all();
 }

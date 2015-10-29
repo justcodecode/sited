@@ -95,7 +95,7 @@ public class Graph<T> implements Iterable<T> {
                 Preconditions.checkState(dependencies.containsKey(dependency), "missing dependency, %s -> %s", entry.getKey(), dependency);
             }
 
-            Preconditions.checkState(!overall.get(entry.getKey()).contains(entry.getKey()), "cycle dependency, %", entry.getKey());
+            Preconditions.checkState(!overall.get(entry.getKey()).contains(entry.getKey()), "cycle dependency, %s", entry.getKey());
         }
     }
 

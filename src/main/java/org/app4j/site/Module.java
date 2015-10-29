@@ -1,5 +1,6 @@
 package org.app4j.site;
 
+import com.google.common.collect.Lists;
 import org.app4j.site.internal.admin.AdminConfig;
 import org.app4j.site.internal.admin.AdminModule;
 import org.app4j.site.internal.cache.CacheConfig;
@@ -24,75 +25,70 @@ import java.util.List;
  * @author chi
  */
 public abstract class Module extends ScopeImpl {
-    private final Site site;
+    protected final Site site;
+    protected final List<Class<? extends Module>> dependencies = Lists.newArrayList();
 
     public Module(Site site) {
         super(site);
         this.site = site;
+
+        dependencies.addAll(Arrays.asList(AdminModule.class,
+            CacheModule.class, DatabaseModule.class,
+            ErrorModule.class, EventModule.class,
+            EventModule.class, RouteModule.class,
+            TemplateModule.class));
     }
 
     protected abstract void configure() throws Exception;
 
-    public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(AdminModule.class,
-            CacheModule.class, DatabaseModule.class,
-            ErrorModule.class, EventModule.class,
-            EventModule.class, RouteModule.class,
-            TemplateModule.class);
-    }
-
     protected Module onShutdown(Runnable shutdownHook) {
-        site().onShutdown(new Site.Hook(this, shutdownHook));
+        site.onShutdown(new Site.Hook(this, shutdownHook));
         return this;
     }
 
     protected Module onStartup(Runnable startupHook) {
-        site().onStartup(new Site.Hook(this, startupHook));
+        site.onStartup(new Site.Hook(this, startupHook));
         return this;
     }
 
     protected RouteConfig route() {
-        return site().route();
-    }
-
-    protected Site site() {
-        return site;
+        return site.route();
     }
 
     protected DatabaseConfig database() {
-        return site().database();
+        return site.database();
     }
 
     protected EventConfig event() {
-        return site().event();
+        return site.event();
     }
 
     protected TemplateConfig template() {
-        return site().template();
+        return site.template();
     }
 
     protected CacheConfig cache() {
-        return site().cache();
+        return site.cache();
     }
 
     protected ErrorConfig error() {
-        return site().error();
+        return site.error();
     }
 
     protected AdminConfig admin() {
-        return site().admin();
+        return site.admin();
     }
 
     protected IndexConfig index() {
-        return site().index();
+        return site.index();
     }
 
     protected TrackConfig track() {
-        return site().track();
+        return site.track();
     }
 
     protected <T> Property<T> property(String key, Class<T> type) {
-        return site().property(key, type);
+        return site.property(key, type);
     }
 
     protected Property<String> property(String key) {

@@ -3,7 +3,6 @@ package org.app4j.site.internal.template;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import org.app4j.site.Module;
 import org.app4j.site.Site;
 import org.app4j.site.internal.InternalModule;
 import org.app4j.site.internal.cache.CacheModule;
@@ -16,7 +15,6 @@ import org.app4j.site.internal.template.service.TemplateDialect;
 import org.app4j.site.internal.template.service.TemplateRepository;
 import org.app4j.site.internal.template.web.AssetsHandler;
 import org.app4j.site.util.FolderResourceRepository;
-import org.app4j.site.util.ResourceRepository;
 import org.app4j.site.util.SortedList;
 import org.app4j.site.web.Response;
 import org.app4j.site.web.exception.BadRequestException;
@@ -48,10 +46,14 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     private final StandardCacheManager cacheManager = new StandardCacheManager();
     private final SortedList<TemplateRepository> templateRepositories = new SortedList<>((o1, o2) -> o2.priority() - o1.priority());
     private final File dir;
-    private AssetsConfig assetsConfig;
+    private final AssetsConfig assetsConfig = new AssetsConfig();
+
 
     public TemplateModule(Site site) {
         super(site);
+        dependencies.addAll(Arrays.asList(RouteModule.class, CacheModule.class,
+            ErrorModule.class));
+
         this.dir = site.dir("web");
         templateEngine.setCacheManager(cacheManager);
         templateEngine.setDialect(templateDialect);
@@ -72,24 +74,6 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     }
 
     @Override
-    public List<Class<? extends Module>> dependencies() {
-        return Arrays.asList(RouteModule.class, CacheModule.class, ErrorModule.class);
-    }
-
-    public TemplateModule add(ResourceRepository resourceRepository) {
-        templateRepositories.add(new TemplateRepository(resourceRepository));
-        assetsConfig.add(resourceRepository);
-        return this;
-    }
-
-    @Override
-    public TemplateConfig add(TemplateRepository resourceRepository) {
-        templateRepositories.add(resourceRepository);
-        assetsConfig.add(resourceRepository.raw());
-        return this;
-    }
-
-    @Override
     public Optional<Template> get(String templatePath) {
         for (TemplateRepository repository : templateRepositories) {
             Optional<Template> template = repository.resolve(templatePath);
@@ -98,6 +82,11 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public File dir() {
+        return dir;
     }
 
     public AssetsConfig assets() {
@@ -116,16 +105,15 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
     protected void configure() throws Exception {
         bind(TemplateConfig.class).to(this).export();
 
-        assetsConfig = new AssetsConfig();
         add(new TemplateRepository(new FolderResourceRepository(dir)));
 
         templateDialect
-            .add(new TemplateHrefAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
-            .add(new TemplateSrcAttrProcessor(dialect(), site().baseURL(), site().baseCdnURLs()))
+            .add(new TemplateHrefAttrProcessor(dialect(), site.baseURL(), site.baseCdnURLs()))
+            .add(new TemplateSrcAttrProcessor(dialect(), site.baseURL(), site.baseCdnURLs()))
             .add(new LangAttrProcessor(dialect()));
 
 
-        if (site().isDebugEnabled()) {
+        if (site.isDebugEnabled()) {
             cacheManager.setTemplateCacheMaxSize(0);
             templateResolver.setCacheable(false);
         }
@@ -156,6 +144,12 @@ public class TemplateModule extends InternalModule implements TemplateConfig {
             e.printStackTrace(new PrintWriter(stackTrace));
             return Response.text(stackTrace.toString()).setStatusCode(500);
         });
+    }
+
+
+    void add(TemplateRepository resourceRepository) {
+        templateRepositories.add(resourceRepository);
+        assetsConfig.add(resourceRepository.raw());
     }
 
     @Override

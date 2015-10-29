@@ -1,7 +1,6 @@
-package org.app4j.util;
+package org.app4j.site.util;
 
 import com.github.fakemongo.junit.FongoRule;
-import org.app4j.site.util.JSON;
 import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Rule;

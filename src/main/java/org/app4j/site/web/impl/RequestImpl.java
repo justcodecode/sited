@@ -89,7 +89,7 @@ public class RequestImpl extends ScopeImpl implements Request {
 
     @Override
     public String accept() {
-        return header("accept").orElse(null).get();
+        return header("accept").orElse("").get();
     }
 
     @Override

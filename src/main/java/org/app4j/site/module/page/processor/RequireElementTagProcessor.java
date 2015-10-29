@@ -2,9 +2,9 @@ package org.app4j.site.module.page.processor;
 
 import com.google.common.collect.Maps;
 import org.app4j.site.ScopeImpl;
+import org.app4j.site.internal.template.processor.TemplateProcessorSupport;
 import org.app4j.site.module.page.variable.VariableConfig;
 import org.app4j.site.module.page.variable.VariableRef;
-import org.app4j.site.internal.template.processor.TemplateProcessorSupport;
 import org.thymeleaf.context.ITemplateProcessingContext;
 import org.thymeleaf.context.TemplateProcessingContext;
 import org.thymeleaf.context.VariablesMap;

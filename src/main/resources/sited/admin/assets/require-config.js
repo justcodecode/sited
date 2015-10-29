@@ -34,7 +34,7 @@ require.config({
     },
     map: {
         '*': {
-            'css': 'lib/js/require-css.min'
+            'css': '../../assets/js/require-css.min'
         }
     }
 });

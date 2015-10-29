@@ -24,7 +24,7 @@ public class FileModule extends Module {
     public void configure() {
         File dir = property("site.file.dir").isPresent()
             ? new File(property("site.file.dir").get())
-            : site().dir("file");
+            : site.dir("file");
 
         database().codecs().add(new UploadFileCodec());
 
@@ -37,7 +37,9 @@ public class FileModule extends Module {
 
         AdminUploadController adminUploadController = new AdminUploadController(uploadFileService);
         AdminUploadFileRESTController adminUploadFileRESTController = new AdminUploadFileRESTController(uploadFileService);
+
         admin().route()
+            .post("/admin/api/file/upload", adminUploadController::clientUpload)
             .post("/admin/file/upload", adminUploadController::upload)
             .get("/admin/api/file/:id", adminUploadFileRESTController::findById)
             .get("/admin/api/file/", adminUploadFileRESTController::findUploadFiles)

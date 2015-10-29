@@ -27,7 +27,7 @@ public class TopicModule extends Module {
         bind(TopicService.class).to(topicService);
 
         AdminCommentRESTController commentRESTController = new AdminCommentRESTController(topicService);
-        admin().route().get("/sited/admin/api/comment/", commentRESTController::findComments);
+        admin().route().get("/web/admin/api/comment/", commentRESTController::findComments);
     }
 
 }

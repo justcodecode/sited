@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.app4j.site.module.page.Page;
 import org.app4j.site.internal.database.Dumper;
 import org.app4j.site.internal.database.FindView;
 import org.app4j.site.internal.database.MongoCollectionDumper;
+import org.app4j.site.module.page.Page;
 import org.app4j.site.web.exception.NotFoundException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -47,9 +47,9 @@ public class PageService {
         return page == null ? Optional.<Page>empty() : Optional.of(page);
     }
 
-    public FindView<Page> findByCategory(String category, int offset, int fetchSize, String type) {
+    public FindView<Page> findByCategory(String category, int offset, int fetchSize) {
         FindView<Page> results = new FindView<>(offset, countByCategory(category));
-        return documents.find(new Document("categories", category).append("type", type))
+        return documents.find(new Document("categories", category).append("directory", false))
             .skip(offset)
             .limit(fetchSize)
             .into(results);
@@ -69,11 +69,11 @@ public class PageService {
     }
 
     public void saveOrUpdate(Page page) {
-        Optional<Page> oldPageOptional = findByPath(page.path());
+        Optional<Page> existPage = findByPath(page.path());
 
-        if (oldPageOptional.isPresent()) {
-            page.setId(oldPageOptional.get().id());
-            page.setCreateTime(oldPageOptional.get().createTime());
+        if (existPage.isPresent()) {
+            page.setId(existPage.get().id());
+            page.setCreateTime(existPage.get().createTime());
         } else {
             page.setCreateTime(new Date());
         }
@@ -84,8 +84,9 @@ public class PageService {
         page.setCategories(parseCategories(path));
         page.setStatus(1);
         page.setLastUpdateTime(new Date());
+        page.setDirectory(page.path().endsWith("/"));
 
-        if (oldPageOptional.isPresent()) {
+        if (existPage.isPresent()) {
             documents.replaceOne(new Document("_id", new ObjectId(page.id())), page);
         } else {
             documents.insertOne(page);
@@ -102,7 +103,6 @@ public class PageService {
                 categories.add(path.substring(0, i + 1));
             }
         }
-
         return categories;
     }
 
@@ -121,6 +121,11 @@ public class PageService {
         page.setLastUpdateTime(new Date());
 
         documents.replaceOne(new Document("_id", objectId), page);
+    }
+
+    public int countCategory(String category) {
+        return (int) documents.count(new Document("categories", category).append("status", 1));
+
     }
 }
 
